@@ -1,5 +1,18 @@
-# Teal Insights R Package Template
 
-This repository is a template repository for creating an R package, following the Teal Insights style guide.
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 
-Clone this repository and find and replace the placeholders 'packagename', 'packagetitle', 'packagedescription', and 'packagelicense' with the appropriate values for your package.
+# wbids
+
+<!-- badges: start -->
+<!-- badges: end -->
+<!-- ## Installation -->
+<!-- You can install the development version of wbids like so: -->
+<!-- ``` r -->
+<!-- # FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE? -->
+<!-- ``` -->
+<!-- ## Example -->
+<!-- This is a basic example which shows you how to solve a common problem: -->
+<!-- ```{r example} -->
+<!-- library(wbids) -->
+<!-- ## basic example code -->
+<!-- ``` -->
