@@ -5,7 +5,7 @@ Authors@R:
     c(person("Teal", "Emery", , "lte@tealinsights.com", role = c("aut", "cre")),
     person("Teal Insights", role = c("cph")))
 Description: Work seamlessly with World Bank International Debt Statistics (IDS). A a link to the World Bank
-  IDS API docs should be here. 
+  IDS API docs should be here. This line should create a merge conflict. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
