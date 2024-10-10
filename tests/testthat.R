@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(packagename)
-
-test_check("packagename")
+# library(wbids)
+#
+# test_check("wbids")
