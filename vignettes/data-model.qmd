@@ -9,7 +9,7 @@ vignette: >
 
 ## Overview
 
-The diagram below shows the data model of the `wbids` package. In our design, we primarily have R users in mind, particularly those who rely heavily on the popular data manipulation packages `dplyr` and `data.table`. For these users, having consistent and descriptive primary key column names across different tables (e.g., `geography_id`, `series_id`) simplifies writing joins across tables, reduces the risk of column name conflicts, and avoids ambiguity. This approach enhances clarity and makes the data model more intuitive to work with, especially when handling multiple joins in complex queries.
+The diagram below shows the data model of the `wbids` package. In our design, we primarily have R users in mind, particularly those who rely heavily on the popular data manipulation packages `dplyr` and `data.table`. For these users, having consistent and descriptive primary key column names across different tables (e.g., `geography_id`, `series_id`) simplifies writing joins across tables, reduces the risk of column name conflicts, and avoids ambiguity. 
 
 ```{mermaid}
 %%| fig-width: 12
@@ -19,14 +19,15 @@ erDiagram
     GEOGRAPHIES {
         string geography_id PK
         string geography_name
-        string geography_iso3code
         string geography_iso2code
+        string geography_iso3code
         string geography_type
         string geography_capital
         string region_id
         string region_iso2code
         string region_name
         string admin_region_id
+        string admin_region_iso2code
         string admin_region_name
         string lending_type_id
         string lending_type_iso2code
@@ -44,6 +45,7 @@ erDiagram
     COUNTERPARTS {
         string counterpart_id PK
         string counterpart_name
+        string counterpart_iso2code
         string counterpart_iso3code
         string counterpart_type
     }
@@ -60,3 +62,63 @@ erDiagram
         float value
     }
 ```
+
+## Table details
+
+## Geographies
+
+| Column name | Description | Example value |
+|-----------------|-------------------------------------|-----------------|
+| geography_id | Unique identifier for the geography | ZMB |
+| geography_name | Standardized name of the geography | Zambia |
+| geography_iso2code | ISO 3166-1 alpha-2 code of the geography | ZM |
+| geography_iso3code | ISO 3166-1 alpha-3 code of the geography | ZMB |
+| geography_type | Type of geography (e.g., country, region) | Country |
+| geography_capital | Capital city of the geography | Lusaka |
+| region_id | Unique identifier for the region | SSF |
+| region_iso2code | ISO 3166-1 alpha-2 code of the region | ZG |
+| region_name | Name of the region | Sub-Saharan Africa |
+| admin_region_id | Unique identifier for the administrative region | SSA |
+| admin_region_iso2code | Unique identifier for the administrative region | ZF |
+| admin_region_name | Name of the administrative region | Sub-Saharan Africa (excluding high income) |
+| lending_type_id | Unique identifier for the lending type | IDX |
+| lending_type_iso2code | ISO code of the lending type | XI |
+| lending_type_name | Name of the lending type | IDA |
+
+## Counterparts
+
+| Column name | Description | Example value |
+|-----------------|-------------------------------------|-----------------|
+| counterpart_id | Unique identifier for the counterpart | CHN |
+| counterpart_name | Standardized name of the counterpart | China |
+| counterpart_iso2code | ISO 3166-1 alpha-2 code of the counterpart | CN |
+| counterpart_iso3code | ISO 3166-1 alpha-3 code of the counterpart | CHN |
+| counterpart_type | Type of counterpart (e.g., institution, country, region) | Country |
+
+## Series
+
+| Column name | Description | Example value |
+|-----------------|--------------------|----------------------------------|
+| series_id | Unique identifier for the data series | DT.DOD.DPPG.CD |
+| series_name | Name of the series | External debt stocks, public and publicly guaranteed (PPG) (DOD, current US\$) |
+| series_description | Detailed description of the series | Public and publicly guaranteed debt comprises long-term external obligations of public debtors, including the national government, political subdivisions (or an agency of either), and autonomous public bodies, and external obligations of private debtors that are guaranteed for repayment by a public entity. |
+| source_note | Note about the data source | Public and publicly guaranteed debt comprises long-term external obligations of public debtors, including the national government,  Public Corporations, State Owned Enterprises, Development Banks and Other Mixed Enterprises, political subdivisions (or an agency of either), autonomous public bodies, and external obligations of private debtors that are guaranteed for repayment by a public entity. Data are in current U.S. dollars. |
+| source_organization | Organization responsible for the data series | World Bank, International Debt Statistics. |
+
+## International Debt Statistics
+
+| Column name | Description | Example value  |
+|----------------|-------------------------------|----------------|
+| series_id      | Identifier for the series     | DT.DOD.DPPG.CD |
+| geography_id   | Identifier for the geography  | ZMB            |
+| counterpart_id | Identifier for the counterpar | CHN            |
+| year           | Year of the data point        | 2020           |
+| value          | Value of the data point       | 4298957000     |
+
+## Standardization of geography and counterpart names
+
+TODO: provide details about the process and why to do this
+
+## Assignment of geography and counterpart types
+
+TODO: provide details about the process and why to do this (in particular deviate from "country")
