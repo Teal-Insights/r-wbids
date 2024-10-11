@@ -1,1 +1,4 @@
 ^LICENSE\.md$
+^.*\.Rproj$
+^\.Rproj\.user$
+^vignettes/*_files$
