@@ -15,7 +15,7 @@ The diagram below shows the data model of the `wbids` package. In our design, we
 %%| fig-width: 12
 %%| fig-height: 8
 erDiagram
-    GEOGRAPHIES ||--o{ INTERNATIONAL_DEBT_STATISTICS : has
+    GEOGRAPHIES ||--o{ DEBT_STATISTICS : has
     GEOGRAPHIES {
         string geography_id PK
         string geography_name
@@ -33,7 +33,7 @@ erDiagram
         string lending_type_iso2code
         string lending_type_name
     }
-    SERIES ||--o{ INTERNATIONAL_DEBT_STATISTICS : has
+    SERIES ||--o{ DEBT_STATISTICS : has
     SERIES ||--o{ SERIES_TOPICS : has
     SERIES {
         string series_id PK
@@ -41,7 +41,7 @@ erDiagram
         string source_note
         string source_organization
     }
-    COUNTERPARTS ||--o{ INTERNATIONAL_DEBT_STATISTICS : has
+    COUNTERPARTS ||--o{ DEBT_STATISTICS : has
     COUNTERPARTS {
         string counterpart_id PK
         string counterpart_name
@@ -54,7 +54,7 @@ erDiagram
         int topic_id 
         string topic_name 
     }
-    INTERNATIONAL_DEBT_STATISTICS {
+    DEBT_STATISTICS {
         string series_id FK
         string geography_id FK
         string counterpart_id FK
@@ -105,7 +105,7 @@ erDiagram
 | source_note | Note about the data source | Public and publicly guaranteed debt comprises long-term external obligations of public debtors, including the national government,  Public Corporations, State Owned Enterprises, Development Banks and Other Mixed Enterprises, political subdivisions (or an agency of either), autonomous public bodies, and external obligations of private debtors that are guaranteed for repayment by a public entity. Data are in current U.S. dollars. |
 | source_organization | Organization responsible for the data series | World Bank, International Debt Statistics. |
 
-## International Debt Statistics
+## Debt Statistics
 
 | Column name | Description | Example value  |
 |----------------|-------------------------------|----------------|
