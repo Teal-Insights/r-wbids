@@ -20,7 +20,6 @@ erDiagram
         string geography_id PK
         string geography_name
         string geography_iso2code
-        string geography_iso3code
         string geography_type
         string geography_capital
         string region_id
@@ -72,7 +71,6 @@ erDiagram
 | geography_id | Unique identifier for the geography | ZMB |
 | geography_name | Standardized name of the geography | Zambia |
 | geography_iso2code | ISO 3166-1 alpha-2 code of the geography | ZM |
-| geography_iso3code | ISO 3166-1 alpha-3 code of the geography | ZMB |
 | geography_type | Type of geography (e.g., country, region) | Country |
 | geography_capital | Capital city of the geography | Lusaka |
 | region_id | Unique identifier for the region | SSF |
