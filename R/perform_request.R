@@ -68,7 +68,7 @@ perform_request <- function(
                             max_reqs = pages,
                             progress = progress)
     out <- resps |>
-      map(function(x) {resp_body_json(x)[[2]]})
+      map(function(x) {resp_body_json(x)[["source"]][["data"]]})
     out <- unlist(out, recursive = FALSE)
   }
   out
