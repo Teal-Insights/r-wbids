@@ -37,6 +37,7 @@ erDiagram
     SERIES {
         string series_id PK
         string series_name
+        int source_id
         string source_note
         string source_organization
     }
@@ -99,7 +100,7 @@ erDiagram
 |-----------------|--------------------|----------------------------------|
 | series_id | Unique identifier for the data series | DT.DOD.DPPG.CD |
 | series_name | Name of the series | External debt stocks, public and publicly guaranteed (PPG) (DOD, current US\$) |
-| series_description | Detailed description of the series | Public and publicly guaranteed debt comprises long-term external obligations of public debtors, including the national government, political subdivisions (or an agency of either), and autonomous public bodies, and external obligations of private debtors that are guaranteed for repayment by a public entity. |
+| source_id | Unique identifier for the data source | 2 | 
 | source_note | Note about the data source | Public and publicly guaranteed debt comprises long-term external obligations of public debtors, including the national government,  Public Corporations, State Owned Enterprises, Development Banks and Other Mixed Enterprises, political subdivisions (or an agency of either), autonomous public bodies, and external obligations of private debtors that are guaranteed for repayment by a public entity. Data are in current U.S. dollars. |
 | source_organization | Organization responsible for the data series | World Bank, International Debt Statistics. |
 
