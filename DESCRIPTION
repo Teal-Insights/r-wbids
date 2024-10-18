@@ -12,7 +12,10 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 URL: https://teal-insights.github.io/r-wbids, https://github.com/Teal-Insights/r-wbids
 BugReports: https://github.com/Teal-Insights/r-wbids/issues
+VignetteBuilder: quarto
