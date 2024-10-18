@@ -9,3 +9,4 @@
 ^Meta$
 ^\.github$
 _pkgdown.yml
+^data-raw$
