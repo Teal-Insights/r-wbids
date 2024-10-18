@@ -7,7 +7,7 @@ devtools::load_all()
 
 series_raw <- perform_request("series")
 
-series <- series_raw[[1]]$concept[[1]]$variable |>
+series_processed <- series_raw[[1]]$concept[[1]]$variable |>
   bind_rows() |>
   select(
     series_id = "id",
@@ -17,7 +17,7 @@ series <- series_raw[[1]]$concept[[1]]$variable |>
 # pak::pak("tidy-intelligence/r-wbwdi")
 indicators <- wbwdi::wdi_get_indicators()
 
-series_extended <- series |>
+series_extended <- series_processed |>
   left_join(indicators, join_by(series_id == indicator_id))
 
 series <- series_extended|>
