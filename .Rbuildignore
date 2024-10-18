@@ -11,3 +11,4 @@
 ^Meta$
 ^\.github$
 _pkgdown.yml
+^.lintr$
