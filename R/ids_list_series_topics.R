@@ -14,8 +14,8 @@
 #' @export
 #'
 #' @examples
-#' ids_list_series()
+#' ids_list_series_topics()
 #'
-ids_list_series <- function() {
+ids_list_series_topics <- function() {
   series_topics
 }
