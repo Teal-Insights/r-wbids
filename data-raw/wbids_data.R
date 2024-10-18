@@ -1,3 +1,4 @@
+devtools::load_all()
 
 # Prepare geography data ----------------------------------------------------------------------
 
@@ -13,21 +14,29 @@ series <- series_raw[[1]]$concept[[1]]$variable |>
     series_name = "value"
   )
 
-ids_list_series <- function() {
-  series
-}
+# pak::pak("tidy-intelligence/r-wbwdi")
+indicators <- wbwdi::wdi_get_indicators()
+
+series_extended <- series |>
+  left_join(indicators, join_by(series_id == indicator_id))
+
+series <- series_extended|>
+  select(series_id, series_name, source_id, source_name, source_note, source_organization)
 
 # Prepare counterpart data --------------------------------------------------------------------
 
 
 # Prepare series-topics data ------------------------------------------------------------------
 
+series_topics <- series_extended |>
+  select(series_id, topics) |>
+  tidyr::unnest(topics)
 
 # Store all data in single rda file -----------------------------------------------------------
 
 # TODO: add other data sources later here as well
 
 usethis::use_data(
-  series,
+  series, series_topics,
   overwrite = TRUE, internal = TRUE
 )
