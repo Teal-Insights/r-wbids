@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-# library(wbids)
-#
-# test_check("wbids")
+library(wbids)
+
+test_check("wbids")

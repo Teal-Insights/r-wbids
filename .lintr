@@ -1,0 +1,5 @@
+linters: linters_with_defaults() # see vignette("lintr")
+encoding: "UTF-8"
+exclude_start: "^```\\{mermaid\\}"
+exclude_end: "^```$"
+
