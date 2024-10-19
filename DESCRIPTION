@@ -23,11 +23,13 @@ Suggests:
     lintr (>= 3.1.2),
     quarto,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    languageserver (>= 0.3.16)
 Config/testthat/edition: 3
 URL: https://teal-insights.github.io/r-wbids, https://github.com/Teal-Insights/r-wbids
 BugReports: https://github.com/Teal-Insights/r-wbids/issues
 VignetteBuilder: quarto
 Remotes:  
     r-lib/devtools,
-    r-lib/lintr
+    r-lib/lintr,
+    REditorSupport/languageserver
