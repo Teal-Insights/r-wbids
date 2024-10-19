@@ -1,11 +1,7 @@
-# TODO: Mock the API response
-test_that("perform_request returns data for a valid resource", {
-  # TODO: Select a valid resource
-  resource <- ""
 
-  # Call the function
+test_that("perform_request returns data for a series resource", {
+  resource <- "series"
   result <- perform_request(resource)
-
-  # TODO: Check the result
-  expect_true(TRUE)
+  expect_true(result[[1]]$name == "International Debt Statistics")
+  expect_true(result[[1]]$id == "6")
 })
