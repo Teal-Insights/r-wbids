@@ -10,15 +10,15 @@
 #' @param series A character vector representing the series codes (e.g.,
 #'  "DT.DOD.DPPG.CD"). This argument is required and cannot contain NA values.
 #' @param counterparts A character vector representing counterpart areas (e.g.,
-#'  "all"). This argument is required and cannot contain NA values.
+#'  "all", "001"). This argument is required and cannot contain NA values.
 #' @param start_date An optional numeric value representing the starting year
 #'  (e.g., 2015). It must be greater than or equal to 1970. If not provided, the
 #'  entire time range is used.
 #' @param end_date An optional numeric value representing the ending year (e.g.,
 #'  2020). It must be greater than or equal to 1970 and cannot be earlier than
-#'  `start_date`. If not provided, the entire time range is used.
+#'  `start_date`. If not provided, the entire available time range is used.
 #' @param progress A logical value indicating whether to display progress during
-#' the request process (default: TRUE). Must be either `TRUE` or `FALSE`.
+#' the request process (default: `TRUE`). Must be either `TRUE` or `FALSE`.
 #'
 #' @return A tibble containing debt statistics with the following columns:
 #' \describe{
@@ -36,7 +36,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Fetch debt statistics for Zambia from 2015 to 2020
+#' # Fetch specific debt statistics for Zambia from 2015 to 2020
 #' ids_get(
 #'   geographies = "ZMB",
 #'   series = c("DT.DOD.DPPG.CD", "BM.GSR.TOTL.CD"),
@@ -50,6 +50,22 @@
 #'   geographies = "ZMB",
 #'   series = "DT.DOD.DPPG.CD",
 #'   counterparts = "all"
+#' )
+#'
+#' # Fetch data for specific counterparts
+#' ids_get(
+#'   geographies = "ZMB",
+#'   series = "DT.DOD.DPPG.CD",
+#'   counterparts = c("216", "231")
+#' )
+#'
+#' # Fetch data for multiple geographies and counterparts
+#' ids_get(
+#'   geographies = c("ZMB", "CHN"),
+#'   series = "DT.DOD.DPPG.CD",
+#'   counterparts = c("216", "231"),
+#'   start_date = 2019,
+#'   end_date = 2020
 #' )
 #' }
 #'
@@ -76,13 +92,17 @@ ids_get <- function(
     "series" = series,
     "counterparts" = counterparts,
     "time" = time
-  ) |> purrr::pmap_df(~ get_debt_statistics(..1, ..2, ..3, ..4),
-                      .progress = progress)
+  ) |> purrr::pmap_df(
+    ~ get_debt_statistics(..1, ..2, ..3, ..4, progress = progress),
+    .progress = progress
+  )
 
   debt_statistics
 }
 
-get_debt_statistics <- function(geographies, series, counterparts, time) {
+get_debt_statistics <- function(
+    geographies, series, counterparts, time, progress
+  ) {
 
   resource <- paste0(
     "country/", geographies,
@@ -91,7 +111,7 @@ get_debt_statistics <- function(geographies, series, counterparts, time) {
     "/time/", time
   )
 
-  series_raw <- perform_request(resource)
+  series_raw <- perform_request(resource, progress = progress)
 
   series_raw_rbind <- series_raw$data |>
     bind_rows()
