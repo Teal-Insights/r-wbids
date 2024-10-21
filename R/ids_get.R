@@ -144,9 +144,10 @@ extract_values <- function(data, path, type = "character") {
   vapply(data, function(x) {
     result <- rlang::eval_tidy(path_expr, x)
     if (is.null(result) || length(result) == 0) {
-      return(fun_value)
+      fun_value
+    } else {
+      result
     }
-    return(result)
   }, FUN.VALUE = fun_value, USE.NAMES = FALSE)
 }
 
