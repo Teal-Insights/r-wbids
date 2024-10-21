@@ -7,10 +7,10 @@
 ids_get(
   geographies,
   series,
-  counterparts,
+  counterparts = "all",
   start_date = NULL,
   end_date = NULL,
-  progress = TRUE
+  progress = FALSE
 )
 }
 \arguments{
@@ -22,7 +22,8 @@ values.}
 "DT.DOD.DPPG.CD"). This argument is required and cannot contain NA values.}
 
 \item{counterparts}{A character vector representing counterpart areas (e.g.,
-"all"). This argument is required and cannot contain NA values.}
+"all", "001"). This argument is required and cannot contain NA values
+(default: "all").}
 
 \item{start_date}{An optional numeric value representing the starting year
 (e.g., 2015). It must be greater than or equal to 1970. If not provided, the
@@ -30,10 +31,11 @@ entire time range is used.}
 
 \item{end_date}{An optional numeric value representing the ending year (e.g.,
 2020). It must be greater than or equal to 1970 and cannot be earlier than
-\code{start_date}. If not provided, the entire time range is used.}
+\code{start_date}. If not provided, the entire available time range is used.}
 
-\item{progress}{A logical value indicating whether to display progress during
-the request process (default: TRUE). Must be either \code{TRUE} or \code{FALSE}.}
+\item{progress}{A logical value indicating whether to display a progress
+message during the request process (default: \code{FALSE}). Must be either \code{TRUE}
+or \code{FALSE}.}
 }
 \value{
 A tibble containing debt statistics with the following columns:
@@ -55,20 +57,34 @@ by geographies, series, counterparts, and time periods.
 }
 \examples{
 \dontrun{
-# Fetch debt statistics for Zambia from 2015 to 2020
+# Fetch data for a series without specifying a time range or counterpart
+ids_get(
+  geographies = "ZMB",
+  series = "DT.DOD.DPPG.CD",
+)
+
+# Fetch specific debt statistics for Zambia from 2015 to 2020
 ids_get(
   geographies = "ZMB",
   series = c("DT.DOD.DPPG.CD", "BM.GSR.TOTL.CD"),
-  counterparts = "all",
   start_date = 2015,
   end_date = 2020
 )
 
-# Fetch data for a series without specifying a time range
+# Fetch data for specific counterparts
 ids_get(
   geographies = "ZMB",
   series = "DT.DOD.DPPG.CD",
-  counterparts = "all"
+  counterparts = c("216", "231")
+)
+
+# Fetch data for multiple geographies and counterparts
+ids_get(
+  geographies = c("ZMB", "CHN"),
+  series = "DT.DOD.DPPG.CD",
+  counterparts = c("216", "231"),
+  start_date = 2019,
+  end_date = 2020
 )
 }
 
