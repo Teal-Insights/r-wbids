@@ -234,6 +234,21 @@
       ],
       "Hash": "3eec01f8b1dee337674b2e34ab1f9bc1"
     },
+    "stdgeography": {
+      "Package": "stdgeography",
+      "Version": "0.0.0.1",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "Teal-Insights",
+      "RemoteRepo": "stdgeography",
+      "RemoteRef": "main",
+      "RemoteSha": "64cc1fdc9a0ec0623a49a61b9d935ec92cec39fe",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "28ae3fef961efa647074f83324d5ccbb"
+    },
     "sys": {
       "Package": "sys",
       "Version": "3.4.3",

@@ -17,7 +17,8 @@ Imports:
     cli,
     httr2 (>= 1.0.0),
     dplyr (>= 1.0.0),
-    purrr (>= 1.0.0)
+    purrr (>= 1.0.0),
+    stdgeography (>= 0.0.0.1)
 Suggests: 
     devtools (>= 2.4.5),
     lintr (>= 3.1.2),
@@ -32,4 +33,5 @@ VignetteBuilder: quarto
 Remotes:  
     r-lib/devtools,
     r-lib/lintr,
-    REditorSupport/languageserver
+    REditorSupport/languageserver,
+    github::Teal-Insights/stdgeography
