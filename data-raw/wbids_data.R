@@ -1,24 +1,41 @@
-devtools::load_all()
+
+library(wbwdi)
+library(tidyr)
+library(usethis)
+library(devtools)
+
+load_all()
 
 # Prepare geography data -------------------------------------------------------
 
+geographies_raw <- perform_request("country")
+
+geographies_ids <- geographies_raw[[1]]$concept[[1]]$variable |>
+  bind_rows() |>
+  select(geography_id = id,
+         geography_name = value)
+
+geographies_wdi <- wdi_get_geographies() |>
+  select(-c(geography_name, longitude, latitude))
+
+geographies <- geographies_ids |>
+  left_join(geographies_wdi, join_by(geography_id))
 
 # Prepare series data ----------------------------------------------------------
 
 series_raw <- perform_request("series")
 
-series_processed <- series_raw[[1]]$concept[[1]]$variable |>
+series_ids <- series_raw[[1]]$concept[[1]]$variable |>
   bind_rows() |>
   select(
     series_id = "id",
     series_name = "value"
   )
 
-# Download package via: pak::pak("tidy-intelligence/r-wbwdi")
-indicators <- wbwdi::wdi_get_indicators()
+indicators_wdi <- wdi_get_indicators()
 
-series_extended <- series_processed |>
-  left_join(indicators, join_by(series_id == indicator_id))
+series_extended <- series_ids |>
+  left_join(indicators_wdi, join_by(series_id == indicator_id))
 
 series <- series_extended |>
   select(series_id, series_name, source_id, source_name,
@@ -31,11 +48,11 @@ series <- series_extended |>
 
 series_topics <- series_extended |>
   select(series_id, topics) |>
-  tidyr::unnest(topics)
+  unnest(topics)
 
 # Store all data in single rda file --------------------------------------------
 
 usethis::use_data(
-  series, series_topics,
+  geographies, series, series_topics,
   overwrite = TRUE, internal = TRUE
 )
