@@ -3,13 +3,12 @@
 perform_request <- function(
   resource,
   per_page = 1000,
-  date = NULL,
   progress = FALSE,
   base_url = "https://api.worldbank.org/v2/sources/6/"
 ) {
   validate_per_page(per_page)
 
-  req <- create_request(base_url, resource, per_page, date)
+  req <- create_request(base_url, resource, per_page)
   resp <- httr2::req_perform(req)
 
   if (is_request_error(resp)) {
@@ -36,10 +35,10 @@ validate_per_page <- function(per_page) {
   }
 }
 
-create_request <- function(base_url, resource, per_page, date) {
+create_request <- function(base_url, resource, per_page) {
   httr2::request(base_url) |>
     httr2::req_url_path_append(resource) |>
-    httr2::req_url_query(format = "json", per_page = per_page, date = date) |>
+    httr2::req_url_query(format = "json", per_page = per_page) |>
     httr2::req_user_agent(
       "wbids R package (https://github.com/teal-insights/r-wbids)"
     )
@@ -102,7 +101,7 @@ fetch_multiple_pages <- function(req, pages, progress) {
     )
   out <- resps |>
     purrr::map(function(x) {
-      httr2::resp_body_json(x)[[2]]
+      httr2::resp_body_json(x)$source
     })
   unlist(out, recursive = FALSE)
 }
