@@ -6,7 +6,7 @@ Authors@R:
       person("Teal Insights", role = c("cph")),
       person("Christoph", "Scheuch", , "christoph@tidy-intelligence.com", role = c("aut"),
              comment = c(ORCID = "0009-0004-0423-6819")))
-Description: A modern, flexible interface for accessing the World Bank’s International Debt Statistics (IDS). 
+Description: A modern, flexible interface for accessing the World Bank’s International Debt Statistics (IDS) <https://datacatalog.worldbank.org/search/dataset/0038015>. 
   'wbids' allows users to download, process, and analyze IDS series for multiple geographies, counterparts and specific time periods. 
   The package is designed to work seamlessly with World Development Indicators (WDI) provided through the 'wbwdi' package.
 License: MIT + file LICENSE

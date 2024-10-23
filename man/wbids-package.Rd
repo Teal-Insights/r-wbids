@@ -6,7 +6,7 @@
 \alias{wbids-package}
 \title{wbids: Work seamlessly with World Bank International Debt Statistics (IDS)}
 \description{
-A modern, flexible interface for accessing the World Bank’s International Debt Statistics (IDS). 'wbids' allows users to download, process, and analyze IDS series for multiple geographies, counterparts and specific time periods. The package is designed to work seamlessly with World Development Indicators (WDI) provided through the 'wbwdi' package.
+A modern, flexible interface for accessing the World Bank’s International Debt Statistics (IDS) \url{https://datacatalog.worldbank.org/search/dataset/0038015}. 'wbids' allows users to download, process, and analyze IDS series for multiple geographies, counterparts and specific time periods. The package is designed to work seamlessly with World Development Indicators (WDI) provided through the 'wbwdi' package.
 }
 \seealso{
 Useful links:
