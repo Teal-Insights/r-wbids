@@ -6,19 +6,24 @@
 \alias{wbids-package}
 \title{wbids: Work seamlessly with World Bank International Debt Statistics (IDS)}
 \description{
-Work seamlessly with World Bank International Debt Statistics (IDS). A a link to the World Bank IDS API docs should be here. This package is a product of Teal-Insight and is not sponsored by or affiliated with the World Bank in any way, except for the use of the World Bank International Debt Statistics.
+A modern, flexible interface for accessing the World Bank’s International Debt Statistics (IDS). 'wbids' allows users to download, process, and analyze IDS series for multiple geographies, counterparts and specific time periods. The package is designed to work seamlessly with World Development Indicators (WDI) provided through the 'wbwdi' package.
 }
 \seealso{
 Useful links:
 \itemize{
   \item \url{https://teal-insights.github.io/r-wbids}
-  \item \url{https://github.com/Teal-Insights/r-wbids}
+  \item \url{https://github.com/teal-insights/r-wbids}
   \item Report bugs at \url{https://github.com/Teal-Insights/r-wbids/issues}
 }
 
 }
 \author{
 \strong{Maintainer}: Teal Emery \email{lte@tealinsights.com}
+
+Authors:
+\itemize{
+  \item Christoph Scheuch \email{christoph@tidy-intelligence.com} (\href{https://orcid.org/0009-0004-0423-6819}{ORCID})
+}
 
 Other contributors:
 \itemize{

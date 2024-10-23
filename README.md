@@ -9,7 +9,9 @@
 `wbids` is an R package that provides a modern, flexible interface for
 accessing the World Bank’s International Debt Statistics (IDS). `wbids`
 allows users to download, process, and analyze IDS series for multiple
-geographies, counterparts and specific time periods.
+geographies, counterparts and specific time periods. The package is
+designed to work seamlessly with World Development Indicators (WDI)
+provided through the `wbwdi` package.
 
 The `wbids` package relies on a redefinition of the original World Bank
 data: ‘geographies’ contain both countries and regions, while
