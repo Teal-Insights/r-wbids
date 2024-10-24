@@ -25,7 +25,7 @@ The `wbids` package relies on a redefinition of the original World Bank data: 'g
 
 This package is a product of Teal Insights and not sponsored by or affiliated with the World Bank in any way, except for the use of the World Bank IDS API.
 
-## Installation
+## Installation 
 
 You can install the development version of `wbids` like this:
 

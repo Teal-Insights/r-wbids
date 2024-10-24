@@ -4,14 +4,17 @@
 # wbids
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/Teal-Insights/r-wbids/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Teal-Insights/r-wbids/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `wbids` is an R package that provides a modern, flexible interface for
-accessing the World Bank’s International Debt Statistics (IDS). `wbids`
-allows users to download, process, and analyze IDS series for multiple
-geographies, counterparts and specific time periods. The package is
-designed to work seamlessly with World Development Indicators (WDI)
-provided through the `wbwdi` package.
+accessing the World Bank’s [International Debt Statistics
+(IDS)](https://datacatalog.worldbank.org/search/dataset/0038015).
+`wbids` allows users to download, process, and analyze IDS series for
+multiple geographies, counterparts and specific time periods. The
+package is designed to work seamlessly with World Development Indicators
+(WDI) provided through the `wbwdi` package.
 
 The `wbids` package relies on a redefinition of the original World Bank
 data: ‘geographies’ contain both countries and regions, while
@@ -20,7 +23,7 @@ provides a consistent mapping of identifiers and names across these
 different types. See the package vignette for more details on the data
 model: TODO: INSERT LINK TO VIGNETTE LATER
 
-This package is a product of Teal Insight and not sponsored by or
+This package is a product of Teal Insights and not sponsored by or
 affiliated with the World Bank in any way, except for the use of the
 World Bank IDS API.
 
