@@ -56,7 +56,7 @@ World Bank International Debt Statistics (IDS) API. The data can be filtered
 by geographies, series, counterparts, and time periods.
 }
 \examples{
-\dontrun{
+\dontshow{if (curl::has_internet()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # Fetch data for a series without specifying a time range or counterpart
 ids_get(
   geographies = "ZMB",
@@ -86,6 +86,5 @@ ids_get(
   start_date = 2019,
   end_date = 2020
 )
-}
-
+\dontshow{\}) # examplesIf}
 }
