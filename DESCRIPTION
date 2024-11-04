@@ -23,6 +23,7 @@ Imports:
     tidyr (>= 1.0.0),
     rlang (>= 1.0.0)
 Suggests: 
+    curl,
     devtools (>= 2.4.5),
     lintr (>= 3.1.2),
     quarto,
