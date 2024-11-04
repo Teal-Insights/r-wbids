@@ -27,6 +27,7 @@ Suggests:
     devtools (>= 2.4.5),
     lintr (>= 3.1.2),
     quarto,
+    readxl,
     rmarkdown,
     testthat (>= 3.0.0),
     languageserver (>= 0.3.16)
