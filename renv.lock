@@ -119,7 +119,7 @@
     },
     "httr2": {
       "Package": "httr2",
-      "Version": "1.0.5",
+      "Version": "1.0.6",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -136,7 +136,7 @@
         "vctrs",
         "withr"
       ],
-      "Hash": "d84e4c33206aaace37714901ac2b00c3"
+      "Hash": "3ef5d07ec78803475a94367d71b40c41"
     },
     "lifecycle": {
       "Package": "lifecycle",
@@ -243,21 +243,6 @@
         "utils"
       ],
       "Hash": "3eec01f8b1dee337674b2e34ab1f9bc1"
-    },
-    "stdgeography": {
-      "Package": "stdgeography",
-      "Version": "0.0.0.2",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteUsername": "Teal-Insights",
-      "RemoteRepo": "stdgeography",
-      "RemoteRef": "main",
-      "RemoteSha": "4b87817cf56234d153254500be5cad2596f4874e",
-      "Requirements": [
-        "R"
-      ],
-      "Hash": "716c0dc2af5f54c7fc3e1e8fe7330ac7"
     },
     "stringi": {
       "Package": "stringi",
@@ -377,28 +362,6 @@
         "rlang"
       ],
       "Hash": "c03fa420630029418f7e6da3667aac4a"
-    },
-    "wbwdi": {
-      "Package": "wbwdi",
-      "Version": "0.1.0.9001",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteUsername": "tidy-intelligence",
-      "RemoteRepo": "r-wbwdi",
-      "RemoteRef": "main",
-      "RemoteSha": "3aa9a49ec41cf830714e906c282a43ebdb2918ed",
-      "Requirements": [
-        "R",
-        "cli",
-        "dplyr",
-        "httr2",
-        "purrr",
-        "rlang",
-        "tibble",
-        "tidyr"
-      ],
-      "Hash": "c9759cb453b5ef3f0e5c3f4e81bc66b7"
     },
     "withr": {
       "Package": "withr",

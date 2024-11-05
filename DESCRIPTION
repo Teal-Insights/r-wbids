@@ -18,15 +18,17 @@ Imports:
     httr2 (>= 1.0.0),
     dplyr (>= 1.0.0),
     purrr (>= 1.0.0),
-    stdgeography (>= 0.0.0.1),
-    wbwdi (>= 0.0.0.1)
+    tidyr (>= 1.0.0),
+    rlang (>= 1.0.0)
 Suggests: 
     devtools (>= 2.4.5),
     lintr (>= 3.1.2),
     quarto,
     rmarkdown,
     testthat (>= 3.0.0),
-    languageserver (>= 0.3.16)
+    languageserver (>= 0.3.16),
+    wbwdi (>= 0.0.0.1),
+    econid (>= 0.0.0.1)
 Config/testthat/edition: 3
 URL: https://teal-insights.github.io/r-wbids, https://github.com/Teal-Insights/r-wbids
 BugReports: https://github.com/Teal-Insights/r-wbids/issues
@@ -35,5 +37,5 @@ Remotes:
     r-lib/devtools,
     r-lib/lintr,
     REditorSupport/languageserver,
-    github::Teal-Insights/stdgeography,
+    github::teal-insights/r-econid,
     github::tidy-intelligence/r-wbwdi
