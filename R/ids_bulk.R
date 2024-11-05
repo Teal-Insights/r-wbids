@@ -10,6 +10,10 @@
 #' extension. The file will automatically be deleted after processing.
 #' @param quiet A logical parameter indicating whether messages should be
 #' printed to the console.
+#' @param timeout An integer specifying the timeout in seconds for downloading
+#' the file. Defaults to the current R timeout setting.
+#' @param warn_size A logical parameter indicating whether to warn about large
+#' downloads. Defaults to TRUE.
 #'
 #' @return A tibble containing processed debt statistics data with the following
 #' columns:
@@ -32,23 +36,122 @@
 #' )
 #'
 ids_bulk <- function(
-  file_url, file_path = tempfile(fileext = ".xlsx"), quiet = FALSE
+  file_url,
+  file_path = tempfile(fileext = ".xlsx"),
+  quiet = FALSE,
+  timeout = getOption("timeout", 60),
+  warn_size = TRUE
 ) {
+  rlang::check_installed("readxl", reason = "to download bulk files.")
 
-  rlang::check_installed(
-    "readxl", reason = "to download bulk files."
+  # Download file with size checks and validation
+  download_bulk_file(file_url, file_path, timeout, warn_size, quiet)
+
+  # Read and process the data
+  if (!quiet) message("Reading in file.")
+  bulk_data <- read_bulk_file(file_path)
+
+  if (!quiet) message("Processing file.")
+  process_bulk_data(bulk_data)
+
+  # Ensure cleanup even if processing fails
+  on.exit(unlink(file_path))
+}
+
+#' Get response headers from a URL
+#'
+#' @param file_url URL to request headers from
+#' @return List of response headers
+get_response_headers <- function(file_url) {
+  httr2::request(file_url) |>
+    httr2::req_headers("Accept" = "*/*") |>
+    httr2::req_perform() |>
+    httr2::resp_headers()
+}
+
+#' Download bulk data file with validation
+#'
+#' @param file_url URL of the file to download
+#' @param file_path Path where file should be saved
+#' @param timeout Timeout in seconds
+#' @param warn_size Whether to warn about large files
+#' @param quiet Whether to suppress messages
+download_bulk_file <- function(file_url, file_path, timeout, warn_size, quiet) {
+  # Get file size before downloading
+  response_headers <- get_response_headers(file_url)
+  size_mb <- as.numeric(response_headers$`content-length`) / 1024^2
+  formatted_size <- format(round(size_mb, 1), nsmall = 1)
+
+  if (warn_size && size_mb > 100) {
+    warning(
+      sprintf(
+        paste(
+          "This file is %s MB and may take several minutes to download.",
+          "Current timeout setting: %s seconds.",
+          "Use warn_size=FALSE to disable this warning.",
+          sep = "\n"
+        ),
+        formatted_size,
+        timeout
+      ),
+      call. = FALSE
+    )
+
+    # Interactive confirmation
+    if (check_interactive()) {
+      response <- readline("Do you want to continue with the download? (y/N): ")
+      if (!tolower(response) %in% c("y", "yes")) {
+        stop("Download cancelled by user", call. = FALSE)
+      }
+    }
+  }
+
+  # Print message about file download
+  if (!quiet) message("Downloading file to: {file_path}")
+
+  # Download with timeout handling
+  withr::with_options(
+    list(timeout = timeout),
+    tryCatch({
+      download_file(file_url, destfile = file_path, quiet = quiet)
+    },
+    error = function(e) {
+      if (grepl("timeout|cannot open URL", e$message, ignore.case = TRUE)) {
+        stop(
+          paste0(
+            "Download timed out after ", timeout, " seconds.\n",
+            "Try increasing the timeout parameter",
+            " (e.g., timeout=600 for 10 minutes)"
+          ),
+          call. = FALSE
+        )
+      }
+      stop(e$message, call. = FALSE)
+    })
   )
 
-  if (!quiet) {
-    cli::cli_inform("Downloading file to: {file_path}")
+  # Validate downloaded file
+  validate_file(file_path)
+}
+
+#' Validate that downloaded file exists and is not empty
+#'
+#' @param file_path Path to file to validate
+validate_file <- function(file_path) {
+  if (!file.exists(file_path)) {
+    stop("Download failed: File not created")
   }
-
-  utils::download.file(file_url, destfile = file_path, quiet = quiet)
-
-  if (!quiet) {
-    cli::cli_inform("Reading in file.")
+  if (file.size(file_path) == 0) {
+    unlink(file_path)
+    stop("Download failed: Empty file")
   }
+}
 
+#' Read bulk file and determine column types
+#'
+#' @param file_path Path to Excel file
+#' @return Raw data frame from Excel file
+read_bulk_file <- function(file_path) {
   available_columns <- readxl::read_excel(path = file_path, n_max = 0) |>
     colnames()
   relevant_columns <- tibble(names = available_columns) |>
@@ -57,17 +160,19 @@ ids_bulk <- function(
     ) |>
     filter(!grepl("column", names, ignore.case = TRUE))
 
-  bulk_raw <- readxl::read_excel(
+  readxl::read_excel(
     path = file_path,
     range = readxl::cell_cols(seq_len(nrow(relevant_columns))),
     col_types = relevant_columns$type
   )
+}
 
-  if (!quiet) {
-    cli::cli_inform("Processing file.")
-  }
-
-  bulk <- bulk_raw |>
+#' Process bulk data into tidy format
+#'
+#' @param bulk_raw Raw data frame from Excel file
+#' @return Processed tibble in tidy format
+process_bulk_data <- function(bulk_raw) {
+  bulk_raw |>
     select(-c("Country Name", "Classification Name")) |>
     select(
       geography_id = "Country Code",
@@ -81,12 +186,28 @@ ids_bulk <- function(
     ) |>
     mutate(year = as.integer(.data$year)) |>
     tidyr::drop_na()
+}
 
-  if (!quiet) {
-    cli::cli_inform("Deleting file.")
-  }
+#' Check if R is running interactively
+#'
+#' Wrapper around base::interactive() to make the function testable.
+#' This function exists primarily to facilitate testing of interactive features.
+#'
+#' @return Logical indicating whether R is running interactively
+#' @keywords internal
+check_interactive <- function() {
+  interactive()
+}
 
-  unlink(file_path)
-
-  bulk
+#' Download a file using utils::download.file
+#'
+#' Wrapper around utils::download.file to facilitate testing.
+#'
+#' @param url URL of file to download
+#' @param destfile Destination file path
+#' @param quiet Whether to suppress messages
+#' @return Invisibly returns the status code from download.file
+#' @keywords internal
+download_file <- function(url, destfile, quiet) {
+  utils::download.file(url, destfile = destfile, quiet = quiet)
 }

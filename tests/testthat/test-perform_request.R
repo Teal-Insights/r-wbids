@@ -1,3 +1,4 @@
+devtools::load_all()
 
 test_that("perform_request returns data for a series resource", {
   resource <- "series"

@@ -38,7 +38,7 @@ ids_bulk_series <- function() {
   bulk_series <- ids_meta$indicators |>
     as_tibble() |>
     select("lineage") |>
-    unnest("lineage") |>
+    tidyr::unnest("lineage") |>
     select(series_id = "harvest_system_reference")
 
   api_series <- ids_list_series()
