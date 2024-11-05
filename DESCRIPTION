@@ -25,9 +25,10 @@ Imports:
 Suggests: 
     curl,
     devtools (>= 2.4.5),
+    jsonlite (>= 1.0.0),
     lintr (>= 3.1.2),
     quarto,
-    readxl,
+    readxl (>= 1.0.0),
     rmarkdown,
     testthat (>= 3.0.0),
     languageserver (>= 0.3.16)
