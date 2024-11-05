@@ -3,6 +3,7 @@ library(wbwdi)
 library(tidyr)
 library(usethis)
 library(devtools)
+library(stdgeography)
 
 load_all()
 

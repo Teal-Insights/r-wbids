@@ -40,6 +40,16 @@
       ],
       "Hash": "b21916dd77a27642b447374a5d30ecf3"
     },
+    "cpp11": {
+      "Package": "cpp11",
+      "Version": "0.5.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "91570bba75d0c9d3f1040c835cee8fba"
+    },
     "curl": {
       "Package": "curl",
       "Version": "5.2.3",
@@ -236,18 +246,48 @@
     },
     "stdgeography": {
       "Package": "stdgeography",
-      "Version": "0.0.0.1",
+      "Version": "0.0.0.2",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteUsername": "Teal-Insights",
       "RemoteRepo": "stdgeography",
       "RemoteRef": "main",
-      "RemoteSha": "64cc1fdc9a0ec0623a49a61b9d935ec92cec39fe",
+      "RemoteSha": "4b87817cf56234d153254500be5cad2596f4874e",
       "Requirements": [
         "R"
       ],
-      "Hash": "28ae3fef961efa647074f83324d5ccbb"
+      "Hash": "716c0dc2af5f54c7fc3e1e8fe7330ac7"
+    },
+    "stringi": {
+      "Package": "stringi",
+      "Version": "1.8.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "stats",
+        "tools",
+        "utils"
+      ],
+      "Hash": "39e1144fd75428983dc3f63aa53dfa91"
+    },
+    "stringr": {
+      "Package": "stringr",
+      "Version": "1.5.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "cli",
+        "glue",
+        "lifecycle",
+        "magrittr",
+        "rlang",
+        "stringi",
+        "vctrs"
+      ],
+      "Hash": "960e2ae9e09656611e0b8214ad543207"
     },
     "sys": {
       "Package": "sys",
@@ -274,6 +314,29 @@
         "vctrs"
       ],
       "Hash": "a84e2cc86d07289b3b6f5069df7a004c"
+    },
+    "tidyr": {
+      "Package": "tidyr",
+      "Version": "1.3.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "cli",
+        "cpp11",
+        "dplyr",
+        "glue",
+        "lifecycle",
+        "magrittr",
+        "purrr",
+        "rlang",
+        "stringr",
+        "tibble",
+        "tidyselect",
+        "utils",
+        "vctrs"
+      ],
+      "Hash": "915fb7ce036c22a6a33b5a8adb712eb1"
     },
     "tidyselect": {
       "Package": "tidyselect",
@@ -314,6 +377,28 @@
         "rlang"
       ],
       "Hash": "c03fa420630029418f7e6da3667aac4a"
+    },
+    "wbwdi": {
+      "Package": "wbwdi",
+      "Version": "0.1.0.9001",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "tidy-intelligence",
+      "RemoteRepo": "r-wbwdi",
+      "RemoteRef": "main",
+      "RemoteSha": "3aa9a49ec41cf830714e906c282a43ebdb2918ed",
+      "Requirements": [
+        "R",
+        "cli",
+        "dplyr",
+        "httr2",
+        "purrr",
+        "rlang",
+        "tibble",
+        "tidyr"
+      ],
+      "Hash": "c9759cb453b5ef3f0e5c3f4e81bc66b7"
     },
     "withr": {
       "Package": "withr",

@@ -44,8 +44,9 @@ knitr::opts_chunk$set(
 
 ### Add dependencies
 
-- `usethis::use_package(package)` adds the named package to DESCRIPTION dependencies
-- `usethis::use_dev_package(package, type="Suggests")` adds a development dependency (won’t be installed for end-users)
+- `usethis::use_package(package)` adds stable-version dependency
+- `usethis::use_dev_package(package)` adds development-version dependency
+- `usethis::use_package(package, type="Suggests")` adds Suggests dependency (won't be installed for end-users)
 - `usethis::use_import_from(package, fun=)` adds a single function import to the roxygen2 docs
 
 ### Install and update dependencies
