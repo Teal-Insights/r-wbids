@@ -9,7 +9,6 @@ ids_bulk_files <- function() {
 
   bulk_files <- ids_meta$resources |>
     as_tibble() |>
-    View()
     select(name, distribution, last_updated_date) |>
     unnest(distribution) |>
     filter(distribution_format == "xlsx") |>
