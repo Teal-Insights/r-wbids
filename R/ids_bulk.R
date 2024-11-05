@@ -98,7 +98,7 @@ download_bulk_file <- function(file_url, file_path, timeout, warn_size, quiet) {
     )
 
     # Interactive confirmation
-    if (check_interactive()) {
+    if (warn_size && check_interactive()) {
       response <- readline("Do you want to continue with the download? (y/N): ")
       if (!tolower(response) %in% c("y", "yes")) {
         stop("Download cancelled by user", call. = FALSE)
