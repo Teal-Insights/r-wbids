@@ -4,7 +4,13 @@
 \alias{ids_bulk}
 \title{Download and Process Bulk Data File for International Debt Statistics}
 \usage{
-ids_bulk(file_url, file_path = tempfile(fileext = ".xlsx"), quiet = FALSE)
+ids_bulk(
+  file_url,
+  file_path = tempfile(fileext = ".xlsx"),
+  quiet = FALSE,
+  timeout = getOption("timeout", 60),
+  warn_size = TRUE
+)
 }
 \arguments{
 \item{file_url}{A character string specifying the URL of the Excel file to
@@ -16,6 +22,12 @@ extension. The file will automatically be deleted after processing.}
 
 \item{quiet}{A logical parameter indicating whether messages should be
 printed to the console.}
+
+\item{timeout}{An integer specifying the timeout in seconds for downloading
+the file. Defaults to the current R timeout setting.}
+
+\item{warn_size}{A logical parameter indicating whether to warn about large
+downloads. Defaults to TRUE.}
 }
 \value{
 A tibble containing processed debt statistics data with the following
@@ -33,12 +45,4 @@ geography, series, counterpart, and year.}
 \description{
 This function downloads a data file from the World Bank International Debt
 Statistics (IDS), reads and processes the data into a tidy format.
-}
-\examples{
-\dontshow{if (curl::has_internet()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-available_files <- ids_bulk_files()
-data <- ids_bulk(
-  available_files$file_url[1]
-)
-\dontshow{\}) # examplesIf}
 }

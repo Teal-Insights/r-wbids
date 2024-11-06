@@ -28,8 +28,8 @@
 #' }
 #'
 #' @export
-#'
-#' @examplesIf curl::has_internet()
+#' @examples
+#' \dontrun{
 #' available_files <- ids_bulk_files()
 #' data <- ids_bulk(
 #'   available_files$file_url[1]
@@ -52,10 +52,12 @@ ids_bulk <- function(
   bulk_data <- read_bulk_file(file_path)
 
   if (!quiet) message("Processing file.")
-  process_bulk_data(bulk_data)
+  bulk_data <- process_bulk_data(bulk_data)
 
   # Ensure cleanup even if processing fails
   on.exit(unlink(file_path))
+
+  bulk_data
 }
 
 #' Get response headers from a URL
@@ -209,5 +211,5 @@ check_interactive <- function() {
 #' @return Invisibly returns the status code from download.file
 #' @keywords internal
 download_file <- function(url, destfile, quiet) {
-  utils::download.file(url, destfile = destfile, quiet = quiet)
+  utils::download.file(url, destfile = destfile, quiet = quiet, mode = "wb")
 }
