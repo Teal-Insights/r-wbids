@@ -46,3 +46,12 @@ geography, series, counterpart, and year.}
 This function downloads a data file from the World Bank International Debt
 Statistics (IDS), reads and processes the data into a tidy format.
 }
+\examples{
+\dontrun{
+available_files <- ids_bulk_files()
+data <- ids_bulk(
+  available_files$file_url[1]
+)
+}
+
+}

@@ -256,6 +256,7 @@ test_that("ids_bulk downloads and processes data correctly", {
 
   # Get a real file URL to test with
   test_url <- ids_bulk_files()$file_url[1]
+  test_path <- tempfile(fileext = ".xlsx")
 
   # Mock slow-running functions
   local_mocked_bindings(
