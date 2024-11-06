@@ -1,5 +1,3 @@
-devtools::load_all()
-
 test_that("geographies input validation works", {
   expect_error(
     ids_get(geographies = NA, series = "DT.DOD.DPPG.CD", counterparts = "all")

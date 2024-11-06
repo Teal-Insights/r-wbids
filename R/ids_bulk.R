@@ -34,6 +34,7 @@
 #' data <- ids_bulk(
 #'   available_files$file_url[1]
 #' )
+#' }
 #'
 ids_bulk <- function(
   file_url,
@@ -43,6 +44,9 @@ ids_bulk <- function(
   warn_size = TRUE
 ) {
   rlang::check_installed("readxl", reason = "to download bulk files.")
+
+  # Register cleanup immediately after creating temporary file
+  on.exit(unlink(file_path))
 
   # Download file with size checks and validation
   download_bulk_file(file_url, file_path, timeout, warn_size, quiet)
@@ -54,10 +58,8 @@ ids_bulk <- function(
   if (!quiet) message("Processing file.")
   bulk_data <- process_bulk_data(bulk_data)
 
-  # Ensure cleanup even if processing fails
-  on.exit(unlink(file_path))
-
-  bulk_data
+  # Return the processed data
+  return(bulk_data)
 }
 
 #' Get response headers from a URL

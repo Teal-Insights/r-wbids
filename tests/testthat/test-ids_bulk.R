@@ -1,5 +1,3 @@
-devtools::load_all()
-
 # Set timeout for testing
 options(timeout = 60)
 
@@ -215,23 +213,18 @@ test_that("download_bulk_file downloads files correctly", {
   unlink(test_path)
 })
 
-# Live, unmocked test
-test_that("ids_bulk downloads and processes data correctly", {
-  skip_if_offline()
+test_that("read_bulk_file reads files correctly", {
+  # Loading the sample file is slow, so skip on CRAN
   skip_on_cran()
 
-  # Get a real file URL to test with
-  test_url <- ids_bulk_files()$file_url[1]
+  test_path <- test_path("data/sample.xlsx")
+  result <- read_bulk_file(test_path)
+  expect_s3_class(result, "tbl_df")
+})
 
-  local_mocked_bindings(
-    check_interactive = function() FALSE
-  )
-
-  # Add timeout to download
-  withr::with_options(
-    list(timeout = 300),
-    result <- ids_bulk(test_url, quiet = TRUE, warn_size = FALSE)
-  )
+test_that("process_bulk_data processes data correctly", {
+  test_path <- test_path("data/sample.rds")
+  result <- process_bulk_data(readRDS(test_path))
 
   # Check structure
   expect_s3_class(result, "tbl_df")
@@ -255,4 +248,25 @@ test_that("ids_bulk downloads and processes data correctly", {
   expect_false(any(is.na(result$series_id)))
   expect_false(any(is.na(result$counterpart_id)))
   expect_false(any(is.na(result$year)))
+})
+
+test_that("ids_bulk downloads and processes data correctly", {
+  skip_if_offline()
+  skip_on_cran()
+
+  # Get a real file URL to test with
+  test_url <- ids_bulk_files()$file_url[1]
+
+  # Mock slow-running functions
+  local_mocked_bindings(
+    check_interactive = function() FALSE,
+    download_bulk_file = function(...) TRUE,
+    read_bulk_file = function(...) readRDS(test_path("data/sample.rds"))
+  )
+
+  # Check that output is a tibble (add more assertions here)
+  result <- ids_bulk(
+    test_url, file_path = test_path, quiet = TRUE, warn_size = FALSE
+  )
+  expect_s3_class(result, "tbl_df")
 })
