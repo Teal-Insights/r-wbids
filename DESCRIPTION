@@ -17,6 +17,7 @@ Depends:
     R (>= 4.1)
 Imports:
     cli,
+    withr,
     httr2 (>= 1.0.0),
     dplyr (>= 1.0.0),
     purrr (>= 1.0.0),
@@ -24,9 +25,12 @@ Imports:
     rlang (>= 1.0.0)
 Suggests: 
     curl,
+    tibble,
     devtools (>= 2.4.5),
+    jsonlite (>= 1.0.0),
     lintr (>= 3.1.2),
     quarto,
+    readxl (>= 1.0.0),
     rmarkdown,
     testthat (>= 3.0.0),
     languageserver (>= 0.3.16)

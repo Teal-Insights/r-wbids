@@ -119,7 +119,7 @@
     },
     "httr2": {
       "Package": "httr2",
-      "Version": "1.0.5",
+      "Version": "1.0.6",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -136,7 +136,7 @@
         "vctrs",
         "withr"
       ],
-      "Hash": "d84e4c33206aaace37714901ac2b00c3"
+      "Hash": "3ef5d07ec78803475a94367d71b40c41"
     },
     "lifecycle": {
       "Package": "lifecycle",
@@ -365,7 +365,7 @@
     },
     "withr": {
       "Package": "withr",
-      "Version": "3.0.1",
+      "Version": "3.0.2",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -373,7 +373,7 @@
         "grDevices",
         "graphics"
       ],
-      "Hash": "07909200e8bbe90426fbfeb73e1e27aa"
+      "Hash": "cc2d62c76458d425210d1eb1478b30b4"
     }
   }
 }
