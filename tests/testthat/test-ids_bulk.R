@@ -265,9 +265,20 @@ test_that("ids_bulk downloads and processes data correctly", {
     read_bulk_file = function(...) readRDS(test_path("data/sample.rds"))
   )
 
-  # Check that output is a tibble (add more assertions here)
+  # Check that output is a tibble and has expected column names and types
   result <- ids_bulk(
     test_url, file_path = test_path, quiet = TRUE, warn_size = FALSE
   )
+
   expect_s3_class(result, "tbl_df")
+
+  expected_colnames <- c(
+    "geography_id", "series_id", "counterpart_id", "year", "value"
+  )
+  expect_equal(colnames(result), expected_colnames)
+
+  expected_coltypes <- c(
+    "character", "character", "character", "integer", "numeric"
+  )
+  expect_true(all(lapply(result, class) == expected_coltypes))
 })
