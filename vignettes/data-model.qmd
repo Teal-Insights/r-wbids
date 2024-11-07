@@ -1,8 +1,8 @@
 ---
-title: "Data Model"
+title: "`wbids` Data Model"
 format: html
 vignette: >
-  %\VignetteIndexEntry{Vignette's Title}
+  %\VignetteIndexEntry{`wbids` Data Model}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---

@@ -23,6 +23,7 @@
 #'
 #' @examples
 #' ids_list_counterparts()
+#'
 ids_list_counterparts <- function() {
   counterparts
 }

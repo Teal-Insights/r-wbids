@@ -16,71 +16,48 @@ knitr::opts_chunk$set(
 # wbids
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/Teal-Insights/r-wbids/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Teal-Insights/r-wbids/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-<!-- ## Installation -->
+`wbids` is an R package that provides a modern, flexible interface for accessing the World Bank’s [International Debt Statistics (IDS)](https://datacatalog.worldbank.org/search/dataset/0038015). `wbids` allows users to download, process, and analyze IDS series for multiple geographies, counterparts and specific time periods. The package is designed to work seamlessly with World Development Indicators (WDI) provided through the `wbwdi` package. 
 
-<!-- You can install the development version of wbids like so: -->
+The `wbids` package relies on a redefinition of the original World Bank data: 'geographies' contain both countries and regions, while 'counterparts' include both counterpart areas and institutions. `wbids` provides a consistent mapping of identifiers and names across these different types. See the package vignette for more details on the data model: TODO: INSERT LINK TO VIGNETTE LATER
 
-<!-- ``` r -->
-<!-- # FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE? -->
-<!-- ``` -->
+This package is a product of Teal Insights and not sponsored by or affiliated with the World Bank in any way, except for the use of the World Bank IDS API.
 
-<!-- ## Example -->
+## Installation 
 
-<!-- This is a basic example which shows you how to solve a common problem: -->
+You can install the development version of `wbids` like this:
 
-<!-- ```{r example} -->
-<!-- library(wbids) -->
-<!-- ## basic example code -->
-<!-- ``` -->
+```r
+pak::pak("teal-insights/r-wbids")
+```
 
-## Development
+## Usage
 
-### Create functions and tests
+The main function `ids_get()` provides an interface to download multiple IDS series for multiple geographies and counterparts and specific date ranges. 
 
-- `use_r(name=)` creates a pair of source and test files with the selected filename
-- If the source file already exists and is open in your IDE, you can instead do `usethis::use_test()` to create an appropriately named test file
+```r
+library(wbids)
 
-### Add dependencies
+ids_get(
+  geographies = c("ZMB", "ZAF"),
+  series = c("DT.DOD.DPPG.CD", "BM.GSR.TOTL.CD"),
+  counterparts = c("216", "231"),
+  start_date = 2015,
+  end_date = 2020
+)
+```
 
-- `usethis::use_package(package)` adds stable-version dependency
-- `usethis::use_dev_package(package)` adds development-version dependency
-- `usethis::use_package(package, type="Suggests")` adds Suggests dependency (won't be installed for end-users)
-- `usethis::use_import_from(package, fun=)` adds a single function import to the roxygen2 docs
+The package comes with prepared metadata about available series, geographies, counterparts, and topics:
 
-### Install and update dependencies
+```r
+ids_list_series()
+ids_list_georaphies()
+ids_list_counterparts()
+ids_list_series_topics()
+```
 
-- `renv::init()` sets up the project’s file system for dependency management with renv
-- `renv::install()` installs all dependencies listed in DESCRIPTION, *including Suggests/development dependencies*
-- `renv::snapshot()` regenerates the lockfile to match currently installed dependencies, *excluding Suggests/development dependencies*
-- `renv::update()` updates all package dependencies to latest versions
-- `renv::restore()` installs all dependencies declared in the lockfile
+This data can be used to enrich the IDS data or facilitate data discovery. For further applications, please consult [Teal Insights’ Guide to Working with the World Bank International Debt Statistics](https://teal-insights.github.io/teal_insights_guide_to_wbids/).
 
-### Add Data
-
-- `usethis::use_data(some_dataframe, name="filename")` saves a data object to “data/filename.rda” for use as a package export
-- `usethis::use_data_raw("dataset_name")` creates an empty R script in the “data-raw” directory—this is where you put any automation scripts that are used for generating/updating the exported dataset but that you *don’t* want to export to the end-user
-
-### Lint
-
-- `lintr::lint_package()`
-
-### Run tests
-
-- `testthat::test_file()`
-- `testthat::test_package()`
-
-### Add Documentation
-
-- `use_vignette()`
-- `use_article()`
-- `use_package_doc()`
-
-### Build
-
-- `devtools::build_readme()`
-- `devtools::build()`
-- `devtools::check()`
-- `devtools::install()`
-
+The interface and namings are fully consistent with World Development Indicators (WDI) data provided through the 'wbwdi' package. You can find details on [github.com/tidy-intelligence/r-wbwdi](https://github.com/tidy-intelligence/r-wbwdi).

@@ -29,4 +29,5 @@ counterparts, including their unique identifiers, names, and types.
 }
 \examples{
 ids_list_counterparts()
+
 }

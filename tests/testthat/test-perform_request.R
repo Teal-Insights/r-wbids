@@ -1,4 +1,3 @@
-
 test_that("perform_request returns data for a series resource", {
   resource <- "series"
   result <- perform_request(resource)

@@ -1,12 +1,14 @@
 Package: wbids
 Title: Work seamlessly with World Bank International Debt Statistics (IDS)
-Version: 0.0.0.1
+Version: 0.0.0.9000
 Authors@R: 
     c(person("Teal", "Emery", , "lte@tealinsights.com", role = c("aut", "cre")),
-    person("Teal Insights", role = c("cph")))
-Description: Work seamlessly with World Bank International Debt Statistics (IDS). A a link to the World Bank
-  IDS API docs should be here. This package is a product of Teal-Insight and is not sponsored by or 
-  affiliated with the World Bank in any way, except for the use of the World Bank International Debt Statistics.
+      person("Teal Insights", role = c("cph")),
+      person("Christoph", "Scheuch", , "christoph@tidy-intelligence.com", role = c("aut"),
+             comment = c(ORCID = "0009-0004-0423-6819")))
+Description: A modern, flexible interface for accessing the World Bank’s International Debt Statistics (IDS) <https://datacatalog.worldbank.org/search/dataset/0038015>. 
+  'wbids' allows users to download, process, and analyze IDS series for multiple geographies, counterparts and specific time periods. 
+  The package is designed to work seamlessly with World Development Indicators (WDI) provided through the 'wbwdi' package.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -15,25 +17,30 @@ Depends:
     R (>= 4.1)
 Imports:
     cli,
+    withr,
     httr2 (>= 1.0.0),
     dplyr (>= 1.0.0),
     purrr (>= 1.0.0),
     tidyr (>= 1.0.0),
     rlang (>= 1.0.0)
 Suggests: 
+    curl,
+    tibble,
     devtools (>= 2.4.5),
+    jsonlite (>= 1.0.0),
     lintr (>= 3.1.2),
     quarto,
+    readxl (>= 1.0.0),
     rmarkdown,
     testthat (>= 3.0.0),
     languageserver (>= 0.3.16),
     wbwdi (>= 0.0.0.1),
     econid (>= 0.0.0.1)
 Config/testthat/edition: 3
-URL: https://teal-insights.github.io/r-wbids, https://github.com/Teal-Insights/r-wbids
+URL: https://teal-insights.github.io/r-wbids, https://github.com/teal-insights/r-wbids
 BugReports: https://github.com/Teal-Insights/r-wbids/issues
 VignetteBuilder: quarto
-Remotes:  
+Remotes: 
     r-lib/devtools,
     r-lib/lintr,
     REditorSupport/languageserver,
