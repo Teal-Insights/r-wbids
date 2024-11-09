@@ -1,4 +1,4 @@
-library(dplyr) 
+library(dplyr)
 library(wbwdi)
 library(econid)
 library(devtools)
@@ -7,7 +7,7 @@ load_all()
 
 # Prepare geography data -------------------------------------------------------
 
-# TODO: once econid is on CRAN, directly call this in id_list_geographies() 
+# TODO: once econid is on CRAN, directly call this in id_list_geographies()
 #       and add econid to Imports
 geographies <- econid::geographies
 
@@ -33,7 +33,7 @@ series <- series_extended |>
 
 # Prepare counterpart data -----------------------------------------------------
 
-# TODO: once econid is on CRAN, directly call this in id_list_geographies() 
+# TODO: once econid is on CRAN, directly call this in id_list_geographies()
 #       and add econid to Imports
 counterparts <- econid::counterparts
 
