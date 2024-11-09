@@ -33,9 +33,7 @@ Suggests:
     readxl (>= 1.0.0),
     rmarkdown,
     testthat (>= 3.0.0),
-    languageserver (>= 0.3.16),
-    wbwdi (>= 0.0.0.1),
-    econid (>= 0.0.0.1)
+    languageserver (>= 0.3.16)
 Config/testthat/edition: 3
 URL: https://teal-insights.github.io/r-wbids, https://github.com/teal-insights/r-wbids
 BugReports: https://github.com/Teal-Insights/r-wbids/issues

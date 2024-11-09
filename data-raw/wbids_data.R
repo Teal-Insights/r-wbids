@@ -22,6 +22,7 @@ series_ids <- series_raw[[1]]$concept[[1]]$variable |>
     series_name = "value"
   )
 
+# TODO: add wbwdi to Imports once it is on CRAN
 indicators_wdi <- wdi_get_indicators()
 
 series_extended <- series_ids |>
