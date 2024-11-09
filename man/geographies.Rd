@@ -11,6 +11,6 @@ An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) w
 geographies
 }
 \description{
-This dataset is accessible through \link{ids_list_geographies()}.
+This dataset is accessible through \link{ids_list_geographies}.
 }
 \keyword{internal}

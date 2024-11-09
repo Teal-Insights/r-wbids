@@ -11,6 +11,6 @@ An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) w
 series
 }
 \description{
-This dataset is accessible through \link{ids_list_series()}.
+This dataset is accessible through \link{ids_list_series}.
 }
 \keyword{internal}

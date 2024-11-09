@@ -4,6 +4,8 @@ library(tidyr)
 library(wbwdi)
 
 # TODO: add wbwdi to Suggests once it is on CRAN
+# TOOD: replace logic for counterparts and geographies with econid package
+#       once it is on CRAN and add it to Suggests
 
 # Fetch countries and regions from World Bank WDI API ----
 
