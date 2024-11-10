@@ -25,9 +25,8 @@ Imports:
     rlang (>= 1.0.0)
 Suggests: 
     curl,
+    jsonlite,
     tibble,
-    devtools (>= 2.4.5),
-    jsonlite (>= 1.0.0),
     lintr (>= 3.1.2),
     quarto,
     readxl (>= 1.0.0),
