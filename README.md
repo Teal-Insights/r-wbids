@@ -6,6 +6,8 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/Teal-Insights/r-wbids/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Teal-Insights/r-wbids/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/Teal-Insights/r-wbids/graph/badge.svg)](https://app.codecov.io/gh/Teal-Insights/r-wbids)
 <!-- badges: end -->
 
 `wbids` is an R package that provides a modern, flexible interface for
