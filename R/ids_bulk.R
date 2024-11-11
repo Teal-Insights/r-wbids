@@ -43,23 +43,20 @@ ids_bulk <- function(
   timeout = getOption("timeout", 60),
   warn_size = TRUE
 ) {
+
   rlang::check_installed("readxl", reason = "to download bulk files.")
 
-  # Register cleanup immediately after creating temporary file
   on.exit(unlink(file_path))
 
-  # Download file with size checks and validation
   download_bulk_file(file_url, file_path, timeout, warn_size, quiet)
 
-  # Read and process the data
-  if (!quiet) message("Reading in file.")
+  if (!quiet) cli::cli_progress_message("Reading in file.")
   bulk_data <- read_bulk_file(file_path)
 
-  if (!quiet) message("Processing file.")
+  if (!quiet) cli::cli_progress_message("Processing file.")
   bulk_data <- process_bulk_data(bulk_data)
 
-  # Return the processed data
-  return(bulk_data)
+  bulk_data
 }
 
 #' Get response headers from a URL
@@ -81,39 +78,33 @@ get_response_headers <- function(file_url) {
 #' @param warn_size Whether to warn about large files
 #' @param quiet Whether to suppress messages
 download_bulk_file <- function(file_url, file_path, timeout, warn_size, quiet) {
-  # Get file size before downloading
+
   response_headers <- get_response_headers(file_url)
   size_mb <- as.numeric(response_headers$`content-length`) / 1024^2
-  formatted_size <- format(round(size_mb, 1), nsmall = 1)
+  formatted_size <- format(round(size_mb, 1), nsmall = 1) # nolint
 
   if (warn_size && size_mb > 100) {
-    warning(
-      sprintf(
-        paste(
-          "This file is %s MB and may take several minutes to download.",
-          "Current timeout setting: %s seconds.",
-          "Use warn_size=FALSE to disable this warning.",
-          sep = "\n"
-        ),
-        formatted_size,
-        timeout
-      ),
-      call. = FALSE
-    )
+    cli::cli_warn(paste0(
+      "This file is {formatted_size} MB and may take several minutes to ",
+      "download. Current timeout setting: {timeout} seconds. Use ",
+      "{.code warn_size = FALSE} to disable this warning."
+    ))
 
-    # Interactive confirmation
     if (warn_size && check_interactive()) {
-      response <- readline("Do you want to continue with the download? (y/N): ")
+      response <- prompt_user(
+        "Do you want to continue with the download? (y/N): "
+      )
       if (!tolower(response) %in% c("y", "yes")) {
-        stop("Download cancelled by user", call. = FALSE)
+        cli::cli_abort("Download cancelled by user")
       }
     }
   }
 
-  # Print message about file download
-  if (!quiet) message("Downloading file to: {file_path}")
+  if (!quiet) {
+    cli::cli_progress_message("Downloading file to: {file_path}")
+  }
 
-  # Download with timeout handling
+  # nocov start
   withr::with_options(
     list(timeout = timeout),
     tryCatch({
@@ -121,20 +112,18 @@ download_bulk_file <- function(file_url, file_path, timeout, warn_size, quiet) {
     },
     error = function(e) {
       if (grepl("timeout|cannot open URL", e$message, ignore.case = TRUE)) {
-        stop(
+        cli::cli_abort(
           paste0(
             "Download timed out after ", timeout, " seconds.\n",
             "Try increasing the timeout parameter",
             " (e.g., timeout=600 for 10 minutes)"
-          ),
-          call. = FALSE
+          )
         )
       }
-      stop(e$message, call. = FALSE)
+      cli::cli_abort(e$message)
     })
   )
-
-  # Validate downloaded file
+  # nocov end
   validate_file(file_path)
 }
 
@@ -143,11 +132,11 @@ download_bulk_file <- function(file_url, file_path, timeout, warn_size, quiet) {
 #' @param file_path Path to file to validate
 validate_file <- function(file_path) {
   if (!file.exists(file_path)) {
-    stop("Download failed: File not created")
+    cli::cli_abort("Download failed: File not created")
   }
   if (file.size(file_path) == 0) {
     unlink(file_path)
-    stop("Download failed: Empty file")
+    cli::cli_abort("Download failed: Empty file")
   }
 }
 
@@ -214,4 +203,14 @@ check_interactive <- function() {
 #' @keywords internal
 download_file <- function(url, destfile, quiet) {
   utils::download.file(url, destfile = destfile, quiet = quiet, mode = "wb")
+}
+
+#' Prompt a user with a question
+#'
+#' Wrapper around base::readline to facilitate testing. Cannot be tested
+#' because of the base binding.
+#'
+#' @keywords internal
+prompt_user <- function(prompt) {
+  readline(prompt) # nocov
 }
