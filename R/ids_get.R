@@ -122,7 +122,7 @@ get_debt_statistics <- function(
 
   series_raw <- perform_request(resource, progress = progress_message)
 
-  if (length(series_raw$data[[1]]$variable[[1]]$concept) == 0) {
+  if (length(series_raw[[1]]$variable[[1]]$concept) == 0) {
     tibble(
       "geography_id" = character(),
       "series_id" = character(),
@@ -131,7 +131,7 @@ get_debt_statistics <- function(
       "value" = numeric()
     )
   } else {
-    series_raw_rbind <- series_raw$data |>
+    series_raw_rbind <- series_raw |>
       bind_rows()
 
     # Since the order of list items changes across series, we cannot use
@@ -157,7 +157,7 @@ get_debt_statistics <- function(
       select(year = "value") |>
       mutate(year = as.integer(.data$year))
 
-    values <- series_raw$data |>
+    values <- series_raw |>
       map_df(\(x) tibble(value = if (is.null(x$value)) NA_real_ else x$value))
 
     bind_cols(

@@ -1,10 +1,3 @@
-test_that("perform_request returns data for a series resource", {
-  resource <- "series"
-  result <- perform_request(resource)
-  expect_true(result[[1]]$name == "International Debt Statistics")
-  expect_true(result[[1]]$id == "6")
-})
-
 test_that("perform_request handles error responses", {
   mock_error_response <- list(
     list(
@@ -68,16 +61,21 @@ test_that("perform_request handles API errors gracefully", {
 
 test_that("perform_request handles wrong requests gracefully", {
 
-  mocked_request <- request(
-    "https://api.worldbank.org/v2/sources/6/country/ZMB/series/DT.DOD.DPPG.CD/counterpart-area/XXX/time/all?format=json&per_page=1000"
-  )
+  mocked_request <- request(paste0(
+    "https://api.worldbank.org/v2/sources/6/",
+    "country/ZMB/series/DT.DOD.DPPG.CD/counterpart-area/XXX/time/all",
+    "?format=json&per_page=1000"
+  ))
 
   with_mocked_bindings(
     create_request = function(...) mocked_request,
     {
       expect_error(
         perform_request("country"),
-        "API Error Code 160 : Data not found. The provided parameter value is not valid or data not found."
+        paste0(
+          "API Error Code 160 : Data not found. ",
+          "The provided parameter value is not valid or data not found."
+        )
       )
     }
   )

@@ -2,7 +2,7 @@
 #'
 perform_request <- function(
   resource,
-  per_page = 10000,
+  per_page = 15000,
   progress = FALSE,
   base_url = "https://api.worldbank.org/v2/sources/6/"
 ) {
@@ -19,9 +19,17 @@ perform_request <- function(
   pages <- body$pages
 
   if (pages == 1L) {
-    out <- body$source
+    out <- body$source$data
   } else {
-    out <- fetch_multiple_pages(req, pages, progress)
+    resps <- req |>
+      httr2::req_perform_iterative(
+        next_req = httr2::iterate_with_offset("page"),
+        max_reqs = pages,
+        progress = progress
+      )
+    out <- resps |>
+      purrr::map(\(x) httr2::resp_body_json(x)$source$data) |>
+      unlist(recursive = FALSE, use.names = FALSE)
   }
   out
 }
@@ -56,28 +64,14 @@ is_request_error <- function(resp) {
 
 handle_request_error <- function(resp) {
   error_string <- as.character(httr2::resp_body_xml(resp))
-  error_code <- sub('.*<wb:message id="([0-9]+)".*', '\\1',
+  error_code <- sub('.*<wb:message id="([0-9]+)".*', "\\1",
                     error_string)
-  error_message <- sub('.*<wb:message id="[0-9]+" key="([^"]*)".*', '\\1',
+  error_message <- sub('.*<wb:message id="[0-9]+" key="([^"]*)".*', "\\1",
                        error_string)
-  error_description <- sub('.*<wb:message.*?>(.*?)</wb:message>.*', '\\1',
+  error_description <- sub(".*<wb:message.*?>(.*?)</wb:message>.*", "\\1",
                            error_string)
   cli::cli_abort(
     paste("API Error Code", error_code, ":", error_message, error_description,
           collapse = "\n")
   )
-}
-
-fetch_multiple_pages <- function(req, pages, progress) {
-  resps <- req |>
-    httr2::req_perform_iterative(
-      next_req = httr2::iterate_with_offset("page"),
-      max_reqs = pages,
-      progress = progress
-    )
-  out <- resps |>
-    purrr::map(function(x) {
-      httr2::resp_body_json(x)$source
-    })
-  unlist(out, recursive = FALSE)
 }

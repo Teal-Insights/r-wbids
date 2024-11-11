@@ -52,9 +52,19 @@ test_that("ids_get handels invalid series input", {
 test_that("ids_get handels invalid progress input", {
   expect_error(
     ids_get(
-      geographies = "US", series = "NY.GDP.MKTP.CD", progress = "yes"
+      geographies = "ZMB", series = "DT.DOD.DPPG.CD", progress = "yes"
     ),
     "`progress` must be either TRUE or FALSE."
+  )
+})
+
+test_that("ids_get handels valid progress input", {
+  expect_silent(
+    ids_get(
+      geographies = "ZMB", series = "DT.DOD.DPPG.CD", counterparts = "265",
+      start_date = 2015, end_date = 2016,
+      progress = TRUE
+    )
   )
 })
 
@@ -109,21 +119,19 @@ test_that("create_time generates correct time sequence", {
 
 test_that("get_debt_statistics returns correctly structured tibble", {
   mock_perform_request <- list(
-      data = list(
-        list(variable = list(
-          list(concept = "Country", id = "ZMB"),
-          list(concept = "Series", id = "DT.DOD.DPPG.CD"),
-          list(concept = "Counterpart-Area", id = "216"),
-          list(concept = "Time", value = "2020")
-        ), value = 100),
-        list(variable = list(
-          list(concept = "Country", id = "ZMB"),
-          list(concept = "Series", id = "DT.DOD.DPPG.CD"),
-          list(concept = "Counterpart-Area", id = "216"),
-          list(concept = "Time", value = "2021")
-        ), value = 200)
-      )
-    )
+    list(variable = list(
+      list(concept = "Country", id = "ZMB"),
+      list(concept = "Series", id = "DT.DOD.DPPG.CD"),
+      list(concept = "Counterpart-Area", id = "216"),
+      list(concept = "Time", value = "2020")
+    ), value = 100),
+    list(variable = list(
+      list(concept = "Country", id = "ZMB"),
+      list(concept = "Series", id = "DT.DOD.DPPG.CD"),
+      list(concept = "Counterpart-Area", id = "216"),
+      list(concept = "Time", value = "2021")
+    ), value = 200)
+  )
 
   with_mocked_bindings(
     perform_request = function(...) mock_perform_request,
@@ -154,32 +162,30 @@ test_that("get_debt_statistics returns correctly structured tibble", {
 test_that("ids_get handles empty data gracefully", {
 
   mock_data <- list(
-    data = list(
-      list(
-        "variable" = list(
-          list(
-            "concept" = character(),
-            "id" = character(),
-            "value" = character()
-          ),
-          list(
-            "concept" = character(),
-            "id" = character(),
-            "value" = character()
-          ),
-          list(
-            "concept" = character(),
-            "id" = character(),
-            "value" = character()
-          ),
-          list(
-            "concept" = character(),
-            "id" = character(),
-            "value" = character()
-          )
+    list(
+      "variable" = list(
+        list(
+          "concept" = character(),
+          "id" = character(),
+          "value" = character()
         ),
-        "value" = numeric()
-      )
+        list(
+          "concept" = character(),
+          "id" = character(),
+          "value" = character()
+        ),
+        list(
+          "concept" = character(),
+          "id" = character(),
+          "value" = character()
+        ),
+        list(
+          "concept" = character(),
+          "id" = character(),
+          "value" = character()
+        )
+      ),
+      "value" = numeric()
     )
   )
 
@@ -194,16 +200,14 @@ test_that("ids_get handles empty data gracefully", {
 
 test_that("ids_get handles empty or incomplete data gracefully", {
   incomplete_data_mock <- list(
-    data = list(
-      list(
-        "variable" = list(
-          list("concept" = "Country", "id" = "ZMB"),
-          list("concept" = "Series", "id" = NA),
-          list("concept" = "Counterpart-Area", "id" = "all"),
-          list("concept" = "Time", "value" = "2020")
-        ),
-        "value" = NULL
-      )
+    list(
+      "variable" = list(
+        list("concept" = "Country", "id" = "ZMB"),
+        list("concept" = "Series", "id" = NA),
+        list("concept" = "Counterpart-Area", "id" = "all"),
+        list("concept" = "Time", "value" = "2020")
+      ),
+      "value" = NULL
     )
   )
 
