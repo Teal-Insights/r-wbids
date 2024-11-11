@@ -66,3 +66,19 @@ test_that("perform_request handles API errors gracefully", {
   expect_error(perform_request("nonexistent"), "HTTP 400 Bad Request.")
 })
 
+test_that("perform_request handles wrong requests gracefully", {
+
+  mocked_request <- request(
+    "https://api.worldbank.org/v2/sources/6/country/ZMB/series/DT.DOD.DPPG.CD/counterpart-area/XXX/time/all?format=json&per_page=1000"
+  )
+
+  with_mocked_bindings(
+    create_request = function(...) mocked_request,
+    {
+      expect_error(
+        perform_request("country"),
+        "API Error Code 160 : Data not found. The provided parameter value is not valid or data not found."
+      )
+    }
+  )
+})

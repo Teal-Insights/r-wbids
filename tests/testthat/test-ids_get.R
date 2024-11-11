@@ -15,6 +15,20 @@ test_that("ids_get returns a tibble with expected columns", {
   expect_equal(colnames(result), expected_columns)
 })
 
+test_that("ids_get returns a large data", {
+  result <- ids_get(
+    geographies = "ZMB",
+    series = "DT.DOD.DPPG.CD",
+    counterparts = c("all")
+  )
+  expect_s3_class(result, "tbl_df")
+  expect_true(nrow(result) > 0)
+  expected_columns <- c(
+    "geography_id", "series_id", "counterpart_id", "year", "value"
+  )
+  expect_equal(colnames(result), expected_columns)
+})
+
 test_that("ids_get handels invalid geography input", {
   expect_error(
     ids_get(
