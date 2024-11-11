@@ -16,25 +16,54 @@ url_geographies_wdi <- paste0(
 
 geographies_raw <- request(url_geographies_wdi) |>
   req_perform() |>
-  resp_body_json()
-
-aggregates <- geographies_raw[[2]] |>
-  bind_rows() |>
-  unnest(region) |>
-  filter(region == "Aggregates") |>
-  pull(id)
+  resp_body_json(simplifyVector = TRUE)
 
 geographies_wdi <- geographies_raw[[2]] |>
-  bind_rows() |>
-  select(
-    geography_iso3code = id,
-    geography_iso2code = iso2Code,
-    geography_name = name
+  as_tibble() |>
+  rename(
+    geography_id = "id",
+    geography_iso2code = "iso2Code",
+    geography_name = "name"
   ) |>
-  distinct() |>
-  mutate(geography_type = if_else(
-    geography_iso3code %in% aggregates, "Region", "Country"
-  ))
+  unnest_wider("region") |>
+  rename(
+    region_id = "id",
+    region_iso2code = "iso2code",
+    region_name = "value"
+  ) |>
+  unnest_wider("adminregion") |>
+  rename(
+    admin_region_id = "id",
+    admin_region_iso2code = "iso2code",
+    admin_region_name = "value"
+  ) |>
+  unnest_wider("incomeLevel") |>
+  rename(
+    income_level_id = "id",
+    income_level_iso2code = "iso2code",
+    income_level_name = "value"
+  ) |>
+  unnest_wider("lendingType") |>
+  rename(
+    lending_type_id = "id",
+    lending_type_iso2code = "iso2code",
+    lending_type_name = "value",
+    capital_city = "capitalCity"
+  ) |>
+  mutate(
+    longitude = if_else(
+      .data$longitude == "", NA_real_, as.numeric(.data$longitude)
+    ),
+    latitude = if_else(
+      .data$latitude == "", NA_real_, as.numeric(.data$latitude)
+    ),
+    geography_type = if_else(
+      .data$region_name == "Aggregates", "Region", "Country"
+    ),
+    across(where(is.character), ~ if_else(.x == "", NA, .x)),
+    across(where(is.character), trimws)
+  ) |>
+  relocate(c("geography_type", "capital_city"), .after = "geography_iso2code")
 
 # Fetch counterparts from World Bank International Debt Statistics API  ----
 
@@ -196,7 +225,7 @@ counterparts_ids_enriched <- counterparts_ids |>
 counterparts_ids_cleaned <- counterparts_ids_enriched |>
   left_join(
     geographies_wdi,
-    join_by(geography_iso2code, geography_iso3code, geography_type)
+    join_by(geography_iso2code, geography_id, geography_type)
   ) |>
   mutate(counterpart_name = if_else(
     !is.na(geography_name), geography_name, counterpart_name
@@ -233,19 +262,33 @@ counterparts <- counterparts_ids_cleaned |>
       .default = "Other"
     )
   ) |>
-  rename(geography_id = geography_iso3code)
+  select(
+    counterpart_id,
+    counterpart_name,
+    counterpart_iso2code = geography_iso3code,
+    counterpart_iso3code = geography_id,
+    counterpart_type
+  )
 
 # Use processed counterparts to enrich geographies -----------------------
 
-geographies <- geographies_wdi |>
-  rename(geography_id = geography_iso3code) |>
-  bind_rows(
-    counterparts |>
-      filter(!is.na(geography_id)) |>
-      select(contains("geography"), geography_name = counterpart_name)
-  ) |>
-  distinct() |>
-  arrange(geography_id)
+url_geographies_ids <- paste0(
+  "https://api.worldbank.org/v2/sources/",
+  "6/country?per_page=32500&format=json"
+)
+
+geographies_ids_raw <- request(url_geographies_ids) |>
+  req_perform() |>
+  resp_body_json()
+
+geographies <- geographies_ids_raw$source[[1]]$concept[[1]]$variable |>
+  bind_rows() |>
+  select(geography_id = id) |>
+  left_join(
+    geographies <- geographies_wdi |>
+      select(-c(longitude, latitude)),
+    join_by(geography_id)
+  )
 
 # Prepare series data ----------------------------------------------------------
 

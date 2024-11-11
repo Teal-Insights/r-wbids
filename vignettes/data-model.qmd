@@ -69,7 +69,7 @@ erDiagram
 
 | Column name | Description | Example value |
 |-----------------|-------------------------------------|-----------------|
-| geography_id | Unique identifier for the geography | ZMB |
+| geography_id | ISO 3166-1 alpha-3 code of the geography | ZMB |
 | geography_name | Standardized name of the geography | Zambia |
 | geography_iso2code | ISO 3166-1 alpha-2 code of the geography | ZM |
 | geography_type | Type of geography (e.g., country, region) | Country |
