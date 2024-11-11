@@ -1,10 +1,6 @@
-test_that("ids_list_geographies returns a tibble", {
+test_that("ids_list_geographies returns a tibble with expected columns", {
   result <- ids_list_geographies()
   expect_s3_class(result, "tbl_df")
-})
-
-test_that("ids_list_geographies returns expected columns", {
-  result <- ids_list_geographies()
   expected_columns <- c(
     "geography_id", "geography_iso2code", "geography_type", "capital_city",
     "geography_name", "region_id", "region_iso2code", "region_name",
