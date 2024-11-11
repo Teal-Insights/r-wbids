@@ -148,36 +148,16 @@ get_debt_statistics <- function(
     select(year = "value") |>
     mutate(year = as.integer(.data$year))
 
-  values <- extract_values(series_raw$data, "value", "numeric")
+  values <- series_raw$data |>
+    map_df(\(x) tibble(value = if (is.null(x$value)) NA_real_ else x$value))
 
   bind_cols(
     geography_ids,
     series_ids,
     counterpart_ids,
     years,
-    value = values
+    values
   )
-}
-
-extract_values <- function(data, path, type = "character") {
-  path_expr <- rlang::parse_expr(path)
-
-  fun_value <- switch(
-    type,
-    "character" = NA_character_,
-    "integer" = NA_integer_,
-    "numeric" = NA_real_,
-    stop("Invalid type. Must be one of 'character', 'integer', or 'numeric'.")
-  )
-
-  vapply(data, function(x) {
-    result <- rlang::eval_tidy(path_expr, x)
-    if (is.null(result) || length(result) == 0) {
-      fun_value
-    } else {
-      result
-    }
-  }, FUN.VALUE = fun_value, USE.NAMES = FALSE)
 }
 
 validate_character_vector <- function(arg, arg_name) {

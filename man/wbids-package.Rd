@@ -13,7 +13,7 @@ Useful links:
 \itemize{
   \item \url{https://teal-insights.github.io/r-wbids}
   \item \url{https://github.com/teal-insights/r-wbids}
-  \item Report bugs at \url{https://github.com/Teal-Insights/r-wbids/issues}
+  \item Report bugs at \url{https://github.com/teal-insights/r-wbids/issues}
 }
 
 }
