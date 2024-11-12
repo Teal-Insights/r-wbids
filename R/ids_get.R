@@ -122,62 +122,54 @@ get_debt_statistics <- function(
 
   series_raw <- perform_request(resource, progress = progress_message)
 
-  series_raw_rbind <- series_raw$data |>
-    bind_rows()
+  if (length(series_raw[[1]]$variable[[1]]$concept) == 0) {
+    tibble(
+      "geography_id" = character(),
+      "series_id" = character(),
+      "counterpart_id" = character(),
+      "year" = integer(),
+      "value" = numeric()
+    )
+  } else {
+    series_raw_rbind <- series_raw |>
+      bind_rows()
 
-  # Since the order of list items changes across series, we cannot use
-  # hard-coded list paths
-  series_wide <- series_raw_rbind |>
-    select("variable") |>
-    tidyr::unnest_wider("variable")
+    # Since the order of list items changes across series, we cannot use
+    # hard-coded list paths
+    series_wide <- series_raw_rbind |>
+      select("variable") |>
+      tidyr::unnest_wider("variable")
 
-  geography_ids <- series_wide |>
-    filter(.data$concept == "Country") |>
-    select(geography_id = "id")
+    geography_ids <- series_wide |>
+      filter(.data$concept == "Country") |>
+      select(geography_id = "id")
 
-  series_ids <- series_wide |>
-    filter(.data$concept == "Series") |>
-    select(series_id = "id")
+    series_ids <- series_wide |>
+      filter(.data$concept == "Series") |>
+      select(series_id = "id")
 
-  counterpart_ids <- series_wide |>
-    filter(.data$concept == "Counterpart-Area") |>
-    select(counterpart_id = "id")
+    counterpart_ids <- series_wide |>
+      filter(.data$concept == "Counterpart-Area") |>
+      select(counterpart_id = "id")
 
-  years <- series_wide |>
-    filter(.data$concept == "Time") |>
-    select(year = "value") |>
-    mutate(year = as.integer(.data$year))
+    years <- series_wide |>
+      filter(.data$concept == "Time") |>
+      select(year = "value") |>
+      mutate(year = as.integer(.data$year))
 
-  values <- extract_values(series_raw$data, "value", "numeric")
+    values <- series_raw |>
+      purrr::map_df(
+        \(x) tibble(value = if (is.null(x$value)) NA_real_ else x$value)
+      )
 
-  bind_cols(
-    geography_ids,
-    series_ids,
-    counterpart_ids,
-    years,
-    value = values
-  )
-}
-
-extract_values <- function(data, path, type = "character") {
-  path_expr <- rlang::parse_expr(path)
-
-  fun_value <- switch(
-    type,
-    "character" = NA_character_,
-    "integer" = NA_integer_,
-    "numeric" = NA_real_,
-    stop("Invalid type. Must be one of 'character', 'integer', or 'numeric'.")
-  )
-
-  vapply(data, function(x) {
-    result <- rlang::eval_tidy(path_expr, x)
-    if (is.null(result) || length(result) == 0) {
-      fun_value
-    } else {
-      result
-    }
-  }, FUN.VALUE = fun_value, USE.NAMES = FALSE)
+    bind_cols(
+      geography_ids,
+      series_ids,
+      counterpart_ids,
+      years,
+      values
+    )
+  }
 }
 
 validate_character_vector <- function(arg, arg_name) {

@@ -2,7 +2,7 @@
 #'
 perform_request <- function(
   resource,
-  per_page = 1000,
+  per_page = 15000,
   progress = FALSE,
   base_url = "https://api.worldbank.org/v2/sources/6/"
 ) {
@@ -16,12 +16,20 @@ perform_request <- function(
   }
 
   body <- httr2::resp_body_json(resp)
-  pages <- extract_pages(body)
+  pages <- body$pages
 
   if (pages == 1L) {
-    out <- extract_single_page_data(body)
+    out <- body$source$data
   } else {
-    out <- fetch_multiple_pages(req, pages, progress)
+    resps <- req |>
+      httr2::req_perform_iterative(
+        next_req = httr2::iterate_with_offset("page"),
+        max_reqs = pages,
+        progress = progress
+      )
+    out <- resps |>
+      purrr::map(\(x) httr2::resp_body_json(x)$source$data) |>
+      unlist(recursive = FALSE, use.names = FALSE)
   }
   out
 }
@@ -46,62 +54,24 @@ create_request <- function(base_url, resource, per_page) {
 
 is_request_error <- function(resp) {
   status <- httr2::resp_status(resp)
-  if (status >= 400L) {
-    return(TRUE)
+  content_type <- resp_content_type(resp)
+  if (status >= 400L || content_type == "text/xml") {
+    TRUE
+  } else {
+    FALSE
   }
-  body <- httr2::resp_body_json(resp)
-  if (length(body) == 1L && length(body[[1L]]$message) == 1L) {
-    return(TRUE)
-  }
-  FALSE
 }
 
 handle_request_error <- function(resp) {
-  error_body <- check_for_body_error(resp)
-  cli::cli_alert_danger(paste(error_body, collapse = "\n"))
-}
-
-check_for_body_error <- function(resp) {
-  content_type <- httr2::resp_content_type(resp)
-  if (identical(content_type, "application/json")) {
-    body <- httr2::resp_body_json(resp)
-    message_id <- body[[1]]$message[[1]]$id
-    message_value <- body[[1]]$message[[1]]$value
-    error_code <- paste("Error code:", message_id)
-    docs <- paste0(
-      "Read more at <https://datahelpdesk.worldbank.org/",
-      "knowledgebase/articles/898620-api-error-codes>"
-    )
-    c(error_code, message_value, docs)
-  }
-}
-
-extract_pages <- function(body) {
-  if (length(body) == 2) {
-    body[[1L]]$pages
-  } else {
-    body$pages
-  }
-}
-
-extract_single_page_data <- function(body) {
-  if (length(body) == 2) {
-    body[[2L]]
-  } else {
-    body$source
-  }
-}
-
-fetch_multiple_pages <- function(req, pages, progress) {
-  resps <- req |>
-    httr2::req_perform_iterative(
-      next_req = httr2::iterate_with_offset("page"),
-      max_reqs = pages,
-      progress = progress
-    )
-  out <- resps |>
-    purrr::map(function(x) {
-      httr2::resp_body_json(x)$source
-    })
-  unlist(out, recursive = FALSE)
+  error_string <- as.character(httr2::resp_body_xml(resp))
+  error_code <- sub('.*<wb:message id="([0-9]+)".*', "\\1",
+                    error_string)
+  error_message <- sub('.*<wb:message id="[0-9]+" key="([^"]*)".*', "\\1",
+                       error_string)
+  error_description <- sub(".*<wb:message.*?>(.*?)</wb:message>.*", "\\1",
+                           error_string)
+  cli::cli_abort(
+    paste("API Error Code", error_code, ":", error_message, error_description,
+          collapse = "\n")
+  )
 }

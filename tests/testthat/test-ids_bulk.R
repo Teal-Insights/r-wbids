@@ -30,7 +30,6 @@ test_that("ids_bulk handles custom file paths", {
     test_url, file_path = temp_path, quiet = TRUE, warn_size = FALSE
   )
 
-  # Check that file is cleaned up when we're done
   expect_false(file.exists(temp_path))
 })
 
@@ -52,10 +51,9 @@ test_that("ids_bulk requires readxl package", {
   )
 })
 
-test_that("quiet parameter controls message output", {
+test_that("ids_bulk handles message parameter correctly", {
   test_url <- ids_bulk_files()$file_url[1]
 
-  # Create a small mock dataset that read_excel would return
   mock_data <- tibble::tibble(
     "Country Code" = "ABC",
     "Country Name" = "Test Country",
@@ -65,7 +63,6 @@ test_that("quiet parameter controls message output", {
     "2020" = 100
   )
 
-  # Set up mocked bindings
   local_mocked_bindings(
     download_file = function(...) TRUE
   )
@@ -80,7 +77,6 @@ test_that("quiet parameter controls message output", {
     check_interactive = function() FALSE
   )
 
-  # Should show messages
   expect_message(
     ids_bulk(test_url, quiet = FALSE, warn_size = FALSE),
     "Downloading file"
@@ -93,8 +89,6 @@ test_that("quiet parameter controls message output", {
     ids_bulk(test_url, quiet = FALSE, warn_size = FALSE),
     "Processing file"
   )
-
-  # Should not show messages
   expect_no_message(
     ids_bulk(test_url, quiet = TRUE, warn_size = FALSE)
   )
@@ -104,15 +98,12 @@ test_that("ids_bulk handles timeout parameter correctly", {
   skip_if_offline()
   skip_on_cran()
 
-  # Mock a slow URL that will definitely timeout
   mock_url <- "http://httpbin.org/delay/10"
 
-  # Mock interactive to return FALSE
   local_mocked_bindings(
     check_interactive = function() FALSE
   )
 
-  # Test with short timeout (1 second)
   expect_warning(
     expect_error(
       ids_bulk(mock_url, timeout = 1, warn_size = FALSE),
@@ -126,25 +117,20 @@ test_that("ids_bulk handles warn_size parameter", {
   skip_if_offline()
   skip_on_cran()
 
-  # Get a real file URL to test with
   test_url <- ids_bulk_files()$file_url[1]
 
-  # Mock download_file with mocked_bindings
   local_mocked_bindings(
     download_file = function(...) TRUE
   )
 
-  # Mock validate_file with mocked_bindings
   local_mocked_bindings(
     validate_file = function(...) TRUE
   )
 
-  # Mock interactive to return FALSE
   local_mocked_bindings(
     check_interactive = function() FALSE
   )
 
-  # Should show warning with warn_size = TRUE
   expect_warning(
     download_bulk_file(
       test_url, tempfile(), 60, warn_size = TRUE, quiet = TRUE
@@ -153,7 +139,6 @@ test_that("ids_bulk handles warn_size parameter", {
     fixed = FALSE
   )
 
-  # Should not show warning with warn_size = FALSE
   expect_no_warning(
     download_bulk_file(
       test_url, tempfile(), 60, warn_size = FALSE, quiet = TRUE
@@ -162,7 +147,6 @@ test_that("ids_bulk handles warn_size parameter", {
 })
 
 test_that("ids_bulk validates downloaded files", {
-  # Mock an empty file
   temp_file <- tempfile()
   file.create(temp_file)
 
@@ -171,7 +155,6 @@ test_that("ids_bulk validates downloaded files", {
     "Download failed: Empty file"
   )
 
-  # Mock a non-existent file
   expect_error(
     validate_file("nonexistent.xlsx"),
     "Download failed: File not created"
@@ -182,16 +165,13 @@ test_that("download_bulk_file downloads files correctly", {
   skip_if_offline()
   skip_on_cran()
 
-  # Get a real file URL to test with
   test_url <- ids_bulk_files()$file_url[1]
   test_path <- tempfile(fileext = ".xlsx")
 
-  # Mock interactive check to avoid prompts
   local_mocked_bindings(
     check_interactive = function() FALSE
   )
 
-  # Test successful download
   withr::with_options(
     list(timeout = 300),
     expect_no_error(
@@ -205,16 +185,13 @@ test_that("download_bulk_file downloads files correctly", {
     )
   )
 
-  # Verify file exists and has content
   expect_true(file.exists(test_path))
   expect_gt(file.size(test_path), 0)
 
-  # Clean up
   unlink(test_path)
 })
 
 test_that("read_bulk_file reads files correctly", {
-  # Loading the sample file is slow, so skip on CRAN
   skip_on_cran()
 
   test_path <- test_path("data/sample.xlsx")
@@ -226,24 +203,20 @@ test_that("process_bulk_data processes data correctly", {
   test_path <- test_path("data/sample.rds")
   result <- process_bulk_data(readRDS(test_path))
 
-  # Check structure
   expect_s3_class(result, "tbl_df")
   expect_named(
     result,
     c("geography_id", "series_id", "counterpart_id", "year", "value")
   )
 
-  # Check data types
   expect_type(result$geography_id, "character")
   expect_type(result$series_id, "character")
   expect_type(result$counterpart_id, "character")
   expect_type(result$year, "integer")
   expect_type(result$value, "double")
 
-  # Check for non-empty result
   expect_gt(nrow(result), 0)
 
-  # Check that all values in required columns are non-NA
   expect_false(any(is.na(result$geography_id)))
   expect_false(any(is.na(result$series_id)))
   expect_false(any(is.na(result$counterpart_id)))
@@ -254,31 +227,88 @@ test_that("ids_bulk downloads and processes data correctly", {
   skip_if_offline()
   skip_on_cran()
 
-  # Get a real file URL to test with
-  test_url <- ids_bulk_files()$file_url[1]
+  test_url <- paste0(
+    "https://datacatalogfiles.worldbank.org/ddh-published/0038015/DR0092201/",
+    "A_D.xlsx?versionId=2024-10-08T01:35:39.3946879Z"
+  )
   test_path <- tempfile(fileext = ".xlsx")
 
-  # Mock slow-running functions
   local_mocked_bindings(
     check_interactive = function() FALSE,
     download_bulk_file = function(...) TRUE,
     read_bulk_file = function(...) readRDS(test_path("data/sample.rds"))
   )
 
-  # Check that output is a tibble and has expected column names and types
   result <- ids_bulk(
     test_url, file_path = test_path, quiet = TRUE, warn_size = FALSE
   )
 
   expect_s3_class(result, "tbl_df")
 
-  expected_colnames <- c(
+  expected_columns <- c(
     "geography_id", "series_id", "counterpart_id", "year", "value"
   )
-  expect_equal(colnames(result), expected_colnames)
+  expect_equal(colnames(result), expected_columns)
 
-  expected_coltypes <- c(
+  expected_types <- c(
     "character", "character", "character", "integer", "numeric"
   )
-  expect_true(all(lapply(result, class) == expected_coltypes))
+  expect_true(all(lapply(result, class) == expected_types))
+})
+
+test_that("check_interactive returns expected results", {
+  if (interactive()) {
+    expect_true(check_interactive())
+  } else {
+    expect_false(check_interactive())
+  }
+})
+
+test_that("download_file downloads a file correctly", {
+  url <- "https://example.com"
+  destfile <- tempfile(fileext = ".txt")
+  if (file.exists(destfile)) {
+    file.remove(destfile)
+  }
+  download_file(url, destfile, quiet = TRUE)
+  expect_true(file.exists(destfile))
+  file.remove(destfile)
+})
+
+test_that("warn_size warning is triggered & user prompt is handled correctly", {
+
+  test_url <- paste0(
+    "https://datacatalogfiles.worldbank.org/ddh-published/0038015/DR0092201/",
+    "A_D.xlsx?versionId=2024-10-08T01:35:39.3946879Z"
+  )
+
+  with_mocked_bindings(
+    get_response_headers = function(...) list(`content-length` = 150 * 1024^2),
+    check_interactive = function(...) TRUE,
+    prompt_user = function(...) "y",
+    {
+      expect_warning(
+        download_bulk_file(
+          test_url, tempfile(fileext = ".xlsx"),
+          timeout = 30, warn_size = TRUE, quiet = TRUE
+        ),
+        regexp = "may take several minutes to download."
+      )
+    }
+  )
+
+  with_mocked_bindings(
+    get_response_headers = function(...) list(`content-length` = 150 * 1024^2),
+    check_interactive = function(...) TRUE,
+    prompt_user = function(...) "n",
+    {
+      expect_error(
+        suppressWarnings(download_bulk_file(
+          test_url, tempfile(fileext = ".xlsx"),
+          timeout = 30, warn_size = TRUE, quiet = TRUE
+        )),
+        regexp = "Download cancelled."
+      )
+    }
+  )
 })

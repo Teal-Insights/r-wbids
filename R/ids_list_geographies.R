@@ -7,7 +7,8 @@
 #'
 #' @return A tibble containing the available geographies and their attributes:
 #' \describe{
-#'   \item{geography_id}{The unique identifier for the geography (e.g., "ZMB").}
+#'   \item{geography_id}{ISO 3166-1 alpha-3 code of the geography (e.g.,
+#'                       "ZMB").}
 #'   \item{geography_name}{The standardized name of the geography (e.g.,
 #'                         "Zambia").}
 #'   \item{geography_iso2code}{ISO 3166-1 alpha-2 code of the geography (e.g.,

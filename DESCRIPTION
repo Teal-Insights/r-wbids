@@ -35,7 +35,7 @@ Suggests:
     languageserver (>= 0.3.16)
 Config/testthat/edition: 3
 URL: https://teal-insights.github.io/r-wbids, https://github.com/teal-insights/r-wbids
-BugReports: https://github.com/Teal-Insights/r-wbids/issues
+BugReports: https://github.com/teal-insights/r-wbids/issues
 VignetteBuilder: quarto
 Remotes: 
     r-lib/devtools,
