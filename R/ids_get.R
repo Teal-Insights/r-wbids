@@ -158,7 +158,9 @@ get_debt_statistics <- function(
       mutate(year = as.integer(.data$year))
 
     values <- series_raw |>
-      map_df(\(x) tibble(value = if (is.null(x$value)) NA_real_ else x$value))
+      purrr::map_df(
+        \(x) tibble(value = if (is.null(x$value)) NA_real_ else x$value)
+      )
 
     bind_cols(
       geography_ids,
