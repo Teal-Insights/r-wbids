@@ -9,10 +9,10 @@ Authors@R:
       person("Christopher", "Smith", email = "chriscarrollsmith@gmail.com", 
              role = c("ctb")))
 Description: Access and analyze the World Bank’s International Debt Statistics 
-  (IDS) dataset <https://datacatalog.worldbank.org/search/dataset/0038015>, 
-  which provides creditor-debtor relationships between countries, regions, and 
+  (IDS) <https://datacatalog.worldbank.org/search/dataset/0038015>, 
+  which provide creditor-debtor relationships between countries, regions, and 
   institutions. 'wbids' enables users to download, process and work with IDS
-  series across multiple geographies, counterparties, and time periods. 
+  series across multiple geographies, counterparts, and time periods. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
