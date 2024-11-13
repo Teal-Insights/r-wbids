@@ -1,4 +1,5 @@
 #' @keywords internal
+#' @noRd
 #'
 perform_request <- function(
   resource,
