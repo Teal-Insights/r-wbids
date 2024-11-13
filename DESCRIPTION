@@ -1,14 +1,18 @@
 Package: wbids
-Title: Work seamlessly with World Bank International Debt Statistics (IDS)
+Title: Seamless Access to World Bank International Debt Statistics (IDS)
 Version: 0.0.0.9000
 Authors@R: 
     c(person("Teal", "Emery", , "lte@tealinsights.com", role = c("aut", "cre")),
       person("Teal Insights", role = c("cph")),
-      person("Christoph", "Scheuch", , "christoph@tidy-intelligence.com", role = c("aut"),
-             comment = c(ORCID = "0009-0004-0423-6819")))
-Description: A modern, flexible interface for accessing the World Bank’s International Debt Statistics (IDS) <https://datacatalog.worldbank.org/search/dataset/0038015>. 
-  'wbids' allows users to download, process, and analyze IDS series for multiple geographies, counterparts and specific time periods. 
-  The package is designed to work seamlessly with World Development Indicators (WDI) provided through the 'wbwdi' package.
+      person("Christoph", "Scheuch", , "christoph@tidy-intelligence.com",
+             role = c("aut"), comment = c(ORCID = "0009-0004-0423-6819")),
+      person("Christopher", "Smith", email = "chriscarrollsmith@gmail.com", 
+             role = c("ctb")))
+Description: Access and analyze the World Bank’s International Debt Statistics 
+  (IDS) dataset <https://datacatalog.worldbank.org/search/dataset/0038015>, 
+  which provides creditor-debtor relationships between countries, regions, and 
+  institutions. 'wbids' enables users to download, process and work with IDS
+  series across multiple geographies, counterparties, and time periods. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -34,7 +38,7 @@ Suggests:
     testthat (>= 3.0.0),
     languageserver (>= 0.3.16)
 Config/testthat/edition: 3
-URL: https://teal-insights.github.io/r-wbids, https://github.com/teal-insights/r-wbids
+URL: https://teal-insights.github.io/r-wbids, https://github.com/teal-insights/r-wbids, https://teal-insights.github.io/r-wbids/
 BugReports: https://github.com/teal-insights/r-wbids/issues
 VignetteBuilder: quarto
 Remotes: 
