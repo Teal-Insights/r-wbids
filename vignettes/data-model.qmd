@@ -63,7 +63,7 @@ erDiagram
     }
 ```
 
-## Table details
+## Table Details
 
 ### Geographies
 
