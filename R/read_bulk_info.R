@@ -1,4 +1,5 @@
 #' @keywords internal
+#' @noRd
 #'
 read_bulk_info <- function() {
 

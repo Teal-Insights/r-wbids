@@ -4,15 +4,16 @@
 \name{wbids-package}
 \alias{wbids}
 \alias{wbids-package}
-\title{wbids: Work seamlessly with World Bank International Debt Statistics (IDS)}
+\title{wbids: Seamless Access to World Bank International Debt Statistics (IDS)}
 \description{
-A modern, flexible interface for accessing the World Bank’s International Debt Statistics (IDS) \url{https://datacatalog.worldbank.org/search/dataset/0038015}. 'wbids' allows users to download, process, and analyze IDS series for multiple geographies, counterparts and specific time periods. The package is designed to work seamlessly with World Development Indicators (WDI) provided through the 'wbwdi' package.
+Access and analyze the World Bank’s International Debt Statistics (IDS) \url{https://datacatalog.worldbank.org/search/dataset/0038015}, which provide creditor-debtor relationships between countries, regions, and institutions. 'wbids' enables users to download, process and work with IDS series across multiple geographies, counterparts, and time periods.
 }
 \seealso{
 Useful links:
 \itemize{
   \item \url{https://teal-insights.github.io/r-wbids}
   \item \url{https://github.com/teal-insights/r-wbids}
+  \item \url{https://teal-insights.github.io/r-wbids/}
   \item Report bugs at \url{https://github.com/teal-insights/r-wbids/issues}
 }
 
@@ -28,6 +29,7 @@ Authors:
 Other contributors:
 \itemize{
   \item Teal Insights [copyright holder]
+  \item Christopher Smith \email{chriscarrollsmith@gmail.com} [contributor]
 }
 
 }

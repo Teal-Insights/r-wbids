@@ -63,6 +63,9 @@ ids_bulk <- function(
 #'
 #' @param file_url URL to request headers from
 #' @return List of response headers
+#'
+#' @keywords internal
+#' @noRd
 get_response_headers <- function(file_url) {
   httr2::request(file_url) |>
     httr2::req_headers("Accept" = "*/*") |>
@@ -77,6 +80,10 @@ get_response_headers <- function(file_url) {
 #' @param timeout Timeout in seconds
 #' @param warn_size Whether to warn about large files
 #' @param quiet Whether to suppress messages
+#'
+#' @keywords internal
+#' @noRd
+#'
 download_bulk_file <- function(file_url, file_path, timeout, warn_size, quiet) {
 
   response_headers <- get_response_headers(file_url)
@@ -130,6 +137,8 @@ download_bulk_file <- function(file_url, file_path, timeout, warn_size, quiet) {
 #' Validate that downloaded file exists and is not empty
 #'
 #' @param file_path Path to file to validate
+#' @noRd
+#'
 validate_file <- function(file_path) {
   if (!file.exists(file_path)) {
     cli::cli_abort("Download failed: File not created")
@@ -144,6 +153,8 @@ validate_file <- function(file_path) {
 #'
 #' @param file_path Path to Excel file
 #' @return Raw data frame from Excel file
+#' @noRd
+#'
 read_bulk_file <- function(file_path) {
   available_columns <- readxl::read_excel(path = file_path, n_max = 0) |>
     colnames()
@@ -164,6 +175,8 @@ read_bulk_file <- function(file_path) {
 #'
 #' @param bulk_raw Raw data frame from Excel file
 #' @return Processed tibble in tidy format
+#' @noRd
+#'
 process_bulk_data <- function(bulk_raw) {
   bulk_raw |>
     select(-c("Country Name", "Classification Name")) |>
@@ -188,6 +201,8 @@ process_bulk_data <- function(bulk_raw) {
 #'
 #' @return Logical indicating whether R is running interactively
 #' @keywords internal
+#' @noRd
+#'
 check_interactive <- function() {
   interactive()
 }
@@ -201,6 +216,8 @@ check_interactive <- function() {
 #' @param quiet Whether to suppress messages
 #' @return Invisibly returns the status code from download.file
 #' @keywords internal
+#' @noRd
+#'
 download_file <- function(url, destfile, quiet) {
   utils::download.file(url, destfile = destfile, quiet = quiet, mode = "wb")
 }
@@ -211,6 +228,8 @@ download_file <- function(url, destfile, quiet) {
 #' because of the base binding.
 #'
 #' @keywords internal
+#' @noRd
+#'
 prompt_user <- function(prompt) {
   readline(prompt) # nocov
 }
