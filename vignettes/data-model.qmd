@@ -9,7 +9,7 @@ vignette: >
 
 ## Overview
 
-The diagram below shows the data model of the `wbids` package. In our design, we primarily have R users in mind, particularly those who rely heavily on the popular data manipulation packages `dplyr` and `data.table`. For these users, having consistent and descriptive primary key column names across different tables (e.g., `geography_id`, `series_id`) simplifies writing joins across tables, reduces the risk of column name conflicts, and avoids ambiguity. 
+The diagram below shows the data model of the `wbids` package. In our design, we primarily have R users in mind, particularly those who rely heavily on the popular data manipulation packages `dplyr` and `data.table`. For these users, having consistent and descriptive primary key column names across different tables (e.g., `geography_id`, `series_id`) simplifies writing joins across tables, reduces the risk of column name conflicts, and avoids ambiguity. We hence deliberately deviate from a common practice in data modeling to omit the entity prefix from a entity table (e.g. `geography_` in the geographies table). 
 
 ```{mermaid}
 %%| fig-width: 12
@@ -65,7 +65,7 @@ erDiagram
 
 ## Table details
 
-## Geographies
+### Geographies
 
 | Column name | Description | Example value |
 |-----------------|-------------------------------------|-----------------|
@@ -84,7 +84,7 @@ erDiagram
 | lending_type_iso2code | ISO code of the lending type | XI |
 | lending_type_name | Name of the lending type | IDA |
 
-## Counterparts
+### Counterparts
 
 | Column name | Description | Example value |
 |-----------------|-------------------------------------|-----------------|
@@ -94,7 +94,7 @@ erDiagram
 | counterpart_iso3code | ISO 3166-1 alpha-3 code of the counterpart | CHN |
 | counterpart_type | Type of counterpart (e.g., institution, country, region) | Country |
 
-## Series
+### Series
 
 | Column name | Description | Example value |
 |-----------------|--------------------|----------------------------------|
@@ -104,20 +104,22 @@ erDiagram
 | source_note | Note about the data source | Public and publicly guaranteed debt comprises long-term external obligations of public debtors, including the national government,  Public Corporations, State Owned Enterprises, Development Banks and Other Mixed Enterprises, political subdivisions (or an agency of either), autonomous public bodies, and external obligations of private debtors that are guaranteed for repayment by a public entity. Data are in current U.S. dollars. |
 | source_organization | Organization responsible for the data series | World Bank, International Debt Statistics. |
 
-## Debt Statistics
+### Debt Statistics
 
 | Column name | Description | Example value  |
-|----------------|-------------------------------|----------------|
-| series_id      | Identifier for the series     | DT.DOD.DPPG.CD |
-| geography_id   | Identifier for the geography  | ZMB            |
-| counterpart_id | Identifier for the counterpar | CHN            |
-| year           | Year of the data point        | 2020           |
-| value          | Value of the data point       | 4298957000     |
+|----------------|--------------------------------|----------------|
+| series_id      | Identifier for the series      | DT.DOD.DPPG.CD |
+| geography_id   | Identifier for the geography   | ZMB            |
+| counterpart_id | Identifier for the counterpart | 061.           |
+| year           | Year of the data point         | 2020           |
+| value          | Value of the data point        | 4298957000     |
 
-## Standardization of geography and counterpart names
+## Assignment of Geography and Counterpart Types
 
-TODO: provide details about the process and why to do this
+The original World Bank IDS data includes a ‘country’ field, containing both countries and regions, and a ‘counterpart-area’ field, which may include countries, regions, and institutions. In our data model, these fields are renamed to ‘geography’ and ‘counterpart’ to clarify the types of entities in each column.
 
-## Assignment of geography and counterpart types
+We also introduce corresponding type columns that specify whether a geography is a country (e.g., “Aruba”) or a region (e.g., “Africa Eastern and Southern”), and whether a counterpart is a country, region, or a special category (e.g., “Global IFIs”, “Global MDBs”). Each counterpart is represented in the geography table if it is a country or region, ensuring consistency across both tables.
 
-TODO: provide details about the process and why to do this (in particular deviate from "country")
+## Harmonization of Geography and Counterpart Names
+
+In some cases, the  IDS data provides different names for geographies that appear both in the 'counterpart-area' and the 'country' data. We use the geography names whenever they are available and drop counterpart names with different wording. For instance, if the original data features "Cote D`Ivoire, Republic Of" in the counterpart table, but the country name is "Cote d'Ivoire", then we overwrite the former with the latter. 
