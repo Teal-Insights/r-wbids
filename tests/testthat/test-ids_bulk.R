@@ -129,7 +129,6 @@ test_that("ids_bulk handles timeout parameter correctly", {
       if (grepl("HTTP 504 Gateway Timeout",
                 e$message) && attempt <= max_attempts) {
         message("Retrying due to 504 Gateway Timeout...")
-        return(NULL)
       } else {
         stop(e)
       }
