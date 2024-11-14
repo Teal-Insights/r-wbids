@@ -19,7 +19,7 @@
 #'
 #' @export
 #'
-#' @examplesIf curl::has_internet()
+#' @examplesIf curl::has_internet() && rlang::is_installed("jsonlite")
 #' ids_bulk_series()
 #'
 ids_bulk_series <- function() {

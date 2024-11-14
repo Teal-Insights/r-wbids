@@ -26,7 +26,7 @@ This function retrieves a tibble with metadata for series available via
 bulk download of the World Bank International Debt Statistics (IDS).
 }
 \examples{
-\dontshow{if (curl::has_internet()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (curl::has_internet() && rlang::is_installed("jsonlite")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ids_bulk_series()
 \dontshow{\}) # examplesIf}
 }

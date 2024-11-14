@@ -21,7 +21,7 @@ information such as file names, URLs, and the last update dates for each file
 in Excel (xlsx) format.
 }
 \examples{
-\dontshow{if (curl::has_internet()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (curl::has_internet() && rlang::is_installed("jsonlite")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ids_bulk_files()
 \dontshow{\}) # examplesIf}
 }

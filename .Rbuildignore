@@ -13,7 +13,6 @@
 _pkgdown.yml
 ^data-raw$
 ^.lintr$
-
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
