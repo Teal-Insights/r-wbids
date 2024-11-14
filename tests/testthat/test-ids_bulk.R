@@ -3,6 +3,7 @@ options(timeout = 60)
 
 test_that("ids_bulk handles custom file paths", {
   skip_if_offline()
+  skip_on_cran()
 
   test_url <- ids_bulk_files()$file_url[1]
   temp_path <- tempfile(fileext = ".xlsx")
@@ -52,6 +53,9 @@ test_that("ids_bulk requires readxl package", {
 })
 
 test_that("ids_bulk handles message parameter correctly", {
+  skip_if_offline()
+  skip_on_cran()
+
   test_url <- ids_bulk_files()$file_url[1]
 
   mock_data <- tibble::tibble(
@@ -104,13 +108,34 @@ test_that("ids_bulk handles timeout parameter correctly", {
     check_interactive = function() FALSE
   )
 
-  expect_warning(
-    expect_error(
-      ids_bulk(mock_url, timeout = 1, warn_size = FALSE),
-      "cannot open URL|Download timed out"
-    ),
-    "Timeout of 1 seconds was reached"
-  )
+  # Retry logic to handle occasional 504 errors
+  attempt <- 1
+  max_attempts <- 5
+  success <- FALSE
+
+  while (!success && attempt <= max_attempts) {
+    attempt <- attempt + 1
+
+    result <- tryCatch({
+      expect_warning(
+        expect_error(
+          ids_bulk(mock_url, timeout = 1, warn_size = FALSE),
+          "cannot open URL|Download timed out"
+        ),
+        "Timeout of 1 seconds was reached"
+      )
+      success <- TRUE
+    }, error = function(e) {
+      if (grepl("HTTP 504 Gateway Timeout",
+                e$message) && attempt <= max_attempts) {
+        message("Retrying due to 504 Gateway Timeout...")
+      } else {
+        stop(e)
+      }
+    })
+  }
+  expect_true(success,
+              info = "Test failed due to repeated 504 Gateway Timeout errors.")
 })
 
 test_that("ids_bulk handles warn_size parameter", {
