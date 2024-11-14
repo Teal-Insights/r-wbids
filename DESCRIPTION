@@ -9,8 +9,8 @@ Authors@R:
       person("Christopher", "Smith", email = "chriscarrollsmith@gmail.com", 
              role = c("ctb")))
 Description: Access and analyze the World Bank’s International Debt Statistics 
-  (IDS) <https://datacatalog.worldbank.org/search/dataset/0038015>, 
-  which provide creditor-debtor relationships between countries, regions, and 
+  (IDS) <https://datacatalog.worldbank.org/search/dataset/0038015>. 
+  IDS provides creditor-debtor relationships between countries, regions, and 
   institutions. 'wbids' enables users to download, process and work with IDS
   series across multiple geographies, counterparts, and time periods. 
 License: MIT + file LICENSE
@@ -38,8 +38,8 @@ Suggests:
     testthat (>= 3.0.0),
     languageserver (>= 0.3.16)
 Config/testthat/edition: 3
-URL: https://teal-insights.github.io/r-wbids, https://github.com/teal-insights/r-wbids, https://teal-insights.github.io/r-wbids/
-BugReports: https://github.com/teal-insights/r-wbids/issues
+URL: https://teal-insights.github.io/r-wbids, https://github.com/teal-insights/r-wbids, https://teal-insights.github.io/r-wbids/, https://github.com/Teal-Insights/r-wbids
+BugReports: https://github.com/Teal-Insights/r-wbids/issues
 VignetteBuilder: quarto
 Remotes: 
     r-lib/devtools,
