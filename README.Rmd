@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 
 `wbids` is an R package to access and analyze the World Bank’s [International Debt Statistics (IDS)](https://datacatalog.worldbank.org/search/dataset/0038015), which provide creditor-debtor relationships between countries, regions, and institutions. 'wbids' enables users to download, process and work with IDS series across multiple geographies, counterparts, and time periods. 
 
-The `wbids` package relies on a redefinition of the original World Bank data: 'geographies' contain both countries and regions, while 'counterparts' include both counterpart areas and institutions. `wbids` provides a consistent mapping of identifiers and names across these different types. The corresponding [package vignette](https://teal-insights.github.io/r-wbids/r-wbids/articles/data-model.html) provides more details on the data model.
+The `wbids` package relies on a redefinition of the original World Bank data: 'geographies' contain both countries and regions, while 'counterparts' include both counterpart areas and institutions. `wbids` provides a consistent mapping of identifiers and names across these different types. The corresponding [package vignette](https://teal-insights.github.io/r-wbids/articles/data-model.html) provides more details on the data model.
 
 This package is a product of Teal Insights and not sponsored by or affiliated with the World Bank in any way, except for the use of the World Bank IDS API.
 
@@ -51,7 +51,7 @@ ids_get(
 )
 ```
 
-The package comes with prepared metadata about available series, geographies, counterparts, and topics. Please consult the [package vignette](https://teal-insights.github.io/r-wbids/r-wbids/articles/data-model.html) for details. 
+The package comes with prepared metadata about available series, geographies, counterparts, and topics. Please consult the [package vignette](https://teal-insights.github.io/r-wbids/articles/data-model.html) for details. 
 
 ```r
 ids_list_series()

@@ -23,7 +23,7 @@ data: ‘geographies’ contain both countries and regions, while
 ‘counterparts’ include both counterpart areas and institutions. `wbids`
 provides a consistent mapping of identifiers and names across these
 different types. The corresponding [package
-vignette](https://teal-insights.github.io/r-wbids/r-wbids/articles/data-model.html)
+vignette](https://teal-insights.github.io/r-wbids/articles/data-model.html)
 provides more details on the data model.
 
 This package is a product of Teal Insights and not sponsored by or
@@ -58,7 +58,7 @@ ids_get(
 
 The package comes with prepared metadata about available series,
 geographies, counterparts, and topics. Please consult the [package
-vignette](https://teal-insights.github.io/r-wbids/r-wbids/articles/data-model.html)
+vignette](https://teal-insights.github.io/r-wbids/articles/data-model.html)
 for details.
 
 ``` r
