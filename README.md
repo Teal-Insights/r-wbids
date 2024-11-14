@@ -32,9 +32,16 @@ World Bank IDS API.
 
 ## Installation
 
-You can install the development version of `wbids` like this:
+You can install `wbids` from CRAN via:
 
 ``` r
+install.packages("wbids")
+```
+
+You can also install the development version of `wbids` like this:
+
+``` r
+# install.packages("pak")
 pak::pak("teal-insights/r-wbids")
 ```
 

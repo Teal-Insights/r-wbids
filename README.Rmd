@@ -29,9 +29,16 @@ This package is a product of Teal Insights and not sponsored by or affiliated wi
 
 ## Installation 
 
-You can install the development version of `wbids` like this:
+You can install `wbids` from CRAN via:
 
 ```r
+install.packages("wbids")
+```
+
+You can also install the development version of `wbids` like this:
+
+```r
+# install.packages("pak")
 pak::pak("teal-insights/r-wbids")
 ```
 

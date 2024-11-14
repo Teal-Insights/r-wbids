@@ -28,7 +28,7 @@
 #' }
 #'
 #' @export
-#' @examples
+#' @examplesIf curl::has_internet()
 #' \dontrun{
 #' available_files <- ids_bulk_files()
 #' data <- ids_bulk(
