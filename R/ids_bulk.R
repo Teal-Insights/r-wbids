@@ -28,8 +28,8 @@
 #' }
 #'
 #' @export
-#' @examplesIf curl::has_internet()
-#' \dontrun{
+#' @examplesIf curl::has_internet() && rlang::is_installed("readxl")
+#' \donttest{
 #' available_files <- ids_bulk_files()
 #' data <- ids_bulk(
 #'   available_files$file_url[1]

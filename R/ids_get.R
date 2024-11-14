@@ -37,6 +37,7 @@
 #' @export
 #'
 #' @examplesIf curl::has_internet()
+#' \donttest{
 #' # Fetch data for a series without specifying a time range or counterpart
 #' ids_get(
 #'   geographies = "ZMB",
@@ -66,6 +67,7 @@
 #'   start_date = 2019,
 #'   end_date = 2020
 #' )
+#' }
 #'
 ids_get <- function(
   geographies,

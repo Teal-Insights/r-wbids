@@ -4,6 +4,8 @@ options(timeout = 60)
 test_that("ids_bulk handles custom file paths", {
   skip_if_offline()
   skip_on_cran()
+  skip_if_not_installed("jsonlite")
+  skip_if_not_installed("readxl")
 
   test_url <- ids_bulk_files()$file_url[1]
   temp_path <- tempfile(fileext = ".xlsx")
@@ -55,6 +57,8 @@ test_that("ids_bulk requires readxl package", {
 test_that("ids_bulk handles message parameter correctly", {
   skip_if_offline()
   skip_on_cran()
+  skip_if_not_installed("jsonlite")
+  skip_if_not_installed("readxl")
 
   test_url <- ids_bulk_files()$file_url[1]
 
@@ -101,6 +105,8 @@ test_that("ids_bulk handles message parameter correctly", {
 test_that("ids_bulk handles timeout parameter correctly", {
   skip_if_offline()
   skip_on_cran()
+  skip_if_not_installed("jsonlite")
+  skip_if_not_installed("readxl")
 
   mock_url <- "http://httpbin.org/delay/10"
 
@@ -141,6 +147,8 @@ test_that("ids_bulk handles timeout parameter correctly", {
 test_that("ids_bulk handles warn_size parameter", {
   skip_if_offline()
   skip_on_cran()
+  skip_if_not_installed("jsonlite")
+  skip_if_not_installed("readxl")
 
   test_url <- ids_bulk_files()$file_url[1]
 
@@ -251,6 +259,8 @@ test_that("process_bulk_data processes data correctly", {
 test_that("ids_bulk downloads and processes data correctly", {
   skip_if_offline()
   skip_on_cran()
+  skip_if_not_installed("jsonlite")
+  skip_if_not_installed("readxl")
 
   test_url <- paste0(
     "https://datacatalogfiles.worldbank.org/ddh-published/0038015/DR0092201/",
@@ -301,6 +311,10 @@ test_that("download_file downloads a file correctly", {
 })
 
 test_that("warn_size warning is triggered & user prompt is handled correctly", {
+  skip_if_offline()
+  skip_on_cran()
+  skip_if_not_installed("jsonlite")
+  skip_if_not_installed("readxl")
 
   test_url <- paste0(
     "https://datacatalogfiles.worldbank.org/ddh-published/0038015/DR0092201/",

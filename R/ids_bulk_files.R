@@ -14,7 +14,7 @@
 #'
 #' @export
 #'
-#' @examplesIf curl::has_internet()
+#' @examplesIf curl::has_internet() && rlang::is_installed("jsonlite")
 #' ids_bulk_files()
 #'
 ids_bulk_files <- function() {

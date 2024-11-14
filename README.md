@@ -6,15 +6,15 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/Teal-Insights/r-wbids/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Teal-Insights/r-wbids/actions/workflows/R-CMD-check.yaml)
-[![Lint](https://github.com/Teal-Insights/r-wbids/actions/workflows/lint.yaml/badge.svg)](https://github.com/Teal-Insights/r-wbids/actions/lint.yaml/R-CMD-check.yaml)
+[![Lint](https://github.com/Teal-Insights/r-wbids/actions/workflows/lint.yaml/badge.svg)](https://github.com/Teal-Insights/r-wbids/actions/workflows/lint.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/Teal-Insights/r-wbids/graph/badge.svg)](https://app.codecov.io/gh/Teal-Insights/r-wbids)
 <!-- badges: end -->
 
 `wbids` is an R package to access and analyze the World Bank’s
 [International Debt Statistics
-(IDS)](https://datacatalog.worldbank.org/search/dataset/0038015), which
-provide creditor-debtor relationships between countries, regions, and
+(IDS)](https://datacatalog.worldbank.org/search/dataset/0038015/). IDS
+provides creditor-debtor relationships between countries, regions, and
 institutions. ‘wbids’ enables users to download, process and work with
 IDS series across multiple geographies, counterparts, and time periods.
 
