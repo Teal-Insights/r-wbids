@@ -5,6 +5,10 @@
 
 <!-- badges: start -->
 
+[![CRAN
+status](https://www.r-pkg.org/badges/version/wbids)](https://cran.r-project.org/package=wbids)
+[![CRAN
+downloads](https://cranlogs.r-pkg.org/badges/wbids)](https://cran.r-project.org/package=wbids)
 [![R-CMD-check](https://github.com/Teal-Insights/r-wbids/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Teal-Insights/r-wbids/actions/workflows/R-CMD-check.yaml)
 [![Lint](https://github.com/Teal-Insights/r-wbids/actions/workflows/lint.yaml/badge.svg)](https://github.com/Teal-Insights/r-wbids/actions/workflows/lint.yaml)
 [![Codecov test
