@@ -1,6 +1,6 @@
 Package: wbids
 Title: Seamless Access to World Bank International Debt Statistics (IDS)
-Version: 0.1.0.9001
+Version: 0.1.0.9002
 Authors@R: 
     c(person("Teal", "Emery", , "lte@tealinsights.com", role = c("aut", "cre")),
       person("Teal Insights", role = c("cph")),
