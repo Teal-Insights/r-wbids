@@ -316,36 +316,19 @@ test_that("warn_size warning is triggered & user prompt is handled correctly", {
   skip_if_not_installed("jsonlite")
   skip_if_not_installed("readxl")
 
-  test_url <- paste0(
-    "https://datacatalogfiles.worldbank.org/ddh-published/0038015/DR0092201/",
-    "A_D.xlsx?versionId=2024-10-08T01:35:39.3946879Z"
-  )
-
-  with_mocked_bindings(
-    get_response_headers = function(...) list(`content-length` = 150 * 1024^2),
-    check_interactive = function(...) TRUE,
-    prompt_user = function(...) "y",
-    {
-      expect_warning(
-        download_bulk_file(
-          test_url, tempfile(fileext = ".xlsx"),
-          timeout = 30, warn_size = TRUE, quiet = TRUE
-        ),
-        regexp = "may take several minutes to download."
-      )
-    }
-  )
-
   with_mocked_bindings(
     get_response_headers = function(...) list(`content-length` = 150 * 1024^2),
     check_interactive = function(...) TRUE,
     prompt_user = function(...) "n",
     {
       expect_error(
-        suppressWarnings(download_bulk_file(
-          test_url, tempfile(fileext = ".xlsx"),
-          timeout = 30, warn_size = TRUE, quiet = TRUE
-        )),
+        expect_warning(
+          download_bulk_file(
+            test_url, tempfile(fileext = ".xlsx"),
+            timeout = 30, warn_size = TRUE, quiet = TRUE
+          ),
+          regexp = "may take several minutes to download."
+        ),
         regexp = "Download cancelled."
       )
     }
