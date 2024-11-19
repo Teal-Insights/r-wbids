@@ -61,7 +61,7 @@ geographies_wdi <- geographies_raw[[2]] |>
       .data$region_name == "Aggregates", "Region", "Country"
     ),
     across(where(is.character), ~ if_else(.x == "", NA, .x)),
-    across(where(is.character), trimws)
+    across(where(is.character), ~ trimws(gsub("\u00a0", "", .x)))
   ) |>
   relocate(c("geography_type", "capital_city"), .after = "geography_iso2code")
 
@@ -80,7 +80,7 @@ counterparts_ids <- counterparts_raw$source[[1]]$concept[[1]]$variable |>
   bind_rows() |>
   select(counterpart_id = id,
          counterpart_name = value) |>
-  mutate(across(where(is.character), trimws))
+  mutate(across(where(is.character), ~ trimws(gsub("\u00a0", "", .x))))
 
 # Enrich counterparts with codes and types -------------------------------
 
@@ -351,7 +351,7 @@ series_topics <- indicators_wdi |>
   rename(topic_id = id, topic_name = value) |>
   mutate(
     topic_id = as.integer(topic_id),
-    topic_name = trimws(topic_name)
+    topic_name = trimws(gsub("\u00a0", "", topic_name))
   ) |>
   inner_join(series_ids |> select(series_id), join_by(series_id))
 
