@@ -86,7 +86,7 @@ counterparts_ids <- counterparts_raw$source[[1]]$concept[[1]]$variable |>
 
 # Used ChatGPT to create this tribble, but also checked for most countries
 geographies_manual <- tribble(
-  ~geography_name, ~geography_iso2code, ~geography_iso3code, ~geography_type,
+  ~geography_name, ~geography_iso2code, ~geography_id, ~geography_type,
   "African Dev. Bank", NA, NA, "Institution",
   "African Export-Import Bank", NA, NA, "Institution",
   "Anguilla", "AI", "AIA", "Country",
@@ -224,8 +224,9 @@ counterparts_ids_enriched <- counterparts_ids |>
 # Some counterparts have better names from WDI (e.g. Germany)
 counterparts_ids_cleaned <- counterparts_ids_enriched |>
   left_join(
-    geographies_wdi,
-    join_by(geography_iso2code, geography_id, geography_type)
+    geographies_wdi |>
+      select(geography_id, geography_iso2code, geography_type, geography_name),
+    join_by(geography_id, geography_iso2code, geography_type)
   ) |>
   mutate(counterpart_name = if_else(
     !is.na(geography_name), geography_name, counterpart_name
@@ -265,7 +266,7 @@ counterparts <- counterparts_ids_cleaned |>
   select(
     counterpart_id,
     counterpart_name,
-    counterpart_iso2code = geography_iso3code,
+    counterpart_iso2code = geography_iso2code,
     counterpart_iso3code = geography_id,
     counterpart_type
   )

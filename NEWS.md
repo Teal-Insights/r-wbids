@@ -1,5 +1,9 @@
 # wbids (development version)
 
+## Bug fixes
+
+* `ids_list_counterparts()` now contains `counterpart_iso2code` for all countries and regions.
+
 # wbids 0.1.0
 
 * Initial CRAN submission.
