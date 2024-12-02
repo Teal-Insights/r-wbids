@@ -25,9 +25,11 @@ ids_bulk_files <- function() {
     as_tibble() |>
     select("name", "distribution", "last_updated_date") |>
     tidyr::unnest("distribution") |>
-    filter(.data$distribution_format == "xlsx") |>
+    filter(grepl("Bulk Download File - Debtor Countries:", .data$name) &
+             !is.na(.data$url)) |>
     select(file_name = "name", file_url = "url", "last_updated_date") |>
-    mutate(last_updated_date = as.Date(.data$last_updated_date))
+    mutate(last_updated_date = as.Date(.data$last_updated_date)) |>
+    arrange("file_name")
 
   bulk_files
 
