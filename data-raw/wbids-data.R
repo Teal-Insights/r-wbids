@@ -228,9 +228,15 @@ counterparts_ids_cleaned <- counterparts_ids_enriched |>
       select(geography_id, geography_iso2code, geography_type, geography_name),
     join_by(geography_id, geography_iso2code, geography_type)
   ) |>
-  mutate(counterpart_name = if_else(
-    !is.na(geography_name), geography_name, counterpart_name
-  )) |>
+  mutate(
+    counterpart_name = if_else(
+      !is.na(geography_name), geography_name, counterpart_name
+    ),
+    counterpart_name = case_when(
+      counterpart_name == "German Dem. Rep." ~ "German Democratic Republic",
+      .default = counterpart_name
+    )
+  ) |>
   select(-geography_name)
 
 global_ifis <- c(
