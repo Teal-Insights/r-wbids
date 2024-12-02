@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">wbids</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9003</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,8 +55,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>
-<code>wbids</code> Data Model</h1>
+      <h1></h1>
 
 
 
@@ -70,8 +69,9 @@
 
 
 
-    <section class="level2"><h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
-</h2>
+    <header id="title-block-header" class="quarto-title-block"><h1 class="title">
+<code>wbids</code> Data Model</h1></header><section class="section level3"><h3 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h3>
 <p>The diagram below shows the data model of the <code>wbids</code> package. In our design, we primarily have R users in mind, particularly those who rely heavily on the popular data manipulation packages <code>dplyr</code> and <code>data.table</code>. For these users, having consistent and descriptive primary key column names across different tables (e.g., <code>geography_id</code>, <code>series_id</code>) simplifies writing joins across tables, reduces the risk of column name conflicts, and avoids ambiguity. We hence deliberately deviate from a common practice in data modeling to omit the entity prefix from a entity table (e.g. <code>geography_</code> in the geographies table).</p>
 <div class="cell" data-fig-width="12" data-fig-height="8" data-layout-align="default">
 <div class="cell-output-display">
@@ -132,10 +132,10 @@
 </div>
 </div>
 </div>
-</section><section class="level2"><h2 id="table-details">Table Details<a class="anchor" aria-label="anchor" href="#table-details"></a>
-</h2>
-<section class="level3"><h3 id="geographies">Geographies<a class="anchor" aria-label="anchor" href="#geographies"></a>
+</section><section class="section level3"><h3 id="table-details">Table Details<a class="anchor" aria-label="anchor" href="#table-details"></a>
 </h3>
+<section class="level3"><h4 id="geographies">Geographies<a class="anchor" aria-label="anchor" href="#geographies"></a>
+</h4>
 <table class="table caption-top">
 <colgroup>
 <col style="width: 23%">
@@ -219,8 +219,8 @@
 <td>IDA</td>
 </tr>
 </tbody>
-</table></section><section class="level3"><h3 id="counterparts">Counterparts<a class="anchor" aria-label="anchor" href="#counterparts"></a>
-</h3>
+</table></section><section class="level3"><h4 id="counterparts">Counterparts<a class="anchor" aria-label="anchor" href="#counterparts"></a>
+</h4>
 <table class="table caption-top">
 <colgroup>
 <col style="width: 23%">
@@ -259,8 +259,8 @@
 <td>Country</td>
 </tr>
 </tbody>
-</table></section><section class="level3"><h3 id="series">Series<a class="anchor" aria-label="anchor" href="#series"></a>
-</h3>
+</table></section><section class="level3"><h4 id="series">Series<a class="anchor" aria-label="anchor" href="#series"></a>
+</h4>
 <table class="table caption-top">
 <colgroup>
 <col style="width: 23%">
@@ -299,8 +299,8 @@
 <td>World Bank, International Debt Statistics.</td>
 </tr>
 </tbody>
-</table></section><section class="level3"><h3 id="debt-statistics">Debt Statistics<a class="anchor" aria-label="anchor" href="#debt-statistics"></a>
-</h3>
+</table></section><section class="level3"><h4 id="debt-statistics">Debt Statistics<a class="anchor" aria-label="anchor" href="#debt-statistics"></a>
+</h4>
 <table class="table caption-top">
 <thead><tr class="header">
 <th>Column name</th>
@@ -334,12 +334,12 @@
 <td>4298957000</td>
 </tr>
 </tbody>
-</table></section></section><section class="level2"><h2 id="assignment-of-geography-and-counterpart-types">Assignment of Geography and Counterpart Types<a class="anchor" aria-label="anchor" href="#assignment-of-geography-and-counterpart-types"></a>
-</h2>
+</table></section></section><section class="section level3"><h3 id="assignment-of-geography-and-counterpart-types">Assignment of Geography and Counterpart Types<a class="anchor" aria-label="anchor" href="#assignment-of-geography-and-counterpart-types"></a>
+</h3>
 <p>The original World Bank IDS data includes a ‘country’ field, containing both countries and regions, and a ‘counterpart-area’ field, which may include countries, regions, and institutions. In our data model, these fields are renamed to ‘geography’ and ‘counterpart’ to clarify the types of entities in each column.</p>
 <p>We also introduce corresponding type columns that specify whether a geography is a country (e.g., “Aruba”) or a region (e.g., “Africa Eastern and Southern”), and whether a counterpart is a country, region, or a special category (e.g., “Global IFIs”, “Global MDBs”). Each counterpart is represented in the geography table if it is a country or region, ensuring consistency across both tables.</p>
-</section><section class="level2"><h2 id="harmonization-of-geography-and-counterpart-names">Harmonization of Geography and Counterpart Names<a class="anchor" aria-label="anchor" href="#harmonization-of-geography-and-counterpart-names"></a>
-</h2>
+</section><section class="section level3"><h3 id="harmonization-of-geography-and-counterpart-names">Harmonization of Geography and Counterpart Names<a class="anchor" aria-label="anchor" href="#harmonization-of-geography-and-counterpart-names"></a>
+</h3>
 <p>In some cases, the IDS data provides different names for geographies that appear both in the ‘counterpart-area’ and the ‘country’ data. We use the geography names whenever they are available and drop counterpart names with different wording. For instance, if the original data features “Cote D`Ivoire, Republic Of” in the counterpart table, but the country name is “Cote d’Ivoire”, then we overwrite the former with the latter.</p>
 </section><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
