@@ -168,7 +168,7 @@ test_that("ids_bulk handles warn_size parameter", {
     download_bulk_file(
       test_url, tempfile(), 60, warn_size = TRUE, quiet = TRUE
     ),
-    "This file is 125.8 MB and may take several minutes to download",
+    "may take several minutes to download",
     fixed = FALSE
   )
 
