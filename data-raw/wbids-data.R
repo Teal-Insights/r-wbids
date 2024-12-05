@@ -60,7 +60,19 @@ geographies_wdi <- geographies_raw[[2]] |>
     geography_type = if_else(
       .data$region_name == "Aggregates", "Region", "Country"
     ),
-    across(where(is.character), ~ if_else(.x == "", NA, .x)),
+    region_id = if_else(
+      .data$region_name == "Aggregates", NA_character_, .data$region_id
+    ),
+    region_iso2code = if_else(
+      .data$region_name == "Aggregates", NA_character_, .data$region_iso2code
+    ),
+    income_level_id = if_else(
+      .data$region_name == "Aggregates", NA_character_, .data$income_level_id
+    ),
+    income_level_iso2code = if_else(
+      .data$region_name == "Aggregates", NA_character_, .data$income_level_iso2code
+    ),
+    across(where(is.character), ~ if_else(.x == "", NA_character_, .x)),
     across(where(is.character), ~ trimws(gsub("\u00a0", "", .x)))
   ) |>
   relocate(c("geography_type", "capital_city"), .after = "geography_iso2code")
@@ -264,9 +276,7 @@ counterparts <- counterparts_ids_cleaned |>
       counterpart_name %in% global_mdbs ~ "Global MDBs",
       counterpart_name %in% c("Bondholders") ~ "Bondholders",
       counterpart_name %in% c("World") ~ "All Creditors",
-      geography_type == "Country" ~ "Country",
-      geography_type == "Region" ~ "Region",
-      .default = "Other"
+      .default = geography_type
     )
   ) |>
   select(
