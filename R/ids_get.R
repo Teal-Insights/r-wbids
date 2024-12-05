@@ -1,79 +1,117 @@
-#' Fetch Debt Statistics from the World Bank International Debt Statistics API
+#' Fetch Data from the World Bank International Debt Statistics (IDS) API
 #'
-#' This function returns a tibble with debt statistics data fetched from the
-#' World Bank International Debt Statistics (IDS) API. The data can be filtered
-#' by geographies, series, counterparts, and time periods.
+#' Retrieves standardized debt statistics from the World Bank's International
+#' Debt Statistics (IDS) database, which provides comprehensive data on the
+#' external debt of low and middle-income countries. The function handles
+#' country identification, data validation, and unit standardization, making it
+#' easier to conduct cross-country debt analysis and monitoring.
 #'
-#' @param geographies A character vector representing the geographic codes
-#'  (e.g., "ZMB" for Zambia). This argument is required and cannot contain NA
-#'  values.
-#' @param series A character vector representing the series codes (e.g.,
-#'  "DT.DOD.DPPG.CD"). This argument is required and cannot contain NA values.
-#' @param counterparts A character vector representing counterpart areas (e.g.,
-#'  "all", "001"). This argument is required and cannot contain NA values
-#'  (default: "all").
-#' @param start_date An optional numeric value representing the starting year
-#'  (e.g., 2015). It must be greater than or equal to 1970. If not provided, the
-#'  entire time range is used.
-#' @param end_date An optional numeric value representing the ending year (e.g.,
-#'  2020). It must be greater than or equal to 1970 and cannot be earlier than
-#'  `start_date`. If not provided, the entire available time range is used.
-#' @param progress A logical value indicating whether to display a progress
-#'  message during the request process (default: `FALSE`). Must be either `TRUE`
-#'  or `FALSE`.
+#' @param geographies A character vector of geography identifiers representing
+#'   debtor countries and aggregates. Must use World Bank codes from
+#'   `ids_list_geographies()`:
+#'   * For individual countries, use ISO3C codes (e.g., "GHA" for Ghana)
+#'   * For aggregates, use World Bank codes (e.g., "LIC" for low income
+#'     countries)
+#'   The IDS database covers low and middle-income countries ("LIC", "LMC",
+#'   "UMC") and related aggregates only. Cannot contain NA values.
+#'
+#' @param series A character vector of debt statistics series identifiers that
+#'   must match the `series_id` column from `ids_list_series()`. Each series
+#'   represents a specific debt statistic (e.g., "DT.DOD.DECT.CD" for total
+#'   external debt stocks, "DT.TDS.DECT.CD" for debt service payments). Cannot
+#'   contain NA values.
+#'
+#' @param counterparts A character vector of creditor identifiers that must
+#'   match the `counterpart_id` column from `ids_list_counterparts()`. The
+#'   default "WLD" returns aggregated global totals across all creditors.
+#'   Common options:
+#'   * "WLD" - World total (aggregated across all creditors)
+#'   * "all" - Retrieve data broken down by all creditors
+#'   * Individual creditors use numeric codes (e.g., "730" for China)
+#'   * Special creditors have text codes (e.g., "907" for IMF, "BND" for
+#'     bondholders)
+#'   Cannot contain NA values.
+#'
+#' @param start_date A numeric value representing the starting year (default:
+#'   2000). Must be >= 1970. The default focuses on modern data while reducing
+#'   data volume. For historical analysis, explicitly set to 1970.
+#'
+#' @param end_date A numeric value representing the ending year (default: NULL).
+#'   Must be >= 1970 and cannot be earlier than start_date. If NULL, returns
+#'   data through the most recent available year.
+#'
+#' @param progress A logical value indicating whether to display progress
+#'   messages during data retrieval (default: FALSE).
 #'
 #' @return A tibble containing debt statistics with the following columns:
 #' \describe{
-#'   \item{geography_id}{The unique identifier for the geography (e.g., "ZMB").}
-#'   \item{series_id}{The unique identifier for the series (e.g.,
-#'                    "DT.DOD.DPPG.CD").}
-#'   \item{counterpart_id}{The unique identifier for the counterpart (e.g.,
-#'                         "all").}
-#'   \item{year}{The year corresponding to the data (e.g., 2020).}
-#'   \item{value}{The numeric value representing the statistic for the given
-#'                geography, series, counterpart, and year.}
+#'   \item{geography_id}{The identifier for the debtor geography (e.g., "GHA"
+#'     for Ghana, "LIC" for low income countries)}
+#'   \item{series_id}{The identifier for the debt statistic series (e.g.,
+#'     "DT.DOD.DECT.CD" for total external debt stocks)}
+#'   \item{counterpart_id}{The identifier for the creditor (e.g., "WLD" for
+#'     world total, "730" for China)}
+#'   \item{year}{The year of the observation}
+#'   \item{value}{The numeric value of the debt statistic, standardized to the
+#'     units specified in the series definition (typically current US dollars)}
 #' }
+#'
+#' @section Data Coverage and Validation:
+#' The IDS database provides detailed debt statistics for low and middle-income
+#' countries, including:
+#' * Debt stocks and flows
+#' * Debt service and interest payments
+#' * Creditor composition
+#' * Terms and conditions of new commitments
+#'
+#' To ensure valid queries:
+#' * Use `ids_list_geographies()` to find valid debtor geography codes
+#' * Use `ids_list_series()` to explore available debt statistics
+#' * Use `ids_list_counterparts()` to see available creditor codes
+#'
+#' @examples
+#' \donttest{
+#' # Get total external debt stocks for a single country from 2000 onward
+#' ghana_debt <- ids_get(
+#'   geographies = "GHA",
+#'   series = "DT.DOD.DECT.CD"  # External debt stocks, total
+#' )
+#'
+#' # Compare debt service metrics across income groups
+#' income_groups <- ids_get(
+#'   geographies = c("LIC", "LMC", "UMC"),  # Income group aggregates
+#'   series = "DT.TDS.DECT.CD",  # Total debt service
+#'   start_date = 2010
+#' )
+#'
+#' # Analyze debt composition by major creditors
+#' creditor_analysis <- ids_get(
+#'   geographies = c("KEN", "ETH"),  # Kenya and Ethiopia
+#'   series = c(
+#'     "DT.DOD.DECT.CD",  # Total external debt
+#'     "DT.TDS.DECT.CD"   # Total debt service
+#'   ),
+#'   counterparts = c(
+#'     "WLD",  # World total
+#'     "730",  # China
+#'     "907",  # IMF
+#'     "BND"   # Bondholders
+#'   ),
+#'   start_date = 2015
+#' )
+#' }
+#'
+#' @seealso
+#' * `ids_list_geographies()` for available debtor geography codes
+#' * `ids_list_series()` for available debt statistics series codes
+#' * `ids_list_counterparts()` for available creditor codes
 #'
 #' @export
-#'
-#' @examplesIf curl::has_internet()
-#' \donttest{
-#' # Fetch data for a series without specifying a time range or counterpart
-#' ids_get(
-#'   geographies = "ZMB",
-#'   series = "DT.DOD.DPPG.CD",
-#' )
-#'
-#' # Fetch specific debt statistics for Zambia from 2015 to 2020
-#' ids_get(
-#'   geographies = "ZMB",
-#'   series = c("DT.DOD.DPPG.CD", "BM.GSR.TOTL.CD"),
-#'   start_date = 2015,
-#'   end_date = 2020
-#' )
-#'
-#' # Fetch data for specific counterparts
-#' ids_get(
-#'   geographies = "ZMB",
-#'   series = "DT.DOD.DPPG.CD",
-#'   counterparts = c("216", "231")
-#' )
-#'
-#' # Fetch data for multiple geographies and counterparts
-#' ids_get(
-#'   geographies = c("ZMB", "CHN"),
-#'   series = "DT.DOD.DPPG.CD",
-#'   counterparts = c("216", "231"),
-#'   start_date = 2019,
-#'   end_date = 2020
-#' )
-#' }
-#'
 ids_get <- function(
   geographies,
   series,
-  counterparts = "all",
-  start_date = NULL,
+  counterparts = "WLD",
+  start_date = 2000,
   end_date = NULL,
   progress = FALSE
 ) {
