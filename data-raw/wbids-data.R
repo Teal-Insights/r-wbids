@@ -70,7 +70,8 @@ geographies_wdi <- geographies_raw[[2]] |>
       .data$region_name == "Aggregates", NA_character_, .data$income_level_id
     ),
     income_level_iso2code = if_else(
-      .data$region_name == "Aggregates", NA_character_, .data$income_level_iso2code
+      .data$region_name == "Aggregates", NA_character_,
+      .data$income_level_iso2code
     ),
     across(where(is.character), ~ if_else(.x == "", NA_character_, .x)),
     across(where(is.character), ~ trimws(gsub("\u00a0", "", .x)))
