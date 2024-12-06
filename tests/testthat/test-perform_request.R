@@ -80,3 +80,72 @@ test_that("perform_request handles wrong requests gracefully", {
     }
   )
 })
+
+test_that("validate_max_tries handles valid and invalid inputs", {
+  expect_silent(validate_max_tries(1))
+  expect_silent(validate_max_tries(10))
+
+  expect_error(validate_max_tries(0), "must be a positive integer")
+  expect_error(validate_max_tries(-1), "must be a positive integer")
+  expect_error(validate_max_tries(2.5), "must be a positive integer")
+  expect_error(validate_max_tries("3"), "must be a positive integer")
+})
+
+test_that("perform_request retries on server errors", {
+  # Add debug print
+  attempts <- 0
+  mock_fn <- function(req) {
+    attempts <<- attempts + 1
+    print(paste("Attempt:", attempts))  # Debug print
+    
+    if (attempts <= 2) {
+      # Simulate a 503 Service Unavailable error
+      return(structure(
+        list(
+          status_code = 503,
+          headers = list(`content-type` = "application/json"),
+          # Add error body to match real API response
+          body = charToRaw('{"error": "Service Unavailable"}')
+        ),
+        class = c("httr2_response", "httr2_http_503")
+      ))
+    } else {
+      # Return mock successful response
+      return(structure(
+        list(
+          status_code = 200,
+          headers = list(`content-type` = "application/json"),
+          body = charToRaw(jsonlite::toJSON(list(
+            pages = 1L,
+            source = list(
+              data = list(list(id = 1, name = "test"))
+            )
+          )))
+        ),
+        class = c("httr2_response")
+      ))
+    }
+  }
+
+  withr::local_options(httr2_mock = mock_fn)
+  
+  result <- perform_request("test", max_tries = 3)
+  expect_equal(attempts, 3)
+  expect_equal(result[[1]]$id, 1)
+})
+
+test_that("perform_request fails after max retries", {
+  mock_fn <- function(...) {
+    structure(
+      list(status_code = 503),
+      class = "httr2_response"
+    )
+  }
+
+  withr::local_options(httr2_mock = mock_fn)
+
+  expect_error(
+    perform_request("test", max_tries = 2),
+    "HTTP 503"
+  )
+})
