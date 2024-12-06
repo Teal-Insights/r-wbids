@@ -65,7 +65,7 @@ test_that("ids_bulk handles message parameter correctly", {
   mock_data <- tibble::tibble(
     "Country Code" = "ABC",
     "Country Name" = "Test Country",
-    "Classification Name" = "Test Class",
+    "Counterpart-Area Code" = "Test Counterpart",
     "Series Code" = "TEST.1",
     "Series Name" = "Test Series",
     "2020" = 100
@@ -234,6 +234,7 @@ test_that("read_bulk_file reads files correctly", {
 
 test_that("process_bulk_data processes data correctly", {
   test_path <- test_path("data/sample.rds")
+
   result <- process_bulk_data(readRDS(test_path))
 
   expect_s3_class(result, "tbl_df")
