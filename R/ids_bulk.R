@@ -179,11 +179,14 @@ read_bulk_file <- function(file_path) {
 #'
 process_bulk_data <- function(bulk_raw) {
   bulk_raw |>
-    select(-c("Country Name", "Classification Name")) |>
+    select(
+      "Country Code", "Series Code", "Counterpart-Area Code",
+      matches("^\\d{4}$")
+    ) |>
     select(
       geography_id = "Country Code",
       series_id = "Series Code",
-      counterpart_id = "Series Name",
+      counterpart_id = "Counterpart-Area Code",
       everything()
     ) |>
     tidyr::pivot_longer(
