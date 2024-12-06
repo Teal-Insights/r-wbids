@@ -7,13 +7,13 @@
 #' easier to conduct cross-country debt analysis and monitoring.
 #'
 #' @param geographies A character vector of geography identifiers representing
-#'   debtor countries and aggregates. Must use World Bank codes from
+#'   debtor countries and aggregates. Must use `geography_id` from
 #'   `ids_list_geographies()`:
 #'   * For individual countries, use ISO3C codes (e.g., "GHA" for Ghana)
 #'   * For aggregates, use World Bank codes (e.g., "LIC" for low income
 #'     countries)
-#'   The IDS database covers low and middle-income countries ("LIC", "LMC",
-#'   "UMC") and related aggregates only. Cannot contain NA values.
+#'   The IDS database covers low and middle-income countries and related
+#'   aggregates only. Cannot contain NA values.
 #'
 #' @param series A character vector of debt statistics series identifiers that
 #'   must match the `series_id` column from `ids_list_series()`. Each series
@@ -38,7 +38,9 @@
 #'
 #' @param end_date A numeric value representing the ending year (default: NULL).
 #'   Must be >= 1970 and cannot be earlier than start_date. If NULL, returns
-#'   data through the most recent available year.
+#'   data through the most recent available year. Some debt service related
+#'   series include projections of debt service.  For the 2024 data release,
+#'   debt service projections available through 2031.
 #'
 #' @param progress A logical value indicating whether to display progress
 #'   messages during data retrieval (default: FALSE).
@@ -134,6 +136,10 @@ ids_get <- function(
     ~ get_debt_statistics(..1, ..2, ..3, ..4, progress = progress),
     .progress = progress
   )
+
+
+  # Apply specific filtering logic for years beyond latest actual data
+  debt_statistics <- filter_post_actual_na(debt_statistics)
 
   debt_statistics
 }
@@ -239,6 +245,12 @@ validate_progress <- function(progress) {
   }
 }
 
+
+# to be updated manually with each release
+# for the 2024-12 IDS release:
+latest_year_observied <- 2023
+latest_year_projections <- 2031
+
 create_time <- function(start_date, end_date) {
   if (!is.null(start_date) && !is.null(end_date)) {
     if (start_date > end_date) {
@@ -247,7 +259,24 @@ create_time <- function(start_date, end_date) {
       )
     }
     paste0("YR", seq(start_date, end_date, by = 1))
+  } else if (!is.null(start_date)) {
+    paste0("YR", seq(start_date, latest_year_projections, by = 1))
   } else {
     "all"
   }
+}
+
+filter_post_actual_na <- function(data) {
+  # Identify rows after the latest actual year
+  data_after_actual <- data |>
+    filter(.data$year > latest_year_observied)
+
+  # Check if all rows for these years have NA in `value`
+  if (all(is.na(data_after_actual$value))) {
+    # Remove these rows from the data
+    data <- data |>
+      filter(.data$year <= latest_year_observied)
+  }
+
+  data
 }
