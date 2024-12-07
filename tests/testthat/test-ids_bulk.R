@@ -20,6 +20,9 @@ test_that("ids_bulk handles custom file paths", {
     },
     process_bulk_data = function(...) {
       tibble::tibble()
+    },
+    get_response_headers = function(...) {
+      list(`content-length` = 1000)
     }
   )
 

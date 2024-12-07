@@ -223,3 +223,149 @@ test_that("ids_get handles empty or incomplete data gracefully", {
     }
   )
 })
+
+test_that("ids_get uses new default parameters correctly", {
+  # Test that default counterparts = "WLD"
+  default_result <- ids_get(
+    geographies = "GHA",
+    series = "DT.DOD.DECT.CD"
+  )
+
+  # All records should have counterpart_id = "WLD"
+  expect_true(all(default_result$counterpart_id == "WLD"))
+
+  # All years should be >= 2000 (the new default start_date)
+  expect_true(all(default_result$year >= 2000))
+})
+
+test_that("ids_get filters post-observed-year NAs correctly", {
+  result <- ids_get(
+    geographies = "GHA",
+    series = "DT.DOD.DECT.CD"
+  )
+
+  # Ensure no rows exist beyond latest_year_observed if all values are NA
+  expect_true(all(result$year <= latest_year_observed | !is.na(result$value)))
+})
+
+
+test_that("ids_get correctly applies default years for projection series", {
+  result <- ids_get(
+    geographies = "GHA",
+    series = "DT.TDS.DECT.CD"  # Projection series
+  )
+
+  # Verify the years in the result
+  expect_true(all(result$year >= 2000 & result$year <= latest_year_projections))
+})
+
+test_that("ids_get retains post-actual-year data with values", {
+  result <- tibble(
+    geography_id = rep("GHA", 12),
+    series_id = rep("DT.DOD.DECT.CD", 12),
+    counterpart_id = rep("WLD", 12),
+    year = 2020:latest_year_projections,
+    value = c(1:4, rep(NA, 8))
+  )
+
+  filtered_result <- filter_post_actual_na(result)
+
+  # Rows with years <= LATEST_YEAR_ACTUAL should remain
+  expect_equal(filtered_result$year, 2020:latest_year_observed)
+})
+
+
+test_that("ids_get handles valid geography codes correctly", {
+  # Test individual country code (ISO3C)
+  expect_silent(ids_get(
+    geographies = "GHA",
+    series = "DT.DOD.DECT.CD",
+    start_date = 2020,
+    end_date = 2020
+  ))
+
+  # Test income group aggregate code
+  expect_silent(ids_get(
+    geographies = "LIC",
+    series = "DT.DOD.DECT.CD",
+    start_date = 2020,
+    end_date = 2020
+  ))
+
+  # Test multiple geography types together
+  expect_silent(ids_get(
+    geographies = c("GHA", "LIC"),
+    series = "DT.DOD.DECT.CD",
+    start_date = 2020,
+    end_date = 2020
+  ))
+})
+
+test_that("ids_get handles valid counterpart codes correctly", {
+  # Test default world aggregate
+  expect_silent(ids_get(
+    geographies = "GHA",
+    series = "DT.DOD.DECT.CD",
+    counterparts = "WLD",
+    start_date = 2020,
+    end_date = 2020
+  ))
+
+  # Test numeric country code
+  expect_silent(ids_get(
+    geographies = "GHA",
+    series = "DT.DOD.DECT.CD",
+    counterparts = "730",  # China
+    start_date = 2020,
+    end_date = 2020
+  ))
+
+  # Test special text codes
+  expect_silent(ids_get(
+    geographies = "GHA",
+    series = "DT.DOD.DECT.CD",
+    counterparts = c("907", "BND"),  # IMF and bondholders
+    start_date = 2020,
+    end_date = 2020
+  ))
+
+  # Test requesting all counterparts
+  expect_silent(ids_get(
+    geographies = "GHA",
+    series = "DT.DOD.DECT.CD",
+    counterparts = "all",
+    start_date = 2020,
+    end_date = 2020
+  ))
+})
+
+
+
+test_that("ids_get returns expected data structure", {
+  result <- ids_get(
+    geographies = "GHA",
+    series = "DT.DOD.DECT.CD",
+    start_date = 2020,
+    end_date = 2020
+  )
+
+  # Check tibble structure
+  expect_s3_class(result, "tbl_df")
+
+  # Verify column names
+  expected_columns <- c(
+    "geography_id",
+    "series_id",
+    "counterpart_id",
+    "year",
+    "value"
+  )
+  expect_named(result, expected_columns)
+
+  # Check data types
+  expect_type(result$geography_id, "character")
+  expect_type(result$series_id, "character")
+  expect_type(result$counterpart_id, "character")
+  expect_type(result$year, "integer")
+  expect_type(result$value, "double")
+})
