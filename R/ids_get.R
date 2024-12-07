@@ -248,7 +248,7 @@ validate_progress <- function(progress) {
 
 # to be updated manually with each release
 # for the 2024-12 IDS release:
-latest_year_observied <- 2023
+latest_year_observed <- 2023
 latest_year_projections <- 2031
 
 create_time <- function(start_date, end_date) {
@@ -269,13 +269,13 @@ create_time <- function(start_date, end_date) {
 filter_post_actual_na <- function(data) {
   # Identify rows after the latest actual year
   data_after_actual <- data |>
-    filter(.data$year > latest_year_observied)
+    filter(.data$year > latest_year_observed)
 
   # Check if all rows for these years have NA in `value`
   if (all(is.na(data_after_actual$value))) {
     # Remove these rows from the data
     data <- data |>
-      filter(.data$year <= latest_year_observied)
+      filter(.data$year <= latest_year_observed)
   }
 
   data
