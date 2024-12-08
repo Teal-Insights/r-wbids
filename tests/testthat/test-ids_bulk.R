@@ -39,7 +39,7 @@ test_that("ids_bulk handles custom file paths", {
 test_that("ids_bulk fails gracefully with invalid URL", {
   expect_error(
     ids_bulk("https://invalid-url.com/file.xlsx"),
-    "cannot open URL|download failed|Could not resolve host"
+    "cannot open URL|download failed|Could not resolve host|SSL certificate problem" # nolint
   )
 })
 
