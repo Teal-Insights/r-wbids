@@ -326,3 +326,84 @@ test_that("process_debt_statistics handles empty/incomplete data gracefully", {
   expect_true(is.na(result$series_id[1]))
   expect_equal(result$value, NA_real_)
 })
+
+test_that("validate_string correctly validates string lengths", {
+  # Test strings under the limit
+  expect_silent(validate_string("short string", 100, "test_string"))
+  expect_silent(validate_string("", 10, "test_string"))
+
+  # Test strings at or over the limit
+  long_string <- paste(rep("a", 100), collapse = "")
+  expect_error(
+    validate_string(long_string, 100, "test_string"),
+    "Concatenated `test_string` string must be less than 100 characters"
+  )
+
+  very_long_string <- paste(rep("a", 4000), collapse = "")
+  expect_error(
+    validate_string(very_long_string, 4000, "test_string"),
+    "Concatenated `test_string` string must be less than 4000 characters"
+  )
+})
+
+test_that("validate_character_vector correctly handles vector length limits", {
+  # Test vector with exactly 60 items (should pass)
+  exactly_60 <- rep("A", 60)
+  expect_silent(validate_character_vector(exactly_60, "test_vector"))
+
+  # Test vector with more than 60 items (should fail)
+  too_many <- rep("A", 61)
+  expect_error(
+    validate_character_vector(too_many, "test_vector"),
+    "`test_vector` must be a character vector with 60 or fewer values"
+  )
+
+  # Test single string with more than 60 characters (should pass)
+  long_string <- paste(rep("A", 100), collapse = "")
+  expect_silent(validate_character_vector(long_string, "test_vector"))
+})
+
+test_that("ids_get enforces vector length limits", {
+  # Create test vectors with 61 items
+  too_many_geographies <- rep("ZMB", 61)
+  too_many_series <- rep("DT.DOD.DPPG.CD", 61)
+  too_many_counterparts <- rep("all", 61)
+
+  # Test geographies limit
+  expect_error(
+    ids_get(
+      geographies = too_many_geographies,
+      series = "DT.DOD.DPPG.CD"
+    ),
+    "`geographies` must be a character vector with 60 or fewer values"
+  )
+
+  # Test series limit
+  expect_error(
+    ids_get(
+      geographies = "ZMB",
+      series = too_many_series
+    ),
+    "`series` must be a character vector with 60 or fewer values"
+  )
+
+  # Test counterparts limit
+  expect_error(
+    ids_get(
+      geographies = "ZMB",
+      series = "DT.DOD.DPPG.CD",
+      counterparts = too_many_counterparts
+    ),
+    "`counterparts` must be a character vector with 60 or fewer values"
+  )
+
+  # Test that exactly 60 items works for each parameter
+  exactly_60 <- rep("ZMB", 60)
+  expect_error(
+    ids_get(
+      geographies = exactly_60,
+      series = "DT.DOD.DPPG.CD"
+    ),
+    NA
+  )
+})

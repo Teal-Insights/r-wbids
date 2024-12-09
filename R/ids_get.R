@@ -176,12 +176,16 @@ create_progress_message <- function(
 #' @noRd
 #' @keywords internal
 create_resource_url <- function(geography, series, counterpart, time) {
-  paste0(
+  url <- paste0(
     "country/", geography,
     "/series/", series,
     "/counterpart-area/", counterpart,
     "/time/", time
   )
+
+  validate_string(url, 4000, "resource URL")
+
+  url
 }
 
 #' Process Raw Debt Statistics Data
@@ -251,7 +255,9 @@ process_debt_statistics <- function(series_raw) {
 #' @keywords internal
 process_character_vector <- function(arg, arg_name) {
   validate_character_vector(arg, arg_name)
-  paste(arg, collapse = ";")
+  semicolon_separated <- paste(arg, collapse = ";")
+  validate_string(semicolon_separated, 1500, arg_name)
+  semicolon_separated
 }
 
 #' Validate Character Vector
@@ -272,6 +278,44 @@ validate_character_vector <- function(arg, arg_name) {
     cli::cli_abort(paste(
       "{.arg {arg_name}} must be a character vector and cannot contain ",
       "NA values."
+    ))
+  }
+  if (length(arg) > 60) {
+    cli::cli_abort(c(
+      paste("{.arg {arg_name}} must be a character vector with 60 or fewer values."), # nolint
+      "i" = paste(
+        "For larger requests, consider using {.fn ids_bulk} to download the",
+        "complete dataset. See {.fn ids_bulk_files} for available files."
+      )
+    ))
+  }
+}
+
+#' Validate String Length
+#'
+#' This function validates that the input string is shorter than a specified
+#' length.
+#'
+#' @param str The string to validate
+#' @param length The maximum length allowed for the string
+#' @param arg_name The name of the argument (used in error messages)
+#'
+#' @return This function does not return a value. It throws an error if the
+#'   string is too long.
+#'
+#' @noRd
+#' @keywords internal
+validate_string <- function(str, length, arg_name) {
+  if (nchar(str) >= length) {
+    cli::cli_abort(c(
+      paste(
+        "Concatenated {.arg {arg_name}} string must be less than {length}",
+        "characters."
+      ),
+      "i" = paste(
+        "For large data requests, consider using {.fn ids_bulk} to download",
+        "the complete dataset. See {.fn ids_bulk_files} for available files."
+      )
     ))
   }
 }

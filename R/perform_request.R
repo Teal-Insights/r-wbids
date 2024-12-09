@@ -6,13 +6,12 @@ perform_request <- function(
   per_page = 15000,
   progress = FALSE,
   base_url = "https://api.worldbank.org/v2/sources/6/",
-  max_tries = 10L,
-  headers = NULL
+  max_tries = 10L
 ) {
   validate_per_page(per_page)
   validate_max_tries(max_tries)
 
-  req <- create_request(base_url, resource, per_page, headers) |>
+  req <- create_request(base_url, resource, per_page) |>
     httr2::req_retry(max_tries = max_tries)
 
   resp <- httr2::req_perform(req)
@@ -49,19 +48,13 @@ validate_per_page <- function(per_page) {
   }
 }
 
-create_request <- function(base_url, resource, per_page, headers = NULL) {
-  req <- httr2::request(base_url) |>
+create_request <- function(base_url, resource, per_page) {
+  httr2::request(base_url) |>
     httr2::req_url_path_append(resource) |>
     httr2::req_url_query(format = "json", per_page = per_page) |>
     httr2::req_user_agent(
       "wbids R package (https://github.com/teal-insights/r-wbids)"
     )
-
-  if (!is.null(headers)) {
-    req <- req |> httr2::req_headers(!!!headers)
-  }
-
-  req
 }
 
 is_request_error <- function(resp) {
