@@ -51,7 +51,11 @@ test_that("create_request constructs a request with default parameters", {
 })
 
 test_that("is_request_error identifies error responses correctly", {
-  mock_resp <- structure(list(status_code = 400), class = "httr2_response")
+  mock_resp <- httr2::response(
+    status_code = 400,
+    headers = list("Content-Type" = "application/json"),
+    body = charToRaw('{"message": "Bad Request"}')
+  )
   expect_true(is_request_error(mock_resp))
 })
 
@@ -79,4 +83,14 @@ test_that("perform_request handles wrong requests gracefully", {
       )
     }
   )
+})
+
+test_that("validate_max_tries handles valid and invalid inputs", {
+  expect_silent(validate_max_tries(1))
+  expect_silent(validate_max_tries(10))
+
+  expect_error(validate_max_tries(0), "must be a positive integer")
+  expect_error(validate_max_tries(-1), "must be a positive integer")
+  expect_error(validate_max_tries(2.5), "must be a positive integer")
+  expect_error(validate_max_tries("3"), "must be a positive integer")
 })

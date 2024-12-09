@@ -49,6 +49,9 @@ You can also install the development version of `wbids` like this:
 pak::pak("teal-insights/r-wbids")
 ```
 
+On Linux, you may need to install `libcurl4-openssl-dev` as a
+prerequisite to build the package.
+
 ## Usage
 
 The main function `ids_get()` provides an interface to download multiple
