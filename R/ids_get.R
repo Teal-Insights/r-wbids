@@ -77,53 +77,132 @@ ids_get <- function(
   end_date = NULL,
   progress = FALSE
 ) {
-
-  validate_character_vector(geographies, "geographies")
-  validate_character_vector(series, "series")
-  validate_character_vector(counterparts, "counterparts")
-  validate_date(start_date, "start_date")
-  validate_date(end_date, "end_date")
+  # Validate arguments
   validate_progress(progress)
 
-  time <- create_time(start_date, end_date)
+  # Process character vectors and dates into semicolon-separated strings
+  geographies <- process_character_vector(geographies, "geographies")
+  series <- process_character_vector(series, "series")
+  counterparts <- process_character_vector(counterparts, "counterparts")
+  time <- process_time_range(start_date, end_date)
 
-  debt_statistics <- tidyr::crossing(
-    "geographies" = geographies,
-    "series" = series,
-    "counterparts" = counterparts,
-    "time" = time
-  ) |> purrr::pmap_df(
-    ~ get_debt_statistics(..1, ..2, ..3, ..4, progress = progress),
-    .progress = progress
+  # Fetch debt statistics
+  debt_statistics_raw <- get_debt_statistics(
+    geographies, series, counterparts, time, progress
   )
+
+  # Process debt statistics
+  debt_statistics <- process_debt_statistics(debt_statistics_raw)
 
   debt_statistics
 }
 
+#' Fetch Debt Statistics from the World Bank International Debt Statistics API
+#'
+#' This function is a helper function for `ids_get()`. It constructs the API
+#' request URL, performs the request, and returns the raw data.
+#'
+#' @param geography A character string representing the geographic code
+#'  (e.g., "ZMB" for Zambia).
+#' @param series A character string representing the series code (e.g.,
+#'  "DT.DOD.DPPG.CD").
+#' @param counterpart A character string representing the counterpart area
+#'  (e.g., "all", "001").
+#' @param time A character string representing the time range for the request
+#'  (e.g., "YR2015;YR2016;YR2017").
+#' @param progress A logical value or a character string. If `TRUE`, a default
+#'  progress message is displayed. If a character string, it is used as the
+#'  progress message. If `FALSE`, no progress message is displayed.
+#'
+#' @return A list containing the raw debt statistics data returned by the API.
+#'
+#' @noRd
+#' @keywords internal
 get_debt_statistics <- function(
   geography, series, counterpart, time, progress
 ) {
+  # Create progress message if progress is TRUE
+  progress_message <- create_progress_message(
+    progress, series, geography, counterpart, time
+  )
 
-  if (progress) {
-    progress_message <- paste(
-      "Fetching series", series,
-      "for geography", geography,
-      ", counterpart", counterpart,
-      ", and time", time
-    )
-  } else {
-    progress_message <- FALSE
+  # Create resource URL
+  resource <- create_resource_url(geography, series, counterpart, time)
+
+  # Perform API request
+  perform_request(resource, progress = progress_message)
+}
+
+#' Create Progress Message
+#'
+#' Creates a progress message for API requests if progress tracking is enabled.
+#'
+#' @param progress A logical value indicating whether to show progress
+#' @param series The series code
+#' @param geography The geography code
+#' @param counterpart The counterpart code
+#' @param time The time period
+#'
+#' @return Character string with progress message or FALSE
+#'
+#' @noRd
+#' @keywords internal
+create_progress_message <- function(
+  progress, series, geography, counterpart, time
+) {
+  if (!progress) {
+    return(FALSE)
   }
 
-  resource <- paste0(
+  paste(
+    "Fetching series", series,
+    "for geography", geography,
+    ", counterpart", counterpart,
+    ", and time", time
+  )
+}
+
+#' Create Resource URL
+#'
+#' Creates the resource URL path for the API request.
+#'
+#' @param geography The semicolon-separated geography codes
+#' @param series The semicolon-separated series codes
+#' @param counterpart The semicolon-separated counterpart codes
+#' @param time The semicolon-separated time periods
+#'
+#' @return Character string containing the resource URL path
+#'
+#' @noRd
+#' @keywords internal
+create_resource_url <- function(geography, series, counterpart, time) {
+  paste0(
     "country/", geography,
     "/series/", series,
     "/counterpart-area/", counterpart,
     "/time/", time
   )
+}
 
-  series_raw <- perform_request(resource, progress = progress_message)
-
+#' Process Raw Debt Statistics Data
+#'
+#' This function processes the raw debt statistics data returned by the API
+#' and transforms it into a tidy tibble.
+#'
+#' @param series_raw A list containing the raw debt statistics data.
+#'
+#' @return A tibble with the following columns:
+#'   \describe{
+#'     \item{geography_id}{The unique identifier for the geography.}
+#'     \item{series_id}{The unique identifier for the series.}
+#'     \item{counterpart_id}{The unique identifier for the counterpart.}
+#'     \item{year}{The year corresponding to the data.}
+#'     \item{value}{The numeric value representing the statistic.}
+#'   }
+#'
+#' @noRd
+#' @keywords internal
+process_debt_statistics <- function(series_raw) {
   if (length(series_raw[[1]]$variable[[1]]$concept) == 0) {
     tibble(
       "geography_id" = character(),
@@ -133,47 +212,61 @@ get_debt_statistics <- function(
       "value" = numeric()
     )
   } else {
-    series_raw_rbind <- series_raw |>
-      bind_rows()
+    series_df <- series_raw |>
+      bind_rows() |>
+      unnest_wider("variable", names_sep = "_")
 
-    # Since the order of list items changes across series, we cannot use
-    # hard-coded list paths
-    series_wide <- series_raw_rbind |>
-      select("variable") |>
-      tidyr::unnest_wider("variable")
-
-    geography_ids <- series_wide |>
-      filter(.data$concept == "Country") |>
-      select(geography_id = "id")
-
-    series_ids <- series_wide |>
-      filter(.data$concept == "Series") |>
-      select(series_id = "id")
-
-    counterpart_ids <- series_wide |>
-      filter(.data$concept == "Counterpart-Area") |>
-      select(counterpart_id = "id")
-
-    years <- series_wide |>
-      filter(.data$concept == "Time") |>
-      select(year = "value") |>
-      mutate(year = as.integer(.data$year))
-
-    values <- series_raw |>
-      purrr::map_df(
-        \(x) tibble(value = if (is.null(x$value)) NA_real_ else x$value)
+    tibble(
+      geography_id = series_df$variable_id[
+        series_df$variable_concept == "Country"
+      ],
+      series_id = series_df$variable_id[
+        series_df$variable_concept == "Series"
+      ],
+      counterpart_id = series_df$variable_id[
+        series_df$variable_concept == "Counterpart-Area"
+      ],
+      year = as.integer(series_df$variable_value[
+        series_df$variable_concept == "Time"
+      ]),
+      value = purrr::map_dbl(
+        series_raw,
+        \(x) ifelse(is.null(x$value), NA_real_, x$value)
       )
-
-    bind_cols(
-      geography_ids,
-      series_ids,
-      counterpart_ids,
-      years,
-      values
     )
   }
 }
 
+#' Process Character Vector to String
+#'
+#' Validates and converts a character vector into a semicolon-separated string
+#' for API requests.
+#'
+#' @param arg The character vector to process
+#' @param arg_name The name of the argument (for error messages)
+#'
+#' @return A semicolon-separated string
+#'
+#' @noRd
+#' @keywords internal
+process_character_vector <- function(arg, arg_name) {
+  validate_character_vector(arg, arg_name)
+  paste(arg, collapse = ";")
+}
+
+#' Validate Character Vector
+#'
+#' This function validates that the input argument is a character vector and
+#' does not contain any NA values.
+#'
+#' @param arg The argument to validate.
+#' @param arg_name The name of the argument (used in error messages).
+#'
+#' @return This function does not return a value. It throws an error if the
+#'   argument is invalid.
+#'
+#' @noRd
+#' @keywords internal
 validate_character_vector <- function(arg, arg_name) {
   if (!is.character(arg) || any(is.na(arg))) {
     cli::cli_abort(paste(
@@ -183,16 +276,18 @@ validate_character_vector <- function(arg, arg_name) {
   }
 }
 
-validate_date <- function(date, date_name) {
-  if (!is.null(date) &&
-        (!is.numeric(date) || length(date) != 1 || date < 1970)) {
-    cli::cli_abort(paste(
-      "{.arg {date_name}} must be a single numeric value representing ",
-      "a year >= 1970."
-    ))
-  }
-}
-
+#' Validate Progress Argument
+#'
+#' This function validates that the progress argument is a logical value
+#' (`TRUE` or `FALSE`).
+#'
+#' @param progress The progress argument to validate.
+#'
+#' @return This function does not return a value. It throws an error if the
+#'   progress argument is invalid.
+#'
+#' @noRd
+#' @keywords internal
 validate_progress <- function(progress) {
   if (!is.logical(progress)) {
     cli::cli_abort(
@@ -201,14 +296,50 @@ validate_progress <- function(progress) {
   }
 }
 
-create_time <- function(start_date, end_date) {
+#' Validate Year Input
+#'
+#' Helper function to validate a year input is numeric, single value, and >=
+#' 1970
+#'
+#' @param year The year to validate
+#' @param arg_name The argument name for error messages
+#'
+#' @noRd
+#' @keywords internal
+validate_year <- function(year, arg_name) {
+  if (!is.numeric(year) || length(year) != 1 || year < 1970) {
+    cli::cli_abort(paste(
+      "{.arg {arg_name}} must be a single numeric value representing ",
+      "a year >= 1970."
+    ))
+  }
+}
+
+#' Process Time Range
+#'
+#' Validates and converts start and end dates into a semicolon-separated string
+#' of years for API requests.
+#'
+#' @param start_date The starting year (optional).
+#' @param end_date The ending year (optional).
+#'
+#' @return A character string representing the time range for the API request.
+#'
+#' @noRd
+#' @keywords internal
+process_time_range <- function(start_date, end_date) {
+  # Validate dates if provided
+  if (!is.null(start_date)) validate_year(start_date, "start_date")
+  if (!is.null(end_date)) validate_year(end_date, "end_date")
+
+  # Create time string
   if (!is.null(start_date) && !is.null(end_date)) {
     if (start_date > end_date) {
       cli::cli_abort(
         "{.arg start_date} cannot be greater than {.arg end_date}."
       )
     }
-    paste0("YR", seq(start_date, end_date, by = 1))
+    paste("YR", seq(start_date, end_date, by = 1), collapse = ";", sep = "")
   } else {
     "all"
   }
