@@ -103,45 +103,24 @@ test_that("ids_bulk handles message parameter correctly", {
 })
 
 test_that("ids_bulk handles timeout parameter correctly", {
-  skip_if_offline()
-  skip_on_cran()
   skip_if_not_installed("jsonlite")
   skip_if_not_installed("readxl")
 
-  mock_url <- "http://httpbin.org/delay/10"
+  mock_url <- "http://example.com/file.xlsx"
 
   local_mocked_bindings(
-    check_interactive = function() FALSE
+    check_interactive = function() FALSE,
+    download_file = function(...) {
+      Sys.sleep(2)
+      stop("Operation timed out", call. = FALSE)
+    },
+    get_response_headers = function(...) list("content-length" = "1000")
   )
 
-  # Retry logic to handle occasional 504 errors
-  attempt <- 1
-  max_attempts <- 5
-  success <- FALSE
-
-  while (!success && attempt <= max_attempts) {
-    attempt <- attempt + 1
-
-    result <- tryCatch({
-      expect_warning(
-        expect_error(
-          ids_bulk(mock_url, timeout = 1, warn_size = FALSE),
-          "cannot open URL|Download timed out"
-        ),
-        "Timeout of 1 seconds was reached"
-      )
-      success <- TRUE
-    }, error = function(e) {
-      if (grepl("HTTP 504 Gateway Timeout",
-                e$message) && attempt <= max_attempts) {
-        message("Retrying due to 504 Gateway Timeout...")
-      } else {
-        stop(e)
-      }
-    })
-  }
-  expect_true(success,
-              info = "Test failed due to repeated 504 Gateway Timeout errors.")
+  expect_error(
+    ids_bulk(mock_url, timeout = 1, warn_size = FALSE),
+    "Download timed out after 1 seconds"
+  )
 })
 
 test_that("ids_bulk handles warn_size parameter", {
