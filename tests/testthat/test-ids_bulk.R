@@ -111,8 +111,14 @@ test_that("ids_bulk handles timeout parameter correctly", {
   local_mocked_bindings(
     check_interactive = function() FALSE,
     download_file = function(...) {
-      Sys.sleep(2)
-      stop("Operation timed out", call. = FALSE)
+      current_timeout <- getOption("timeout")
+      # Verify the timeout option was set correctly
+      if (current_timeout == 1) {
+        stop(paste0(
+          "Download timed out after ", current_timeout, " seconds"
+        ), call. = FALSE)
+      }
+      stop("Unexpected timeout value", call. = FALSE)
     },
     get_response_headers = function(...) list("content-length" = "1000")
   )
