@@ -11,7 +11,7 @@ by geographies, series, counterparts, and time periods."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">wbids</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,8 +75,8 @@ values.</p></dd>
 
 
 <dt id="arg-counterparts">counterparts<a class="anchor" aria-label="anchor" href="#arg-counterparts"></a></dt>
-<dd><p>A character vector representing counterpart areas (e.g.,
-"all", "001"). This argument is required and cannot contain NA values
+<dd><p>An optional character vector representing counterpart
+areas (e.g., "all", "001"). This argument cannot contain NA values
 (default: "all").</p></dd>
 
 
@@ -175,16 +175,16 @@ geography, series, counterpart, and year.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 124 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    geography_id series_id      counterpart_id  year    value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> ZMB          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">1</span>970      <span style="color: #BB0000;">NA</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ZMB          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">1</span>971      <span style="color: #BB0000;">NA</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ZMB          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">1</span>972      <span style="color: #BB0000;">NA</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ZMB          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">1</span>973 4<span style="text-decoration: underline;">842</span>338.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ZMB          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">1</span>974 4<span style="text-decoration: underline;">241</span>396.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> ZMB          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">1</span>975 2<span style="text-decoration: underline;">616</span>250 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ZMB          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">1</span>976 1<span style="text-decoration: underline;">868</span>750 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ZMB          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">1</span>977 1<span style="text-decoration: underline;">121</span>250 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> ZMB          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">1</span>978 1<span style="text-decoration: underline;">121</span>250 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ZMB          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">1</span>979 1<span style="text-decoration: underline;">179</span>165 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> ZMB          DT.DOD.DPPG.CD 231             <span style="text-decoration: underline;">1</span>970      <span style="color: #BB0000;">NA</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ZMB          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">1</span>970      <span style="color: #BB0000;">NA</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ZMB          DT.DOD.DPPG.CD 231             <span style="text-decoration: underline;">1</span>971      <span style="color: #BB0000;">NA</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ZMB          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">1</span>971      <span style="color: #BB0000;">NA</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ZMB          DT.DOD.DPPG.CD 231             <span style="text-decoration: underline;">1</span>972      <span style="color: #BB0000;">NA</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> ZMB          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">1</span>972      <span style="color: #BB0000;">NA</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ZMB          DT.DOD.DPPG.CD 231             <span style="text-decoration: underline;">1</span>973      <span style="color: #BB0000;">NA</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ZMB          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">1</span>973 4<span style="text-decoration: underline;">842</span>338.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> ZMB          DT.DOD.DPPG.CD 231             <span style="text-decoration: underline;">1</span>974      <span style="color: #BB0000;">NA</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> ZMB          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">1</span>974 4<span style="text-decoration: underline;">241</span>396.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 114 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Fetch data for multiple geographies and counterparts</span></span></span>
@@ -198,14 +198,14 @@ geography, series, counterpart, and year.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 8 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   geography_id series_id      counterpart_id  year     value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> CHN          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">2</span>019        <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> CHN          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">2</span>020        <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> CHN          DT.DOD.DPPG.CD 231             <span style="text-decoration: underline;">2</span>019        <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> CHN          DT.DOD.DPPG.CD 231             <span style="text-decoration: underline;">2</span>020        <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> ZMB          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">2</span>019 279<span style="text-decoration: underline;">060</span>000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> ZMB          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">2</span>020 277<span style="text-decoration: underline;">317</span>000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span> ZMB          DT.DOD.DPPG.CD 231             <span style="text-decoration: underline;">2</span>019        <span style="color: #BB0000;">NA</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">8</span> ZMB          DT.DOD.DPPG.CD 231             <span style="text-decoration: underline;">2</span>020        <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> ZMB          DT.DOD.DPPG.CD 231             <span style="text-decoration: underline;">2</span>019        <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> ZMB          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">2</span>019 279<span style="text-decoration: underline;">060</span>000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> ZMB          DT.DOD.DPPG.CD 231             <span style="text-decoration: underline;">2</span>020        <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> ZMB          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">2</span>020 277<span style="text-decoration: underline;">317</span>000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> CHN          DT.DOD.DPPG.CD 231             <span style="text-decoration: underline;">2</span>019        <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> CHN          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">2</span>019        <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span> CHN          DT.DOD.DPPG.CD 231             <span style="text-decoration: underline;">2</span>020        <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">8</span> CHN          DT.DOD.DPPG.CD 216             <span style="text-decoration: underline;">2</span>020        <span style="color: #BB0000;">NA</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

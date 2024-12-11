@@ -9,7 +9,7 @@ Statistics (IDS), reads and processes the data into a tidy format."></head><body
 
     <a class="navbar-brand me-2" href="../index.html">wbids</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,17 +110,12 @@ geography, series, counterpart, and year.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">available_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="ids_bulk_files.html">ids_bulk_files</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">ids_bulk</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">available_files</span><span class="op">$</span><span class="va">file_url</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>This file is 128.2 MB and may take several minutes to download. Current timeout</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> setting: 60 seconds. Use `warn_size = FALSE` to disable this warning.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Downloading file to: /tmp/Rtmp5Dba1y/file534b5f192ca4.xlsx</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Reading in file.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Processing file.</span>
-<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
