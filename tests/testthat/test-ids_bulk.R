@@ -65,7 +65,7 @@ test_that("ids_bulk handles message parameter correctly", {
   mock_data <- tibble::tibble(
     "Country Code" = "ABC",
     "Country Name" = "Test Country",
-    "Classification Name" = "Test Class",
+    "Counterpart-Area Code" = "Test Counterpart",
     "Series Code" = "TEST.1",
     "Series Name" = "Test Series",
     "2020" = 100
@@ -212,33 +212,52 @@ test_that("download_bulk_file downloads files correctly", {
 test_that("read_bulk_file reads files correctly", {
   skip_on_cran()
 
-  test_path <- test_path("data/sample.xlsx")
+  test_path <- test_path("data/download_bulk_file_output.xlsx")
   result <- read_bulk_file(test_path)
   expect_s3_class(result, "tbl_df")
 })
 
 test_that("process_bulk_data processes data correctly", {
-  test_path <- test_path("data/sample.rds")
-  result <- process_bulk_data(readRDS(test_path))
+  test_path <- test_path("data/read_bulk_file_output.rds")
+  test_data <- readRDS(test_path)
 
+  result <- process_bulk_data(test_data)
+
+  # Test structure
   expect_s3_class(result, "tbl_df")
   expect_named(
     result,
     c("geography_id", "series_id", "counterpart_id", "year", "value")
   )
 
+  # Test data types
   expect_type(result$geography_id, "character")
   expect_type(result$series_id, "character")
   expect_type(result$counterpart_id, "character")
   expect_type(result$year, "integer")
   expect_type(result$value, "double")
 
-  expect_gt(nrow(result), 0)
+  # Each code in test data should occur 17 times (the number of non-NA years)
+  expected_country_codes <- rep(test_data$`Country Code`, each = 17)
+  expect_equal(result$geography_id, expected_country_codes)
 
+  expected_counterpart_codes <- rep(
+    test_data$`Counterpart-Area Code`, each = 17
+  )
+  expect_equal(result$counterpart_id, expected_counterpart_codes)
+
+  expected_series_codes <- rep(test_data$`Series Code`, each = 17)
+  expect_equal(result$series_id, expected_series_codes)
+
+  # Years should span from 2006 to 2022 (non-NA years)
+  expect_equal(result$year, rep(2006:2022, times = nrow(test_data)))
+
+  # No NAs should be present
   expect_false(any(is.na(result$geography_id)))
   expect_false(any(is.na(result$series_id)))
   expect_false(any(is.na(result$counterpart_id)))
   expect_false(any(is.na(result$year)))
+  expect_false(any(is.na(result$value)))
 })
 
 test_that("ids_bulk downloads and processes data correctly", {
@@ -256,7 +275,9 @@ test_that("ids_bulk downloads and processes data correctly", {
   local_mocked_bindings(
     check_interactive = function() FALSE,
     download_bulk_file = function(...) TRUE,
-    read_bulk_file = function(...) readRDS(test_path("data/sample.rds"))
+    read_bulk_file = function(...) {
+      readRDS(test_path("data/read_bulk_file_output.rds"))
+    }
   )
 
   result <- ids_bulk(
