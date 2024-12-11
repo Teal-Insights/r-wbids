@@ -48,7 +48,7 @@ Statistics (IDS), reads and processes the data into a tidy format.
 }
 \examples{
 \dontshow{if (curl::has_internet() && rlang::is_installed("readxl")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-\donttest{
+\dontrun{
 available_files <- ids_bulk_files()
 data <- ids_bulk(
   available_files$file_url[1]

@@ -3,13 +3,19 @@
 #'
 perform_request <- function(
   resource,
-  per_page = 15000,
+  per_page = 15000L,
   progress = FALSE,
-  base_url = "https://api.worldbank.org/v2/sources/6/"
+  base_url = "https://api.worldbank.org/v2/sources/6/",
+  max_tries = 10L
 ) {
   validate_per_page(per_page)
+  validate_max_tries(max_tries)
 
-  req <- create_request(base_url, resource, per_page)
+  req <- create_request(base_url, resource, per_page) |>
+    httr2::req_retry(max_tries = max_tries)
+
+  validate_request_url(req$url)
+
   resp <- httr2::req_perform(req)
 
   if (is_request_error(resp)) {
@@ -53,9 +59,23 @@ create_request <- function(base_url, resource, per_page) {
     )
 }
 
+validate_request_url <- function(url) {
+  if (nchar(url) > 4000L) {
+    cli::cli_abort(c(
+      paste(
+        "{.arg url} must be have less than 4000 characters."
+      ),
+      "i" = paste(
+        "For larger requests, consider using {.fn ids_bulk} to download the",
+        "complete dataset. See {.fn ids_bulk_files} for available files."
+      )
+    ))
+  }
+}
+
 is_request_error <- function(resp) {
   status <- httr2::resp_status(resp)
-  content_type <- resp_content_type(resp)
+  content_type <- httr2::resp_content_type(resp)
   if (status >= 400L || content_type == "text/xml") {
     TRUE
   } else {
@@ -64,7 +84,7 @@ is_request_error <- function(resp) {
 }
 
 handle_request_error <- function(resp) {
-  error_string <- as.character(httr2::resp_body_xml(resp))
+  error_string <- httr2::resp_body_string(resp)
   error_code <- sub('.*<wb:message id="([0-9]+)".*', "\\1",
                     error_string)
   error_message <- sub('.*<wb:message id="[0-9]+" key="([^"]*)".*', "\\1",
@@ -75,4 +95,10 @@ handle_request_error <- function(resp) {
     paste("API Error Code", error_code, ":", error_message, error_description,
           collapse = "\n")
   )
+}
+
+validate_max_tries <- function(max_tries) {
+  if (!is.numeric(max_tries) || max_tries %% 1L != 0 || max_tries < 1L) {
+    cli::cli_abort("{.arg max_tries} must be a positive integer.")
+  }
 }

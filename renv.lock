@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.4.1",
+    "Version": "4.4.2",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -42,13 +42,13 @@
     },
     "cpp11": {
       "Package": "cpp11",
-      "Version": "0.5.0",
+      "Version": "0.5.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R"
       ],
-      "Hash": "91570bba75d0c9d3f1040c835cee8fba"
+      "Hash": "9df43854f1c84685d095ed6270b52387"
     },
     "curl": {
       "Package": "curl",
@@ -119,7 +119,7 @@
     },
     "httr2": {
       "Package": "httr2",
-      "Version": "1.0.6",
+      "Version": "1.0.7",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -136,7 +136,7 @@
         "vctrs",
         "withr"
       ],
-      "Hash": "3ef5d07ec78803475a94367d71b40c41"
+      "Hash": "5a76da345ed4f3e6430517e08441edaf"
     },
     "lifecycle": {
       "Package": "lifecycle",
