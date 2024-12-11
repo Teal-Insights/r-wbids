@@ -94,3 +94,14 @@ test_that("validate_max_tries handles valid and invalid inputs", {
   expect_error(validate_max_tries(2.5), "must be a positive integer")
   expect_error(validate_max_tries("3"), "must be a positive integer")
 })
+
+test_that("perform_request errors on too long URLs", {
+  set.seed(123)
+  random_resource <- paste0(
+    sample(letters, 4000, replace = TRUE), collapse = ""
+  )
+  expect_error(
+    perform_request(random_resource),
+    "must be have less than 4000 characters"
+  )
+})

@@ -14,6 +14,8 @@ perform_request <- function(
   req <- create_request(base_url, resource, per_page) |>
     httr2::req_retry(max_tries = max_tries)
 
+  validate_request_url(req$url)
+
   resp <- httr2::req_perform(req)
 
   if (is_request_error(resp)) {
@@ -55,6 +57,20 @@ create_request <- function(base_url, resource, per_page) {
     httr2::req_user_agent(
       "wbids R package (https://github.com/teal-insights/r-wbids)"
     )
+}
+
+validate_request_url <- function(url) {
+  if (nchar(url) > 4000L) {
+    cli::cli_abort(c(
+      paste(
+        "{.arg url} must be have less than 4000 characters."
+      ),
+      "i" = paste(
+        "For larger requests, consider using {.fn ids_bulk} to download the",
+        "complete dataset. See {.fn ids_bulk_files} for available files."
+      )
+    ))
+  }
 }
 
 is_request_error <- function(resp) {
