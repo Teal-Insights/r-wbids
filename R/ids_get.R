@@ -9,8 +9,8 @@
 #'  values.
 #' @param series A character vector representing the series codes (e.g.,
 #'  "DT.DOD.DPPG.CD"). This argument is required and cannot contain NA values.
-#' @param counterparts A character vector representing counterpart areas (e.g.,
-#'  "all", "001"). This argument is required and cannot contain NA values
+#' @param counterparts An optional character vector representing counterpart
+#'  areas (e.g., "all", "001"). This argument cannot contain NA values
 #'  (default: "all").
 #' @param start_date An optional numeric value representing the starting year
 #'  (e.g., 2015). It must be greater than or equal to 1970. If not provided, the
@@ -256,7 +256,7 @@ process_debt_statistics <- function(series_raw) {
 process_character_vector <- function(arg, arg_name) {
   validate_character_vector(arg, arg_name)
   semicolon_separated <- paste(arg, collapse = ";")
-  validate_string(semicolon_separated, 1500, arg_name)
+  validate_string(semicolon_separated, 1500L, arg_name)
   semicolon_separated
 }
 
@@ -280,9 +280,11 @@ validate_character_vector <- function(arg, arg_name) {
       "NA values."
     ))
   }
-  if (length(arg) > 60) {
+  if (length(arg) > 60L) {
     cli::cli_abort(c(
-      paste("{.arg {arg_name}} must be a character vector with 60 or fewer values."), # nolint
+      paste(
+        "{.arg {arg_name}} must be a character vector with 60 or fewer values."
+      ),
       "i" = paste(
         "For larger requests, consider using {.fn ids_bulk} to download the",
         "complete dataset. See {.fn ids_bulk_files} for available files."

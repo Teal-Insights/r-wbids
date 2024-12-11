@@ -3,7 +3,7 @@
 #'
 perform_request <- function(
   resource,
-  per_page = 15000,
+  per_page = 15000L,
   progress = FALSE,
   base_url = "https://api.worldbank.org/v2/sources/6/",
   max_tries = 10L

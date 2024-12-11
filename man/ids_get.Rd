@@ -21,8 +21,8 @@ values.}
 \item{series}{A character vector representing the series codes (e.g.,
 "DT.DOD.DPPG.CD"). This argument is required and cannot contain NA values.}
 
-\item{counterparts}{A character vector representing counterpart areas (e.g.,
-"all", "001"). This argument is required and cannot contain NA values
+\item{counterparts}{An optional character vector representing counterpart
+areas (e.g., "all", "001"). This argument cannot contain NA values
 (default: "all").}
 
 \item{start_date}{An optional numeric value representing the starting year
