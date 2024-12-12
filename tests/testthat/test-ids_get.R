@@ -1,3 +1,93 @@
+test_that("process_time_range correctly validates and formats time ranges", {
+  # Test NULL inputs
+  expect_equal(process_time_range(NULL, NULL), "all")
+
+  # Test invalid ranges
+  expect_error(
+    process_time_range(2020, 2019),
+    "`start_date` cannot be greater than `end_date`"
+  )
+
+  # Test invalid inputs
+  expect_error(
+    process_time_range("2020", 2021),
+    "`start_date` must be a single numeric value representing a year >= 1970"
+  )
+  expect_error(
+    process_time_range(2020, "2021"),
+    "`end_date` must be a single numeric value representing a year >= 1970"
+  )
+  expect_error(
+    process_time_range(1969, 2020),
+    "`start_date` must be a single numeric value representing a year >= 1970"
+  )
+
+  # Test single year
+  expect_equal(process_time_range(2020, 2020), "YR2020")
+
+  # Test year range
+  expect_equal(process_time_range(2015, 2017), "YR2015;YR2016;YR2017")
+})
+
+test_that("create_resource_url constructs URL path correctly", {
+  # Test basic URL construction
+  expect_equal(
+    create_resource_url(
+      geography = "ZMB",
+      series = "DT.DOD.DPPG.CD",
+      counterpart = "all",
+      time = "all"
+    ),
+    "country/ZMB/series/DT.DOD.DPPG.CD/counterpart-area/all/time/all"
+  )
+
+  # Test with multiple values (semicolon-separated)
+  expect_equal(
+    create_resource_url(
+      geography = "ZMB;CHN",
+      series = "DT.DOD.DPPG.CD;BM.GSR.TOTL.CD",
+      counterpart = "216;231",
+      time = "YR2019;YR2020"
+    ),
+    "country/ZMB;CHN/series/DT.DOD.DPPG.CD;BM.GSR.TOTL.CD/counterpart-area/216;231/time/YR2019;YR2020" # nolint
+  )
+})
+
+test_that("validate_character_vector correctly validates character vectors", {
+  expect_error(
+    validate_character_vector(NA, "geographies"),
+    "`geographies` must be a character vector and cannot contain NA values."
+  )
+  expect_error(
+    validate_character_vector(c("ZMB", NA), "series"),
+    "`series` must be a character vector and cannot contain NA values."
+  )
+  expect_error(
+    validate_character_vector(123, "geographies"),
+    "`geographies` must be a character vector and cannot contain NA values."
+  )
+  expect_silent(validate_character_vector(c("ZMB", "CHN"), "geographies"))
+})
+
+test_that("process_character_vector correctly processes character vectors", {
+  expect_equal(
+    process_character_vector(c("ZMB", "CHN"), "geographies"),
+    "ZMB;CHN"
+  )
+  expect_equal(process_character_vector("ZMB", "geographies"), "ZMB")
+  expect_error(
+    process_character_vector(NA, "geographies"),
+    "`geographies` must be a character vector and cannot contain NA values."
+  )
+})
+
+test_that("validate_progress checks logical values for progress", {
+  expect_error(validate_progress("yes"),
+               "`progress` must be either TRUE or FALSE")
+  expect_silent(validate_progress(TRUE))
+  expect_silent(validate_progress(FALSE))
+})
+
 test_that("ids_get returns a tibble with expected columns", {
   result <- ids_get(
     geographies = "ZMB",
@@ -29,7 +119,7 @@ test_that("ids_get returns a large data", {
   expect_equal(colnames(result), expected_columns)
 })
 
-test_that("ids_get handels invalid geography input", {
+test_that("ids_get handles invalid geography input", {
   expect_error(
     ids_get(
       geographies = NA,
@@ -39,7 +129,7 @@ test_that("ids_get handels invalid geography input", {
   )
 })
 
-test_that("ids_get handels invalid series input", {
+test_that("ids_get handles invalid series input", {
   expect_error(
     ids_get(
       geographies = "ZMB",
@@ -49,7 +139,7 @@ test_that("ids_get handels invalid series input", {
   )
 })
 
-test_that("ids_get handels invalid progress input", {
+test_that("ids_get handles invalid progress input", {
   expect_error(
     ids_get(
       geographies = "ZMB", series = "DT.DOD.DPPG.CD", progress = "yes"
@@ -58,7 +148,7 @@ test_that("ids_get handels invalid progress input", {
   )
 })
 
-test_that("ids_get handels valid progress input", {
+test_that("ids_get handles valid progress input", {
   expect_silent(
     ids_get(
       geographies = "ZMB", series = "DT.DOD.DPPG.CD", counterparts = "265",
@@ -68,56 +158,7 @@ test_that("ids_get handels valid progress input", {
   )
 })
 
-test_that("validate_character_vector correctly validates character vectors", {
-  expect_error(
-    validate_character_vector(NA, "geographies"),
-    "`geographies` must be a character vector and cannot contain NA values"
-  )
-  expect_error(
-    validate_character_vector(c("ZMB", NA), "series"),
-    "`series` must be a character vector and cannot contain NA values"
-  )
-  expect_error(
-    validate_character_vector(123, "geographies"),
-    "`geographies` must be a character vector and cannot contain NA values"
-  )
-  expect_silent(validate_character_vector(c("ZMB", "CHN"), "geographies"))
-})
-
-test_that("validate_date correctly validates date values", {
-  expect_error(
-    validate_date(1969, "start_date"),
-    "`start_date` must be a single numeric value representing a year >= 1970"
-  )
-  expect_error(
-    validate_date("2020", "end_date"),
-    "`end_date` must be a single numeric value representing a year >= 1970"
-  )
-  expect_silent(validate_date(1970, "start_date"))
-  expect_silent(validate_date(2020, "end_date"))
-  expect_silent(validate_date(NULL, "end_date"))
-  expect_silent(validate_date(NULL, "start_date"))
-  expect_equal(create_time(NULL, NULL), "all")
-})
-
-test_that("validate_progress checks logical values for progress", {
-  expect_error(validate_progress("yes"),
-               "`progress` must be either TRUE or FALSE")
-  expect_silent(validate_progress(TRUE))
-  expect_silent(validate_progress(FALSE))
-})
-
-test_that("create_time generates correct time sequence", {
-  expect_equal(create_time(2015, 2017), c("YR2015", "YR2016", "YR2017"))
-  expect_equal(create_time(1970, 1970), "YR1970")
-  expect_equal(create_time(NULL, NULL), "all")
-  expect_error(
-    create_time(2020, 2019),
-    "`start_date` cannot be greater than `end_date`"
-  )
-})
-
-test_that("get_debt_statistics returns correctly structured tibble", {
+test_that("get_debt_statistics returns raw API response", {
   mock_perform_request <- list(
     list(variable = list(
       list(concept = "Country", id = "ZMB"),
@@ -140,23 +181,44 @@ test_that("get_debt_statistics returns correctly structured tibble", {
         geography = "ZMB",
         series = "DT.DOD.DPPG.CD",
         counterpart = "216",
-        time = "YR2020",
+        time = "YR2020;YR2021",
         progress = FALSE
       )
 
-      expect_s3_class(result, "tbl_df")
-      expected_columns <- c(
-        "geography_id", "series_id", "counterpart_id", "year", "value"
-      )
-      expect_equal(colnames(result), expected_columns)
-      expect_equal(nrow(result), 2)
-      expect_equal(result$geography_id, c("ZMB", "ZMB"))
-      expect_equal(result$series_id, c("DT.DOD.DPPG.CD", "DT.DOD.DPPG.CD"))
-      expect_equal(result$counterpart_id, c("216", "216"))
-      expect_equal(result$year, c(2020, 2021))
-      expect_equal(result$value, c(100, 200))
+      expect_equal(result, mock_perform_request)
     }
   )
+})
+
+test_that("process_debt_statistics correctly transforms raw data", {
+  mock_data <- list(
+    list(variable = list(
+      list(concept = "Country", id = "ZMB"),
+      list(concept = "Series", id = "DT.DOD.DPPG.CD"),
+      list(concept = "Counterpart-Area", id = "216"),
+      list(concept = "Time", value = "2020")
+    ), value = 100),
+    list(variable = list(
+      list(concept = "Country", id = "ZMB"),
+      list(concept = "Series", id = "DT.DOD.DPPG.CD"),
+      list(concept = "Counterpart-Area", id = "216"),
+      list(concept = "Time", value = "2021")
+    ), value = 200)
+  )
+
+  result <- process_debt_statistics(mock_data)
+
+  expect_s3_class(result, "tbl_df")
+  expected_columns <- c(
+    "geography_id", "series_id", "counterpart_id", "year", "value"
+  )
+  expect_equal(colnames(result), expected_columns)
+  expect_equal(nrow(result), 2)
+  expect_equal(result$geography_id, c("ZMB", "ZMB"))
+  expect_equal(result$series_id, c("DT.DOD.DPPG.CD", "DT.DOD.DPPG.CD"))
+  expect_equal(result$counterpart_id, c("216", "216"))
+  expect_equal(result$year, c(2020, 2021))
+  expect_equal(result$value, c(100, 200))
 })
 
 test_that("ids_get handles empty data gracefully", {
@@ -214,13 +276,135 @@ test_that("ids_get handles empty or incomplete data gracefully", {
   with_mocked_bindings(
     perform_request = function(...) incomplete_data_mock,
     {
-      result <- get_debt_statistics(
-        "ZMB", "DT.DOD.DPPG.CD", "all", "YR2020", FALSE
+      result <- ids_get(
+        geographies = "ZMB",
+        series = "DT.DOD.DPPG.CD",
+        counterparts = "all",
+        start_date = 2020,
+        end_date = 2020,
+        progress = FALSE
       )
       expect_equal(nrow(result), 1)
       expect_true(is.na(result$series_id[1]))
       expect_equal(result$value, NA_real_)
     }
+  )
+})
+
+test_that("validate_year correctly validates year values", {
+  expect_error(
+    validate_year(1969, "test_year"),
+    "`test_year` must be a single numeric value representing a year >= 1970"
+  )
+  expect_error(
+    validate_year("2020", "test_year"),
+    "`test_year` must be a single numeric value representing a year >= 1970"
+  )
+  expect_error(
+    validate_year(c(2020, 2021), "test_year"),
+    "`test_year` must be a single numeric value representing a year >= 1970"
+  )
+  expect_silent(validate_year(1970, "test_year"))
+  expect_silent(validate_year(2020, "test_year"))
+})
+
+test_that("process_debt_statistics handles empty/incomplete data gracefully", {
+  incomplete_data <- list(
+    list(
+      "variable" = list(
+        list("concept" = "Country", "id" = "ZMB"),
+        list("concept" = "Series", "id" = NA),
+        list("concept" = "Counterpart-Area", "id" = "all"),
+        list("concept" = "Time", "value" = "2020")
+      ),
+      "value" = NULL
+    )
+  )
+
+  result <- process_debt_statistics(incomplete_data)
+  expect_equal(nrow(result), 1)
+  expect_true(is.na(result$series_id[1]))
+  expect_equal(result$value, NA_real_)
+})
+
+test_that("validate_string correctly validates string lengths", {
+  # Test strings under the limit
+  expect_silent(validate_string("short string", 100, "test_string"))
+  expect_silent(validate_string("", 10, "test_string"))
+
+  # Test strings at or over the limit
+  long_string <- paste(rep("a", 100), collapse = "")
+  expect_error(
+    validate_string(long_string, 100, "test_string"),
+    "Concatenated `test_string` string must be less than 100 characters"
+  )
+
+  very_long_string <- paste(rep("a", 4000), collapse = "")
+  expect_error(
+    validate_string(very_long_string, 4000, "test_string"),
+    "Concatenated `test_string` string must be less than 4000 characters"
+  )
+})
+
+test_that("validate_character_vector correctly handles vector length limits", {
+  # Test vector with exactly 60 items (should pass)
+  exactly_60 <- rep("A", 60)
+  expect_silent(validate_character_vector(exactly_60, "test_vector"))
+
+  # Test vector with more than 60 items (should fail)
+  too_many <- rep("A", 61)
+  expect_error(
+    validate_character_vector(too_many, "test_vector"),
+    "`test_vector` must be a character vector with 60 or fewer values"
+  )
+
+  # Test single string with more than 60 characters (should pass)
+  long_string <- paste(rep("A", 100), collapse = "")
+  expect_silent(validate_character_vector(long_string, "test_vector"))
+})
+
+test_that("ids_get enforces vector length limits", {
+  # Create test vectors with 61 items
+  too_many_geographies <- rep("ZMB", 61)
+  too_many_series <- rep("DT.DOD.DPPG.CD", 61)
+  too_many_counterparts <- rep("all", 61)
+
+  # Test geographies limit
+  expect_error(
+    ids_get(
+      geographies = too_many_geographies,
+      series = "DT.DOD.DPPG.CD"
+    ),
+    "`geographies` must be a character vector with 60 or fewer values"
+  )
+
+  # Test series limit
+  expect_error(
+    ids_get(
+      geographies = "ZMB",
+      series = too_many_series
+    ),
+    "`series` must be a character vector with 60 or fewer values"
+  )
+
+  # Test counterparts limit
+  expect_error(
+    ids_get(
+      geographies = "ZMB",
+      series = "DT.DOD.DPPG.CD",
+      counterparts = too_many_counterparts
+    ),
+    "`counterparts` must be a character vector with 60 or fewer values"
+  )
+
+  # Test that exactly 60 items works for each parameter
+  exactly_60 <- rep("ZMB", 60)
+  expect_error(
+    ids_get(
+      geographies = exactly_60,
+      series = "DT.DOD.DPPG.CD"
+    ),
+    NA
   )
 })
 
@@ -248,7 +432,6 @@ test_that("ids_get filters post-observed-year NAs correctly", {
   expect_true(all(result$year <= latest_year_observed | !is.na(result$value)))
 })
 
-
 test_that("ids_get correctly applies default years for projection series", {
   result <- ids_get(
     geographies = "GHA",
@@ -273,7 +456,6 @@ test_that("ids_get retains post-actual-year data with values", {
   # Rows with years <= LATEST_YEAR_ACTUAL should remain
   expect_equal(filtered_result$year, 2020:latest_year_observed)
 })
-
 
 test_that("ids_get handles valid geography codes correctly", {
   # Test individual country code (ISO3C)
@@ -338,8 +520,6 @@ test_that("ids_get handles valid counterpart codes correctly", {
     end_date = 2020
   ))
 })
-
-
 
 test_that("ids_get returns expected data structure", {
   result <- ids_get(
