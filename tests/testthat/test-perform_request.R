@@ -105,3 +105,11 @@ test_that("perform_request errors on too long URLs", {
     "must be have less than 4000 characters"
   )
 })
+
+test_that("perform_request handles pagination correctly", {
+  result <- perform_request(
+    "country/ZMB/series/DT.DOD.DPPG.CD/counterpart-area/WLD/time/YR2020;YR2021",
+    per_page = 1L
+  )
+  expect_equal(length(result), 2)
+})
