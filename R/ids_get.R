@@ -8,7 +8,7 @@
 #'
 #' @param geographies A character vector of geography identifiers representing
 #'   debtor countries and aggregates. Must use `geography_id` from
-#'   `ids_list_geographies()`:
+#'   \link{ids_list_geographies}:
 #'   * For individual countries, use ISO3C codes (e.g., "GHA" for Ghana)
 #'   * For aggregates, use World Bank codes (e.g., "LIC" for low income
 #'     countries)
@@ -16,31 +16,31 @@
 #'   aggregates only. Cannot contain NA values.
 #'
 #' @param series A character vector of debt statistics series identifiers that
-#'   must match the `series_id` column from `ids_list_series()`. Each series
-#'   represents a specific debt statistic (e.g., "DT.DOD.DECT.CD" for total
-#'   external debt stocks, "DT.TDS.DECT.CD" for debt service payments). Cannot
-#'   contain NA values.
-#'
+#'   must match the `series_id` column from \link{ids_list_series}. Each
+#'   series represents a specific debt statistic (e.g., "DT.DOD.DECT.CD" for
+#'   total external debt stocks, "DT.TDS.DECT.CD" for debt service payments).
+#'   Cannot contain NA values.
+#
 #' @param counterparts A character vector of creditor identifiers that must
-#'   match the `counterpart_id` column from `ids_list_counterparts()`. The
+#'   match the `counterpart_id` column from \link{ids_list_counterparts}. The
 #'   default "WLD" returns aggregated global totals across all creditors.
 #'   Common options:
 #'   * "WLD" - World total (aggregated across all creditors)
 #'   * "all" - Retrieve data broken down by all creditors
-#'   * Individual creditors use numeric codes (e.g., "730" for China)
-#'   * Special creditors have text codes (e.g., "907" for IMF, "BND" for
-#'     bondholders)
+#'   * All identifiers are strings, but some are string-formatted numbers
+#'     (e.g., "730" for China, "907" for IMF), while others are alphabetic
+#'     codes (e.g., "BND" for bondholders)
 #'   Cannot contain NA values.
-#'
+#
 #' @param start_date A numeric value representing the starting year (default:
-#'   2000). Must be >= 1970. The default focuses on modern data while reducing
-#'   data volume. For historical analysis, explicitly set to 1970.
+#'   2000). This default is intended to reduce data volume. For historical
+#'   analysis, explicitly set to 1970 (the earliest year of data available).
 #'
 #' @param end_date A numeric value representing the ending year (default: NULL).
 #'   Must be >= 1970 and cannot be earlier than start_date. If NULL, returns
-#'   data through the most recent available year. Some debt service related
-#'   series include projections of debt service.  For the 2024 data release,
-#'   debt service projections available through 2031.
+#'   data through the most recent available year. Some debt service-related
+#'   series include projections of debt service. For the 2024 data release,
+#'   debt service projections are available through 2031.
 #'
 #' @param progress A logical value indicating whether to display progress
 #'   messages during data retrieval (default: FALSE).
@@ -67,9 +67,9 @@
 #' * Terms and conditions of new commitments
 #'
 #' To ensure valid queries:
-#' * Use `ids_list_geographies()` to find valid debtor geography codes
-#' * Use `ids_list_series()` to explore available debt statistics
-#' * Use `ids_list_counterparts()` to see available creditor codes
+#' * Use \link{ids_list_geographies} to find valid debtor geography codes
+#' * Use \link{ids_list_series} to explore available debt statistics
+#' * Use \link{ids_list_counterparts} to see available creditor codes
 #'
 #' @examples
 #' \donttest{
