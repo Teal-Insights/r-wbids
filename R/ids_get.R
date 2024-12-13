@@ -131,6 +131,12 @@ ids_get <- function(
     geographies, series, counterparts, time, progress
   )
 
+  # Process debt statistics
+  debt_statistics <- process_debt_statistics(debt_statistics_raw)
+
+  # Apply specific filtering logic for years beyond latest actual data
+  debt_statistics <- filter_post_actual_na(debt_statistics)
+
   debt_statistics
 }
 
@@ -192,11 +198,11 @@ create_progress_message <- function(
   }
 
   paste(
-    "Fetching series", series,
-    "for geography", geography,
-    ", counterpart", counterpart,
-    ", and time", time
-  )
+      "Fetching series", series,
+      "for geography", geography,
+      ", counterpart", counterpart,
+      ", and time", time
+    )
 }
 
 #' Create Resource URL
@@ -379,19 +385,80 @@ validate_progress <- function(progress) {
   }
 }
 
-create_time <- function(start_date, end_date) {
+
+# to be updated manually with each release
+# for the 2024-12 IDS release:
+latest_year_observed <- 2023
+latest_year_projections <- 2031
+
+#' Validate Year Input
+#'
+#' Helper function to validate a year input is numeric, single value, and >=
+#' 1970
+#'
+#' @param year The year to validate
+#' @param arg_name The argument name for error messages
+#'
+#' @noRd
+#' @keywords internal
+validate_year <- function(year, arg_name) {
+  if (!is.numeric(year) || length(year) != 1 || year < 1970) {
+    cli::cli_abort(paste(
+      "{.arg {arg_name}} must be a single numeric value representing ",
+      "a year >= 1970."
+    ))
+  }
+}
+
+#' Process Time Range
+#'
+#' Validates and converts start and end dates into a semicolon-separated string
+#' of years for API requests.
+#'
+#' @param start_date The starting year (optional).
+#' @param end_date The ending year (optional).
+#'
+#' @return A character string representing the time range for the API request.
+#'
+#' @noRd
+#' @keywords internal
+process_time_range <- function(start_date, end_date) {
+  # Validate dates if provided
+  if (!is.null(start_date)) validate_year(start_date, "start_date")
+  if (!is.null(end_date)) validate_year(end_date, "end_date")
+
+  # Create time string
   if (!is.null(start_date) && !is.null(end_date)) {
     if (start_date > end_date) {
       cli::cli_abort(
         "{.arg start_date} cannot be greater than {.arg end_date}."
       )
     }
-    paste0("YR", seq(start_date, end_date, by = 1))
+    paste(
+      "YR", seq(start_date, end_date, by = 1),
+      collapse = ";", sep = ""
+    )
+  } else if (!is.null(start_date)) {
+    paste(
+      "YR", seq(start_date, latest_year_projections, by = 1),
+      collapse = ";", sep = ""
+    )
   } else {
     "all"
   }
 }
 
+#' Filter Data for Years Beyond Latest Observed Data
+#'
+#' This function filters out rows for years beyond the latest observed data
+#' and removes rows with NA values for these years.
+#'
+#' @param data The data to filter.
+#'
+#' @return The filtered data.
+#'
+#' @noRd
+#' @keywords internal
 filter_post_actual_na <- function(data) {
   # Identify rows after the latest actual year
   data_after_actual <- data |>
