@@ -385,12 +385,6 @@ validate_progress <- function(progress) {
   }
 }
 
-
-# to be updated manually with each release
-# for the 2024-12 IDS release:
-latest_year_observed <- 2023
-latest_year_projections <- 2031
-
 #' Validate Year Input
 #'
 #' Helper function to validate a year input is numeric, single value, and >=
@@ -409,6 +403,11 @@ validate_year <- function(year, arg_name) {
     ))
   }
 }
+
+# to be updated manually with each release
+# for the 2024-12 IDS release:
+latest_year_observed <- 2023
+latest_year_projections <- 2031
 
 #' Process Time Range
 #'
