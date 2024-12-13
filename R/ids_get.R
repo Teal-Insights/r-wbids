@@ -198,11 +198,11 @@ create_progress_message <- function(
   }
 
   paste(
-      "Fetching series", series,
-      "for geography", geography,
-      ", counterpart", counterpart,
-      ", and time", time
-    )
+    "Fetching series", series,
+    "for geography", geography,
+    ", counterpart", counterpart,
+    ", and time", time
+  )
 }
 
 #' Create Resource URL
