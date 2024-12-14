@@ -372,9 +372,31 @@ series_topics <- indicators_wdi |>
   ) |>
   inner_join(series_ids |> select(series_id), join_by(series_id))
 
+# Prepare time data ----------------------------------------------------------
+
+url_time_ids <- paste0(
+  "https://api.worldbank.org/v2/sources/",
+  "6/time?per_page=1000&format=json"
+)
+
+time_raw <- request(url_time_ids) |>
+  req_perform() |>
+  resp_body_json()
+
+times <- time_raw$source[[1]]$concept[[1]]$variable |>
+  bind_rows() |>
+  select(
+    time_id = id,
+    time_name = value
+  ) |>
+  mutate(
+    time_year = as.integer(trimws(time_name))
+  ) |>
+  arrange(time_year)
+
 # Store all data in single rda file --------------------------------------------
 
 save(
-  geographies, series, counterparts, series_topics,
+  geographies, series, counterparts, series_topics, times,
   file = "R/sysdata.rda"
 )

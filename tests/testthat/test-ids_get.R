@@ -428,8 +428,10 @@ test_that("ids_get filters post-observed-year NAs correctly", {
     series = "DT.DOD.DECT.CD"
   )
 
-  # Ensure no rows exist beyond latest_year_observed if all values are NA
-  expect_true(all(result$year <= latest_year_observed | !is.na(result$value)))
+  # Ensure no rows exist beyond current year if all values are NA
+  expect_true(all(
+    result$year <= as.numeric(format(Sys.Date(), "%Y")) | !is.na(result$value)
+  ))
 })
 
 test_that("ids_get correctly applies default years for projection series", {
@@ -439,22 +441,27 @@ test_that("ids_get correctly applies default years for projection series", {
   )
 
   # Verify the years in the result
-  expect_true(all(result$year >= 2000 & result$year <= latest_year_projections))
+  expect_true(all(
+    result$year >= 2000 & result$year <= times$time_year[nrow(times)]
+  ))
 })
 
 test_that("ids_get retains post-actual-year data with values", {
+  start_year <- times$time_year[nrow(times)] - 11
+  end_year <- times$time_year[nrow(times)]
+
   result <- tibble(
     geography_id = rep("GHA", 12),
     series_id = rep("DT.DOD.DECT.CD", 12),
     counterpart_id = rep("WLD", 12),
-    year = 2020:latest_year_projections,
-    value = c(1:4, rep(NA, 8))
+    year = start_year:end_year,
+    value = rep(c(1, NA), 6)
   )
 
   filtered_result <- filter_post_actual_na(result)
 
-  # Rows with years <= LATEST_YEAR_ACTUAL should remain
-  expect_equal(filtered_result$year, 2020:latest_year_observed)
+  # Rows with years <= last year of projections should remain
+  expect_equal(filtered_result$year, start_year:end_year)
 })
 
 test_that("ids_get handles valid geography codes correctly", {

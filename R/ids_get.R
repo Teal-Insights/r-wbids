@@ -396,18 +396,13 @@ validate_progress <- function(progress) {
 #' @noRd
 #' @keywords internal
 validate_year <- function(year, arg_name) {
-  if (!is.numeric(year) || length(year) != 1 || year < 1970) {
+  if (!is.numeric(year) || length(year) != 1 || year < times$time_year[1]) {
     cli::cli_abort(paste(
       "{.arg {arg_name}} must be a single numeric value representing ",
-      "a year >= 1970."
+      "a year >= {min(times$time_year)}."
     ))
   }
 }
-
-# to be updated manually with each release
-# for the 2024-12 IDS release:
-latest_year_observed <- 2023
-latest_year_projections <- 2031
 
 #' Process Time Range
 #'
@@ -422,7 +417,6 @@ latest_year_projections <- 2031
 #' @noRd
 #' @keywords internal
 process_time_range <- function(start_date, end_date) {
-  # Validate dates if provided
   if (!is.null(start_date)) validate_year(start_date, "start_date")
   if (!is.null(end_date)) validate_year(end_date, "end_date")
 
@@ -434,12 +428,14 @@ process_time_range <- function(start_date, end_date) {
       )
     }
     paste(
-      "YR", seq(start_date, end_date, by = 1),
+      times$time_id[
+        times$time_year >= start_date & times$time_year <= end_date
+      ],
       collapse = ";", sep = ""
     )
   } else if (!is.null(start_date)) {
     paste(
-      "YR", seq(start_date, latest_year_projections, by = 1),
+      times$time_id[times$time_year >= start_date],
       collapse = ";", sep = ""
     )
   } else {
@@ -459,15 +455,13 @@ process_time_range <- function(start_date, end_date) {
 #' @noRd
 #' @keywords internal
 filter_post_actual_na <- function(data) {
-  # Identify rows after the latest actual year
+  # WB provides projections ~8 yrs after end of actual data
   data_after_actual <- data |>
-    filter(.data$year > latest_year_observed)
+    filter(.data$year > times$time_year[nrow(times) - 8])
 
-  # Check if all rows for these years have NA in `value`
   if (all(is.na(data_after_actual$value))) {
-    # Remove these rows from the data
     data <- data |>
-      filter(.data$year <= latest_year_observed)
+      filter(.data$year <= times$time_year[nrow(times) - 8])
   }
 
   data
