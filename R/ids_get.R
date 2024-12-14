@@ -387,21 +387,37 @@ validate_progress <- function(progress) {
 
 #' Validate Year Input
 #'
-#' Helper function to validate a year input is numeric, single value, and >=
-#' 1970
+#' Helper function to validate a year input is numeric and single value.
+#' If year < 1970, issues a warning and returns 1970.
 #'
 #' @param year The year to validate
 #' @param arg_name The argument name for error messages
 #'
+#' @return The validated year
+#'
 #' @noRd
 #' @keywords internal
 validate_year <- function(year, arg_name) {
-  if (!is.numeric(year) || length(year) != 1 || year < times$time_year[1]) {
+  if (!is.numeric(year) || length(year) != 1) {
     cli::cli_abort(paste(
-      "{.arg {arg_name}} must be a single numeric value representing ",
-      "a year >= {min(times$time_year)}."
+      "{.arg {arg_name}} must be a single numeric value."
     ))
   }
+
+  if (year < times$time_year[1] && arg_name == "start_date") {
+    cli::cli_warn(c(
+      "!" = "Data only available from {times$time_year[1]} onward.",
+      "i" = "Setting {.arg {arg_name}} to {times$time_year[1]}."
+    ))
+    return(times$time_year[1])
+  } else if (year < times$time_year[1] && arg_name == "end_date") {
+    # Raise an error if end_date is before 1970
+    cli::cli_abort(c(
+      "!" = "Data only available from {times$time_year[1]} onward."
+    ))
+  }
+
+  year
 }
 
 #' Process Time Range
@@ -417,8 +433,12 @@ validate_year <- function(year, arg_name) {
 #' @noRd
 #' @keywords internal
 process_time_range <- function(start_date, end_date) {
-  if (!is.null(start_date)) validate_year(start_date, "start_date")
-  if (!is.null(end_date)) validate_year(end_date, "end_date")
+  if (!is.null(end_date)) {
+    end_date <- validate_year(end_date, "end_date")
+  }
+  if (!is.null(start_date)) {
+    start_date <- validate_year(start_date, "start_date")
+  }
 
   # Create time string
   if (!is.null(start_date) && !is.null(end_date)) {

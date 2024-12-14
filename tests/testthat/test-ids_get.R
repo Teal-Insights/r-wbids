@@ -11,15 +11,15 @@ test_that("process_time_range correctly validates and formats time ranges", {
   # Test invalid inputs
   expect_error(
     process_time_range("2020", 2021),
-    "`start_date` must be a single numeric value representing a year >= 1970"
+    "`start_date` must be a single numeric value"
   )
   expect_error(
     process_time_range(2020, "2021"),
-    "`end_date` must be a single numeric value representing a year >= 1970"
+    "`end_date` must be a single numeric value"
   )
-  expect_error(
+  expect_warning(
     process_time_range(1969, 2020),
-    "`start_date` must be a single numeric value representing a year >= 1970"
+    "Data only available from 1970 onward"
   )
 
   # Test single year
@@ -292,20 +292,30 @@ test_that("ids_get handles empty or incomplete data gracefully", {
 })
 
 test_that("validate_year correctly validates year values", {
+  # Test non-numeric input
   expect_error(
-    validate_year(1969, "test_year"),
-    "`test_year` must be a single numeric value representing a year >= 1970"
+    validate_year("2020", "start_date"),
+    "`start_date` must be a single numeric value"
   )
+
+  # Test multiple values
   expect_error(
-    validate_year("2020", "test_year"),
-    "`test_year` must be a single numeric value representing a year >= 1970"
+    validate_year(c(2020, 2021), "start_date"),
+    "`start_date` must be a single numeric value"
   )
-  expect_error(
-    validate_year(c(2020, 2021), "test_year"),
-    "`test_year` must be a single numeric value representing a year >= 1970"
+
+  # Test pre-1970 dates (should warn and return 1970)
+  expect_warning(
+    result <- validate_year(1969, "start_date"),
+    "Data only available from 1970 onward"
   )
-  expect_silent(validate_year(1970, "test_year"))
-  expect_silent(validate_year(2020, "test_year"))
+  expect_equal(result, 1970)
+
+  # Test valid years (should pass silently and return original value)
+  expect_silent(result <- validate_year(1970, "start_date"))
+  expect_equal(result, 1970)
+  expect_silent(result <- validate_year(2020, "start_date"))
+  expect_equal(result, 2020)
 })
 
 test_that("process_debt_statistics handles empty/incomplete data gracefully", {
@@ -555,4 +565,49 @@ test_that("ids_get returns expected data structure", {
   expect_type(result$counterpart_id, "character")
   expect_type(result$year, "integer")
   expect_type(result$value, "double")
+})
+
+test_that("process_time_range handles pre-1970 dates correctly", {
+  # Test start_date before 1970
+  expect_warning(
+    result <- process_time_range(1960, 2020),
+    "Data only available from 1970 onward"
+  )
+  expect_equal(
+    result,
+    paste(times$time_id[
+      times$time_year >= 1970 & times$time_year <= 2020
+    ], collapse = ";")
+  )
+
+  # Test end_date before 1970
+  expect_error(
+    process_time_range(1960, 1965),
+    "Data only available from 1970 onward"
+  )
+})
+
+test_that("ids_get handles pre-1970 dates correctly", {
+  # Test with start_date before 1970
+  expect_warning(
+    result <- ids_get(
+      geographies = "GHA",
+      series = "DT.DOD.DECT.CD",
+      start_date = 1960,
+      end_date = 1975
+    ),
+    "Data only available from 1970 onward"
+  )
+  expect_true(min(result$year) >= 1970)
+
+  # Test with end_date before 1970
+  expect_error(
+    ids_get(
+      geographies = "GHA",
+      series = "DT.DOD.DECT.CD",
+      start_date = 1960,
+      end_date = 1965
+    ),
+    "Data only available from 1970 onward"
+  )
 })
