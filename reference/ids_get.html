@@ -15,7 +15,7 @@ easier to conduct cross-country debt analysis and monitoring."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">wbids</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,8 +59,8 @@ easier to conduct cross-country debt analysis and monitoring.</p>
 <span>  <span class="va">geographies</span>,</span>
 <span>  <span class="va">series</span>,</span>
 <span>  counterparts <span class="op">=</span> <span class="st">"WLD"</span>,</span>
-<span>  start_date <span class="op">=</span> <span class="fl">2000</span>,</span>
-<span>  end_date <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_year <span class="op">=</span> <span class="fl">2000</span>,</span>
+<span>  end_year <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -101,15 +101,15 @@ Cannot contain NA values.</p></li>
 </ul></dd>
 
 
-<dt id="arg-start-date">start_date<a class="anchor" aria-label="anchor" href="#arg-start-date"></a></dt>
+<dt id="arg-start-year">start_year<a class="anchor" aria-label="anchor" href="#arg-start-year"></a></dt>
 <dd><p>A numeric value representing the starting year (default:
 2000). This default is intended to reduce data volume. For historical
 analysis, explicitly set to 1970 (the earliest year of data available).</p></dd>
 
 
-<dt id="arg-end-date">end_date<a class="anchor" aria-label="anchor" href="#arg-end-date"></a></dt>
+<dt id="arg-end-year">end_year<a class="anchor" aria-label="anchor" href="#arg-end-year"></a></dt>
 <dd><p>A numeric value representing the ending year (default: NULL).
-Must be &gt;= 1970 and cannot be earlier than start_date. If NULL, returns
+Must be &gt;= 1970 and cannot be earlier than start_year. If NULL, returns
 data through the most recent available year. Some debt service-related
 series include projections of debt service. For the 2024 data release,
 debt service projections are available through 2031.</p></dd>
@@ -178,7 +178,7 @@ countries, including:</p><ul><li><p>Debt stocks and flows</p></li>
 <span class="r-in"><span><span class="va">income_groups</span> <span class="op">&lt;-</span> <span class="fu">ids_get</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  geographies <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LIC"</span>, <span class="st">"LMC"</span>, <span class="st">"UMC"</span><span class="op">)</span>,  <span class="co"># Income group aggregates</span></span></span>
 <span class="r-in"><span>  series <span class="op">=</span> <span class="st">"DT.TDS.DECT.CD"</span>,  <span class="co"># Total debt service</span></span></span>
-<span class="r-in"><span>  start_date <span class="op">=</span> <span class="fl">2010</span></span></span>
+<span class="r-in"><span>  start_year <span class="op">=</span> <span class="fl">2010</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Analyze debt composition by major creditors</span></span></span>
@@ -194,7 +194,7 @@ countries, including:</p><ul><li><p>Debt stocks and flows</p></li>
 <span class="r-in"><span>    <span class="st">"907"</span>,  <span class="co"># IMF</span></span></span>
 <span class="r-in"><span>    <span class="st">"BND"</span>   <span class="co"># Bondholders</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span>,</span></span>
-<span class="r-in"><span>  start_date <span class="op">=</span> <span class="fl">2015</span></span></span>
+<span class="r-in"><span>  start_year <span class="op">=</span> <span class="fl">2015</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
