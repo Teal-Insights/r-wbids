@@ -57,8 +57,8 @@ ids_get(
   geographies = c("ZMB", "ZAF"),
   series = c("DT.DOD.DPPG.CD", "BM.GSR.TOTL.CD"),
   counterparts = c("216", "231"),
-  start_date = 2015,
-  end_date = 2020
+  start_year = 2015,
+  end_year = 2020
 )
 ```
 

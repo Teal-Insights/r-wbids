@@ -8,8 +8,8 @@ ids_get(
   geographies,
   series,
   counterparts = "WLD",
-  start_date = 2000,
-  end_date = NULL,
+  start_year = 2000,
+  end_year = NULL,
   progress = FALSE
 )
 }
@@ -44,12 +44,12 @@ codes (e.g., "BND" for bondholders)
 Cannot contain NA values.
 }}
 
-\item{start_date}{A numeric value representing the starting year (default:
+\item{start_year}{A numeric value representing the starting year (default:
 2000). This default is intended to reduce data volume. For historical
 analysis, explicitly set to 1970 (the earliest year of data available).}
 
-\item{end_date}{A numeric value representing the ending year (default: NULL).
-Must be >= 1970 and cannot be earlier than start_date. If NULL, returns
+\item{end_year}{A numeric value representing the ending year (default: NULL).
+Must be >= 1970 and cannot be earlier than start_year. If NULL, returns
 data through the most recent available year. Some debt service-related
 series include projections of debt service. For the 2024 data release,
 debt service projections are available through 2031.}
@@ -109,7 +109,7 @@ ghana_debt <- ids_get(
 income_groups <- ids_get(
   geographies = c("LIC", "LMC", "UMC"),  # Income group aggregates
   series = "DT.TDS.DECT.CD",  # Total debt service
-  start_date = 2010
+  start_year = 2010
 )
 
 # Analyze debt composition by major creditors
@@ -125,7 +125,7 @@ creditor_analysis <- ids_get(
     "907",  # IMF
     "BND"   # Bondholders
   ),
-  start_date = 2015
+  start_year = 2015
 )
 }
 
