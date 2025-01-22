@@ -32,12 +32,12 @@
 #'     codes (e.g., "BND" for bondholders)
 #'   Cannot contain NA values.
 #
-#' @param start_date A numeric value representing the starting year (default:
+#' @param start_year A numeric value representing the starting year (default:
 #'   2000). This default is intended to reduce data volume. For historical
 #'   analysis, explicitly set to 1970 (the earliest year of data available).
 #'
-#' @param end_date A numeric value representing the ending year (default: NULL).
-#'   Must be >= 1970 and cannot be earlier than start_date. If NULL, returns
+#' @param end_year A numeric value representing the ending year (default: NULL).
+#'   Must be >= 1970 and cannot be earlier than start_year. If NULL, returns
 #'   data through the most recent available year. Some debt service-related
 #'   series include projections of debt service. For the 2024 data release,
 #'   debt service projections are available through 2031.
@@ -83,7 +83,7 @@
 #' income_groups <- ids_get(
 #'   geographies = c("LIC", "LMC", "UMC"),  # Income group aggregates
 #'   series = "DT.TDS.DECT.CD",  # Total debt service
-#'   start_date = 2010
+#'   start_year = 2010
 #' )
 #'
 #' # Analyze debt composition by major creditors
@@ -99,7 +99,7 @@
 #'     "907",  # IMF
 #'     "BND"   # Bondholders
 #'   ),
-#'   start_date = 2015
+#'   start_year = 2015
 #' )
 #' }
 #'
@@ -113,8 +113,8 @@ ids_get <- function(
   geographies,
   series,
   counterparts = "WLD",
-  start_date = 2000,
-  end_date = NULL,
+  start_year = 2000,
+  end_year = NULL,
   progress = FALSE
 ) {
   # Validate arguments
@@ -124,7 +124,7 @@ ids_get <- function(
   geographies <- process_character_vector(geographies, "geographies")
   series <- process_character_vector(series, "series")
   counterparts <- process_character_vector(counterparts, "counterparts")
-  time <- process_time_range(start_date, end_date)
+  time <- process_time_range(start_year, end_year)
 
   # Fetch debt statistics
   debt_statistics_raw <- get_debt_statistics(
@@ -404,14 +404,14 @@ validate_year <- function(year, arg_name) {
     ))
   }
 
-  if (year < times$time_year[1] && arg_name == "start_date") {
+  if (year < times$time_year[1] && arg_name == "start_year") {
     cli::cli_warn(c(
       "!" = "Data only available from {times$time_year[1]} onward.",
       "i" = "Setting {.arg {arg_name}} to {times$time_year[1]}."
     ))
     return(times$time_year[1])
-  } else if (year < times$time_year[1] && arg_name == "end_date") {
-    # Raise an error if end_date is before 1970
+  } else if (year < times$time_year[1] && arg_name == "end_year") {
+    # Raise an error if end_year is before 1970
     cli::cli_abort(c(
       "!" = "Data only available from {times$time_year[1]} onward."
     ))
@@ -425,37 +425,37 @@ validate_year <- function(year, arg_name) {
 #' Validates and converts start and end dates into a semicolon-separated string
 #' of years for API requests.
 #'
-#' @param start_date The starting year (optional).
-#' @param end_date The ending year (optional).
+#' @param start_year The starting year (optional).
+#' @param end_year The ending year (optional).
 #'
 #' @return A character string representing the time range for the API request.
 #'
 #' @noRd
 #' @keywords internal
-process_time_range <- function(start_date, end_date) {
-  if (!is.null(end_date)) {
-    end_date <- validate_year(end_date, "end_date")
+process_time_range <- function(start_year, end_year) {
+  if (!is.null(end_year)) {
+    end_year <- validate_year(end_year, "end_year")
   }
-  if (!is.null(start_date)) {
-    start_date <- validate_year(start_date, "start_date")
+  if (!is.null(start_year)) {
+    start_year <- validate_year(start_year, "start_year")
   }
 
   # Create time string
-  if (!is.null(start_date) && !is.null(end_date)) {
-    if (start_date > end_date) {
+  if (!is.null(start_year) && !is.null(end_year)) {
+    if (start_year > end_year) {
       cli::cli_abort(
-        "{.arg start_date} cannot be greater than {.arg end_date}."
+        "{.arg start_year} cannot be greater than {.arg end_year}."
       )
     }
     paste(
       times$time_id[
-        times$time_year >= start_date & times$time_year <= end_date
+        times$time_year >= start_year & times$time_year <= end_year
       ],
       collapse = ";", sep = ""
     )
-  } else if (!is.null(start_date)) {
+  } else if (!is.null(start_year)) {
     paste(
-      times$time_id[times$time_year >= start_date],
+      times$time_id[times$time_year >= start_year],
       collapse = ";", sep = ""
     )
   } else {
