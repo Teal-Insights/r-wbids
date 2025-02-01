@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">wbids</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,11 +37,28 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="wbids-development-version">wbids (development version)<a class="anchor" aria-label="anchor" href="#wbids-development-version"></a></h2>
-<div class="section level3">
-<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<h2 class="pkg-version" data-toc-text="1.0.0" id="wbids-100">wbids 1.0.0<a class="anchor" aria-label="anchor" href="#wbids-100"></a></h2>
+<ul><li>
+<code><a href="../reference/ids_get.html">ids_get()</a></code> Roxygen2 documentation enhancements.</li>
+<li>
+<code><a href="../reference/ids_get.html">ids_get()</a></code> now makes a single consolidated API call for all series and countries rather than one call per series-country combination, greatly improving performance.</li>
+<li>
+<code><a href="../reference/ids_get.html">ids_get()</a></code> now fails with an informative error message if the user requests too much data.</li>
+<li>
+<code><a href="../reference/ids_get.html">ids_get()</a></code> now takes <code>start_year</code> and <code>end_year</code> rather than <code>start_date</code> and <code>end_date</code> arguments (breaking change).</li>
+</ul><div class="section level3">
+<h3 id="bug-fixes-1-0-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-0-0"></a></h3>
 <ul><li>
 <code><a href="../reference/ids_list_counterparts.html">ids_list_counterparts()</a></code> now contains <code>counterpart_iso2code</code> for all countries and regions.</li>
+<li>
+<code>read_bulk_file()</code> now returns the correct column for <code>counterpart_id</code>.</li>
+<li>
+<code><a href="../reference/ids_get.html">ids_get()</a></code> no longer returns NAs for some geographies.</li>
+<li>
+<code><a href="../reference/ids_get.html">ids_get()</a></code> no longer returns the wrong counterpart_type for some rows.</li>
+<li>
+<code><a href="../reference/ids_get.html">ids_get()</a></code> now removes trailing whitespace and correctly encodes special characters.</li>
+<li>Removed a third-party dependency that was causing tests to fail on CRAN.</li>
 </ul></div>
 </div>
     <div class="section level2">
