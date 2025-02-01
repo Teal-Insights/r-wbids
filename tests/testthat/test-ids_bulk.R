@@ -7,7 +7,10 @@ test_that("ids_bulk handles custom file paths", {
   skip_if_not_installed("jsonlite")
   skip_if_not_installed("readxl")
 
-  test_url <- ids_bulk_files()$file_url[1]
+  test_url <- paste0(
+    "https://datacatalogfiles.worldbank.org/ddh-published/0038015/DR0092201/",
+    "A_D.xlsx?versionId=2024-12-04T18:30:10.8890786Z"
+  )
   temp_path <- tempfile(fileext = ".xlsx")
 
   local_mocked_bindings(
@@ -22,7 +25,10 @@ test_that("ids_bulk handles custom file paths", {
       tibble::tibble()
     },
     get_response_headers = function(...) {
-      list(`content-length` = 1000)
+      list(
+        `content-type` = mime::guess_type(temp_path),
+        `content-length` = 1000
+      )
     }
   )
 
@@ -40,9 +46,17 @@ test_that("ids_bulk handles custom file paths", {
 })
 
 test_that("ids_bulk fails gracefully with invalid URL", {
+  local_mocked_bindings(
+    get_response_headers = function(file_url) {
+      list(
+        `content-type` = "text/html; charset=utf-8"
+      )
+    }
+  )
+
   expect_error(
     ids_bulk("https://invalid-url.com/file.xlsx"),
-    "cannot open URL|download failed|Could not resolve host|SSL certificate problem" # nolint
+    "Request returned an invalid file type. Please check the URL and try again."
   )
 })
 
@@ -63,7 +77,10 @@ test_that("ids_bulk handles message parameter correctly", {
   skip_if_not_installed("jsonlite")
   skip_if_not_installed("readxl")
 
-  test_url <- ids_bulk_files()$file_url[1]
+  test_url <- paste0(
+    "https://datacatalogfiles.worldbank.org/ddh-published/0038015/DR0092201/",
+    "A_D.xlsx?versionId=2024-12-04T18:30:10.8890786Z"
+  )
 
   mock_data <- tibble::tibble(
     "Country Code" = "ABC",
@@ -123,7 +140,12 @@ test_that("ids_bulk handles timeout parameter correctly", {
       }
       stop("Unexpected timeout value", call. = FALSE)
     },
-    get_response_headers = function(...) list("content-length" = "1000")
+    get_response_headers = function(...) {
+      list(
+        `content-type` = mime::guess_type("file.xlsx"),
+        `content-length` = "1000"
+      )
+    }
   )
 
   expect_error(
@@ -138,31 +160,27 @@ test_that("ids_bulk handles warn_size parameter", {
   skip_if_not_installed("jsonlite")
   skip_if_not_installed("readxl")
 
-  test_url <- ids_bulk_files()$file_url[1]
-
-  local_mocked_bindings(
-    download_file = function(...) TRUE
+  test_url <- paste0(
+    "https://datacatalogfiles.worldbank.org/ddh-published/0038015/DR0092201/",
+    "A_D.xlsx?versionId=2024-12-04T18:30:10.8890786Z"
   )
 
   local_mocked_bindings(
-    validate_file = function(...) TRUE
-  )
-
-  local_mocked_bindings(
+    download_file = function(...) TRUE,
+    validate_file = function(...) TRUE,
     check_interactive = function() FALSE
   )
 
   expect_warning(
     download_bulk_file(
-      test_url, tempfile(), 60, warn_size = TRUE, quiet = TRUE
+      test_url, tempfile(fileext = ".xlsx"), 60, warn_size = TRUE, quiet = TRUE
     ),
-    "may take several minutes to download",
-    fixed = FALSE
+    "may take several minutes to download"
   )
 
   expect_no_warning(
     download_bulk_file(
-      test_url, tempfile(), 60, warn_size = FALSE, quiet = TRUE
+      test_url, tempfile(fileext = ".xlsx"), 60, warn_size = FALSE, quiet = TRUE
     )
   )
 })
@@ -186,7 +204,10 @@ test_that("download_bulk_file downloads files correctly", {
   skip_if_offline()
   skip_on_cran()
 
-  test_url <- ids_bulk_files()$file_url[1]
+  test_url <- paste0(
+    "https://datacatalogfiles.worldbank.org/ddh-published/0038015/DR0092201/",
+    "A_D.xlsx?versionId=2024-12-04T18:30:10.8890786Z"
+  )
   test_path <- tempfile(fileext = ".xlsx")
 
   local_mocked_bindings(
@@ -325,15 +346,26 @@ test_that("warn_size warning is triggered & user prompt is handled correctly", {
   skip_if_not_installed("jsonlite")
   skip_if_not_installed("readxl")
 
+  test_url <- paste0(
+    "https://datacatalogfiles.worldbank.org/ddh-published/0038015/DR0092201/",
+    "A_D.xlsx?versionId=2024-12-04T18:30:10.8890786Z"
+  )
+  temp_file <- tempfile(fileext = ".xlsx")
+
   with_mocked_bindings(
-    get_response_headers = function(...) list(`content-length` = 150 * 1024^2),
+    get_response_headers = function(...) {
+      list(
+        `content-type` = mime::guess_type(temp_file),
+        `content-length` = 150 * 1024^2
+      )
+    },
     check_interactive = function(...) TRUE,
     prompt_user = function(...) "n",
     {
       expect_error(
         expect_warning(
           download_bulk_file(
-            test_url, tempfile(fileext = ".xlsx"),
+            test_url, temp_file,
             timeout = 30, warn_size = TRUE, quiet = TRUE
           ),
           regexp = "may take several minutes to download."
