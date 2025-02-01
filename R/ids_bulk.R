@@ -85,8 +85,19 @@ get_response_headers <- function(file_url) {
 #' @noRd
 #'
 download_bulk_file <- function(file_url, file_path, timeout, warn_size, quiet) {
-
+  # Error on response mime type mismatch (esp. HTML instead of Excel)
   response_headers <- get_response_headers(file_url)
+  mime_type <- mime::guess_type(file_path)
+
+  if (response_headers$`content-type` != mime_type) {
+    cli::cli_abort(
+      paste0(
+        "Request returned an invalid file type. ",
+        "Please check the URL and try again."
+      )
+    )
+  }
+
   size_mb <- as.numeric(response_headers$`content-length`) / 1024^2
   formatted_size <- format(round(size_mb, 1), nsmall = 1) # nolint
 
