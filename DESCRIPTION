@@ -8,7 +8,7 @@ Authors@R:
              role = c("aut"), comment = c(ORCID = "0009-0004-0423-6819")),
       person("Christopher", "Smith", email = "chriscarrollsmith@gmail.com", 
              role = c("ctb")))
-Description: Access and analyze the World Bank’s International Debt Statistics 
+Description: Access and analyze the World Bank'’'s International Debt Statistics 
   (IDS) <https://datacatalog.worldbank.org/search/dataset/0038015>. 
   IDS provides creditor-debtor relationships between countries, regions, and 
   institutions. 'wbids' enables users to download, process and work with IDS
@@ -18,7 +18,7 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Depends: 
-    R (>= 4.1)
+    R (>= 4.1.0)
 Imports:
     cli,
     withr,
