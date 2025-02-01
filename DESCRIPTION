@@ -26,7 +26,8 @@ Imports:
     dplyr (>= 1.0.0),
     purrr (>= 1.0.0),
     tidyr (>= 1.0.0),
-    rlang (>= 1.0.0)
+    rlang (>= 1.0.0),
+    mime
 Suggests: 
     curl,
     jsonlite,
