@@ -6,7 +6,7 @@
 \alias{wbids-package}
 \title{wbids: Seamless Access to World Bank International Debt Statistics (IDS)}
 \description{
-Access and analyze the World Bank’s International Debt Statistics (IDS) \url{https://datacatalog.worldbank.org/search/dataset/0038015}. IDS provides creditor-debtor relationships between countries, regions, and institutions. 'wbids' enables users to download, process and work with IDS series across multiple geographies, counterparts, and time periods.
+Access and analyze the World Bank's International Debt Statistics (IDS) \url{https://datacatalog.worldbank.org/search/dataset/0038015}. IDS provides creditor-debtor relationships between countries, regions, and institutions. 'wbids' enables users to download, process and work with IDS series across multiple geographies, counterparts, and time periods.
 }
 \seealso{
 Useful links:
