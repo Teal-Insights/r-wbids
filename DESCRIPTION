@@ -34,7 +34,8 @@ Suggests:
     tibble,
     quarto,
     readxl (>= 1.0.0),
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    httr
 Config/testthat/edition: 3
 URL: https://teal-insights.github.io/r-wbids/, https://github.com/teal-insights/r-wbids/
 BugReports: https://github.com/teal-insights/r-wbids/issues
