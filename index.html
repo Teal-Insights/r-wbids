@@ -95,6 +95,52 @@
 <p>This data can be used to enrich the IDS series or facilitate data discovery. For further applications, please consult <a href="https://teal-insights.github.io/teal-insights-guide-to-wbids/" class="external-link">Teal Insights’ Guide to Working with the World Bank International Debt Statistics</a>.</p>
 <p>The interface and column names are fully consistent with World Development Indicators (WDI) data provided through the <code>wbwdi</code> package. You can find details on <a href="https://github.com/tidy-intelligence/r-wbwdi" class="external-link">github.com/tidy-intelligence/r-wbwdi</a>.</p>
 </div>
+<div class="section level2">
+<h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
+</h2>
+<p>Contributions to <code>wbids</code> are welcome! If you’d like to contribute, please follow these steps:</p>
+<ol style="list-style-type: decimal">
+<li>
+<strong>Create an issue</strong>: Before making changes, create an issue describing the bug or feature you’re addressing.</li>
+<li>
+<strong>Fork the repository</strong>: Fork the repository to your GitHub account.</li>
+<li>
+<strong>Create a branch</strong>: Create a branch for your changes with a descriptive name.</li>
+<li>
+<strong>Make your changes</strong>: Implement your bug fix or feature.</li>
+<li>
+<strong>Test your changes</strong>: Run tests to ensure your changes don’t break existing functionality.</li>
+<li>
+<strong>Submit a pull request</strong>: Push your changes to your fork and submit a pull request to the main repository.</li>
+</ol>
+<p>For more detailed information on the package structure and development process, please visit the <a href="https://github.com/Teal-Insights/r-wbids/wiki" class="external-link">project Wiki</a>.</p>
+<div class="section level3">
+<h3 id="package-structure">Package Structure<a class="anchor" aria-label="anchor" href="#package-structure"></a>
+</h3>
+<p>The package is organized around three main functional groups:</p>
+<pre class="mermaid"><code>graph LR
+    A[wbids] --&gt; B[ids_list_*]
+    A --&gt; C[ids_get]
+    A --&gt; D[ids_bulk*]
+
+    B --&gt; B1[ids_list_counterparts]
+    B --&gt; B2[ids_list_geographies]
+    B --&gt; B3[ids_list_series]
+    B --&gt; B4[ids_list_series_topics]
+
+    D --&gt; D1[ids_bulk]
+    D --&gt; D2[ids_bulk_files]
+    D --&gt; D3[ids_bulk_series]
+
+    classDef default fill:#fff,stroke:#333,color:#333
+    classDef main fill:#f9f,stroke:#333,color:#000,font-weight:bold
+    classDef group fill:#bbf,stroke:#333,color:#000
+
+    class A main
+    class B,C,D group
+    class B1,B2,B3,B4,D1,D2,D3 default</code></pre>
+</div>
+</div>
 </div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
