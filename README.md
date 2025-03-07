@@ -117,7 +117,7 @@ Wiki](https://github.com/Teal-Insights/r-wbids/wiki).
 The package is organized around three main functional groups:
 
 ``` mermaid
-graph TD
+graph LR
     A[wbids] --> B[ids_list_*]
     A --> C[ids_get]
     A --> D[ids_bulk*]
@@ -131,8 +131,11 @@ graph TD
     D --> D2[ids_bulk_files]
     D --> D3[ids_bulk_series]
 
-    style A fill:#f9f,stroke:#333
-    style B fill:#bbf,stroke:#333
-    style C fill:#bbf,stroke:#333
-    style D fill:#bbf,stroke:#333
+    classDef default fill:#fff,stroke:#333,color:#333
+    classDef main fill:#f9f,stroke:#333,color:#000,font-weight:bold
+    classDef group fill:#bbf,stroke:#333,color:#000
+
+    class A main
+    class B,C,D group
+    class B1,B2,B3,B4,D1,D2,D3 default
 ```
