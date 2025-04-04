@@ -82,7 +82,7 @@ test_that("ids_bulk handles message parameter correctly", {
 
   test_url <- paste0(
     "https://datacatalogfiles.worldbank.org/ddh-published/0038015/DR0092201/",
-    "A_D.xlsx?versionId=2024-12-04T18:30:10.8890786Z"
+    "A_D.xlsx"
   )
 
   mock_data <- tibble::tibble(
@@ -170,7 +170,7 @@ test_that("ids_bulk handles warn_size parameter", {
 
   test_url <- paste0(
     "https://datacatalogfiles.worldbank.org/ddh-published/0038015/DR0092201/",
-    "A_D.xlsx?versionId=2024-12-04T18:30:10.8890786Z"
+    "A_D.xlsx"
   )
 
   local_mocked_bindings(
@@ -179,7 +179,7 @@ test_that("ids_bulk handles warn_size parameter", {
     check_interactive = function() FALSE
   )
 
-  expect_warning(
+  expect_message(
     download_bulk_file(
       test_url,
       tempfile(fileext = ".xlsx"),
@@ -222,7 +222,7 @@ test_that("download_bulk_file downloads files correctly", {
 
   test_url <- paste0(
     "https://datacatalogfiles.worldbank.org/ddh-published/0038015/DR0092201/",
-    "A_D.xlsx?versionId=2024-12-04T18:30:10.8890786Z"
+    "A_D.xlsx"
   )
   test_path <- tempfile(fileext = ".xlsx")
 
@@ -309,7 +309,7 @@ test_that("ids_bulk downloads and processes data correctly", {
 
   test_url <- paste0(
     "https://datacatalogfiles.worldbank.org/ddh-published/0038015/DR0092201/",
-    "A_D.xlsx?versionId=2024-10-08T01:35:39.3946879Z"
+    "A_D.xlsx"
   )
   test_path <- tempfile(fileext = ".xlsx")
 
@@ -376,7 +376,7 @@ test_that("warn_size warning is triggered & user prompt is handled correctly", {
 
   test_url <- paste0(
     "https://datacatalogfiles.worldbank.org/ddh-published/0038015/DR0092201/",
-    "A_D.xlsx?versionId=2024-12-04T18:30:10.8890786Z"
+    "A_D.xlsx"
   )
   temp_file <- tempfile(fileext = ".xlsx")
 

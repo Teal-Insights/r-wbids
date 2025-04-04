@@ -30,7 +30,7 @@ ids_bulk_files <- function() {
     ) |>
     select(file_name = "name", file_url = "url", "last_updated_date") |>
     mutate(
-      file_url = sub("\\?.*$", "", file_url),
+      file_url = sub("\\?.*$", "", .data$file_url),
       last_updated_date = as.Date(.data$last_updated_date)
     ) |>
     arrange("file_url")
