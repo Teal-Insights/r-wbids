@@ -43,7 +43,6 @@ ids_bulk <- function(
   timeout = getOption("timeout", 60),
   warn_size = TRUE
 ) {
-
   rlang::check_installed("readxl", reason = "to download bulk files.")
 
   on.exit(unlink(file_path))
@@ -69,6 +68,7 @@ ids_bulk <- function(
 get_response_headers <- function(file_url) {
   httr2::request(file_url) |>
     httr2::req_headers("Accept" = "*/*") |>
+    httr2::req_method("HEAD") |>
     httr2::req_perform() |>
     httr2::resp_headers()
 }
@@ -87,7 +87,7 @@ get_response_headers <- function(file_url) {
 download_bulk_file <- function(file_url, file_path, timeout, warn_size, quiet) {
   # Error on response mime type mismatch (esp. HTML instead of Excel)
   response_headers <- get_response_headers(file_url)
-  mime_type <- mime::guess_type(file_path)
+  mime_type <- "application/octet-stream"
 
   if (response_headers$`content-type` != mime_type) {
     cli::cli_abort(
@@ -102,7 +102,7 @@ download_bulk_file <- function(file_url, file_path, timeout, warn_size, quiet) {
   formatted_size <- format(round(size_mb, 1), nsmall = 1) # nolint
 
   if (warn_size && size_mb > 100) {
-    cli::cli_warn(paste0(
+    cli::cli_alert_warning(paste0(
       "This file is {formatted_size} MB and may take several minutes to ",
       "download. Current timeout setting: {timeout} seconds. Use ",
       "{.code warn_size = FALSE} to disable this warning."
@@ -125,21 +125,25 @@ download_bulk_file <- function(file_url, file_path, timeout, warn_size, quiet) {
   # nocov start
   withr::with_options(
     list(timeout = timeout),
-    tryCatch({
-      download_file(file_url, destfile = file_path, quiet = quiet)
-    },
-    error = function(e) {
-      if (grepl("timeout|cannot open URL", e$message, ignore.case = TRUE)) {
-        cli::cli_abort(
-          paste0(
-            "Download timed out after ", timeout, " seconds.\n",
-            "Try increasing the timeout parameter",
-            " (e.g., timeout=600 for 10 minutes)"
+    tryCatch(
+      {
+        download_file(file_url, destfile = file_path, quiet = quiet)
+      },
+      error = function(e) {
+        if (grepl("timeout|cannot open URL", e$message, ignore.case = TRUE)) {
+          cli::cli_abort(
+            paste0(
+              "Download timed out after ",
+              timeout,
+              " seconds.\n",
+              "Try increasing the timeout parameter",
+              " (e.g., timeout=600 for 10 minutes)"
+            )
           )
-        )
+        }
+        cli::cli_abort(e$message)
       }
-      cli::cli_abort(e$message)
-    })
+    )
   )
   # nocov end
   validate_file(file_path)
@@ -171,7 +175,8 @@ read_bulk_file <- function(file_path) {
   header_row <- readxl::read_excel(path = file_path, n_max = 0)
 
   # Get all column names
-  available_columns <- header_row |> colnames()
+  available_columns <- header_row |>
+    colnames()
 
   # Initialize a helper tibble mapping relevant column names to types
   relevant_columns <- tibble(names = available_columns) |>
@@ -200,7 +205,9 @@ process_bulk_data <- function(bulk_raw) {
   bulk_raw |>
     # Select only the relevant columns
     select(
-      "Country Code", "Series Code", "Counterpart-Area Code",
+      "Country Code",
+      "Series Code",
+      "Counterpart-Area Code",
       matches("^\\d{4}$")
     ) |>
     # Rename columns to match the package data model

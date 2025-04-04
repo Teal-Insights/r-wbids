@@ -23,7 +23,6 @@
 #' ids_bulk_series()
 #'
 ids_bulk_series <- function() {
-
   ids_meta <- read_bulk_info()
 
   bulk_series <- ids_meta$indicators |>
@@ -38,5 +37,4 @@ ids_bulk_series <- function() {
     left_join(api_series, join_by("series_id"))
 
   bulk_series
-
 }
