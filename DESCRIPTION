@@ -29,6 +29,7 @@ Imports:
     rlang (>= 1.0.0)
 Suggests: 
     curl,
+    jsonlite,
     tibble,
     quarto,
     readxl (>= 1.0.0),
