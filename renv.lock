@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.4.2",
+    "Version": "4.4.3",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -31,14 +31,14 @@
     },
     "cli": {
       "Package": "cli",
-      "Version": "3.6.3",
+      "Version": "3.6.4",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "utils"
       ],
-      "Hash": "b21916dd77a27642b447374a5d30ecf3"
+      "Hash": "491c34d3d9dd0d2fe13d9f278bb90795"
     },
     "cpp11": {
       "Package": "cpp11",
@@ -52,13 +52,13 @@
     },
     "curl": {
       "Package": "curl",
-      "Version": "6.0.1",
+      "Version": "6.2.2",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R"
       ],
-      "Hash": "e8ba62486230951fcd2b881c5be23f96"
+      "Hash": "e4f9e10b18f453a1b7eaf38247dad4fe"
     },
     "dplyr": {
       "Package": "dplyr",
@@ -119,7 +119,7 @@
     },
     "httr2": {
       "Package": "httr2",
-      "Version": "1.0.7",
+      "Version": "1.1.2",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -136,7 +136,7 @@
         "vctrs",
         "withr"
       ],
-      "Hash": "5a76da345ed4f3e6430517e08441edaf"
+      "Hash": "ade531519694081d91036b509eb30594"
     },
     "lifecycle": {
       "Package": "lifecycle",
@@ -160,16 +160,6 @@
         "R"
       ],
       "Hash": "7ce2733a9826b3aeb1775d56fd305472"
-    },
-    "mime": {
-      "Package": "mime",
-      "Version": "0.12",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "tools"
-      ],
-      "Hash": "18e9c28c1d3ca1560ce30658b22ce104"
     },
     "openssl": {
       "Package": "openssl",
@@ -210,7 +200,7 @@
     },
     "purrr": {
       "Package": "purrr",
-      "Version": "1.0.2",
+      "Version": "1.0.4",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -221,7 +211,7 @@
         "rlang",
         "vctrs"
       ],
-      "Hash": "1cba04a4e9414bdefc9dcaa99649a8dc"
+      "Hash": "cc8b5d43f90551fa6df0a6be5d640a4f"
     },
     "rappdirs": {
       "Package": "rappdirs",
@@ -245,14 +235,14 @@
     },
     "rlang": {
       "Package": "rlang",
-      "Version": "1.1.4",
+      "Version": "1.1.5",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "utils"
       ],
-      "Hash": "3eec01f8b1dee337674b2e34ab1f9bc1"
+      "Hash": "724dcc1490cd7071ee75ca2994a5446e"
     },
     "stringi": {
       "Package": "stringi",
