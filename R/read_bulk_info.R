@@ -8,7 +8,8 @@
 #'
 read_bulk_info <- function() {
   rlang::check_installed(
-    "jsonlite", reason = "to retrieve available series via bulk download."
+    "jsonlite",
+    reason = "to retrieve available series via bulk download."
   )
 
   jsonlite::fromJSON(

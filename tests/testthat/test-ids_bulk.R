@@ -26,7 +26,7 @@ test_that("ids_bulk handles custom file paths", {
     },
     get_response_headers = function(...) {
       list(
-        `content-type` = mime::guess_type(temp_path),
+        `content-type` = "application/octet-stream",
         `content-length` = 1000
       )
     }
@@ -39,7 +39,10 @@ test_that("ids_bulk handles custom file paths", {
   )
 
   result <- ids_bulk(
-    test_url, file_path = temp_path, quiet = TRUE, warn_size = FALSE
+    test_url,
+    file_path = temp_path,
+    quiet = TRUE,
+    warn_size = FALSE
   )
 
   expect_false(file.exists(temp_path))
@@ -79,7 +82,7 @@ test_that("ids_bulk handles message parameter correctly", {
 
   test_url <- paste0(
     "https://datacatalogfiles.worldbank.org/ddh-published/0038015/DR0092201/",
-    "A_D.xlsx?versionId=2024-12-04T18:30:10.8890786Z"
+    "A_D.xlsx"
   )
 
   mock_data <- tibble::tibble(
@@ -134,15 +137,20 @@ test_that("ids_bulk handles timeout parameter correctly", {
       current_timeout <- getOption("timeout")
       # Verify the timeout option was set correctly
       if (current_timeout == 1) {
-        stop(paste0(
-          "Download timed out after ", current_timeout, " seconds"
-        ), call. = FALSE)
+        stop(
+          paste0(
+            "Download timed out after ",
+            current_timeout,
+            " seconds"
+          ),
+          call. = FALSE
+        )
       }
       stop("Unexpected timeout value", call. = FALSE)
     },
     get_response_headers = function(...) {
       list(
-        `content-type` = mime::guess_type("file.xlsx"),
+        `content-type` = "application/octet-stream",
         `content-length` = "1000"
       )
     }
@@ -162,7 +170,7 @@ test_that("ids_bulk handles warn_size parameter", {
 
   test_url <- paste0(
     "https://datacatalogfiles.worldbank.org/ddh-published/0038015/DR0092201/",
-    "A_D.xlsx?versionId=2024-12-04T18:30:10.8890786Z"
+    "A_D.xlsx"
   )
 
   local_mocked_bindings(
@@ -171,16 +179,24 @@ test_that("ids_bulk handles warn_size parameter", {
     check_interactive = function() FALSE
   )
 
-  expect_warning(
+  expect_message(
     download_bulk_file(
-      test_url, tempfile(fileext = ".xlsx"), 60, warn_size = TRUE, quiet = TRUE
+      test_url,
+      tempfile(fileext = ".xlsx"),
+      60,
+      warn_size = TRUE,
+      quiet = TRUE
     ),
     "may take several minutes to download"
   )
 
   expect_no_warning(
     download_bulk_file(
-      test_url, tempfile(fileext = ".xlsx"), 60, warn_size = FALSE, quiet = TRUE
+      test_url,
+      tempfile(fileext = ".xlsx"),
+      60,
+      warn_size = FALSE,
+      quiet = TRUE
     )
   )
 })
@@ -206,7 +222,7 @@ test_that("download_bulk_file downloads files correctly", {
 
   test_url <- paste0(
     "https://datacatalogfiles.worldbank.org/ddh-published/0038015/DR0092201/",
-    "A_D.xlsx?versionId=2024-12-04T18:30:10.8890786Z"
+    "A_D.xlsx"
   )
   test_path <- tempfile(fileext = ".xlsx")
 
@@ -266,7 +282,8 @@ test_that("process_bulk_data processes data correctly", {
   expect_equal(result$geography_id, expected_country_codes)
 
   expected_counterpart_codes <- rep(
-    test_data$`Counterpart-Area Code`, each = 17
+    test_data$`Counterpart-Area Code`,
+    each = 17
   )
   expect_equal(result$counterpart_id, expected_counterpart_codes)
 
@@ -292,7 +309,7 @@ test_that("ids_bulk downloads and processes data correctly", {
 
   test_url <- paste0(
     "https://datacatalogfiles.worldbank.org/ddh-published/0038015/DR0092201/",
-    "A_D.xlsx?versionId=2024-10-08T01:35:39.3946879Z"
+    "A_D.xlsx"
   )
   test_path <- tempfile(fileext = ".xlsx")
 
@@ -305,18 +322,29 @@ test_that("ids_bulk downloads and processes data correctly", {
   )
 
   result <- ids_bulk(
-    test_url, file_path = test_path, quiet = TRUE, warn_size = FALSE
+    test_url,
+    file_path = test_path,
+    quiet = TRUE,
+    warn_size = FALSE
   )
 
   expect_s3_class(result, "tbl_df")
 
   expected_columns <- c(
-    "geography_id", "series_id", "counterpart_id", "year", "value"
+    "geography_id",
+    "series_id",
+    "counterpart_id",
+    "year",
+    "value"
   )
   expect_equal(colnames(result), expected_columns)
 
   expected_types <- c(
-    "character", "character", "character", "integer", "numeric"
+    "character",
+    "character",
+    "character",
+    "integer",
+    "numeric"
   )
   expect_true(all(lapply(result, class) == expected_types))
 })
@@ -348,14 +376,14 @@ test_that("warn_size warning is triggered & user prompt is handled correctly", {
 
   test_url <- paste0(
     "https://datacatalogfiles.worldbank.org/ddh-published/0038015/DR0092201/",
-    "A_D.xlsx?versionId=2024-12-04T18:30:10.8890786Z"
+    "A_D.xlsx"
   )
   temp_file <- tempfile(fileext = ".xlsx")
 
   with_mocked_bindings(
     get_response_headers = function(...) {
       list(
-        `content-type` = mime::guess_type(temp_file),
+        `content-type` = "application/octet-stream",
         `content-length` = 150 * 1024^2
       )
     },
@@ -365,8 +393,11 @@ test_that("warn_size warning is triggered & user prompt is handled correctly", {
       expect_error(
         expect_warning(
           download_bulk_file(
-            test_url, temp_file,
-            timeout = 30, warn_size = TRUE, quiet = TRUE
+            test_url,
+            temp_file,
+            timeout = 30,
+            warn_size = TRUE,
+            quiet = TRUE
           ),
           regexp = "may take several minutes to download."
         ),

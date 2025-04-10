@@ -18,19 +18,22 @@
 #' ids_bulk_files()
 #'
 ids_bulk_files <- function() {
-
   ids_meta <- read_bulk_info()
 
   bulk_files <- ids_meta$resources |>
     as_tibble() |>
     select("name", "distribution", "last_updated_date") |>
     tidyr::unnest("distribution") |>
-    filter(grepl("Bulk Download File - Debtor Countries:", .data$name) &
-             !is.na(.data$url)) |>
+    filter(
+      grepl("Bulk Download File - Debtor Countries:", .data$name) &
+        !is.na(.data$url)
+    ) |>
     select(file_name = "name", file_url = "url", "last_updated_date") |>
-    mutate(last_updated_date = as.Date(.data$last_updated_date)) |>
-    arrange("file_name")
+    mutate(
+      file_url = sub("\\?.*$", "", .data$file_url),
+      last_updated_date = as.Date(.data$last_updated_date)
+    ) |>
+    arrange("file_url")
 
   bulk_files
-
 }
