@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">wbids</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,7 +72,7 @@
 
     <section class="level2"><h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>The diagram below shows the data model of the <code>wbids</code> package. In our design, we primarily have R users in mind, particularly those who rely heavily on the popular data manipulation packages <code>dplyr</code> and <code>data.table</code>. For these users, having consistent and descriptive primary key column names across different tables (e.g., <code>geography_id</code>, <code>series_id</code>) simplifies writing joins across tables, reduces the risk of column name conflicts, and avoids ambiguity. We hence deliberately deviate from a common practice in data modeling to omit the entity prefix from a entity table (e.g. <code>geography_</code> in the geographies table).</p>
+<p>The diagram below shows the data model of the <code>wbids</code> package. In our design, we primarily have R users in mind, particularly those who rely heavily on the popular data manipulation packages <code>dplyr</code> and <code>data.table</code>. For these users, having consistent and descriptive primary key column names across different tables (e.g., <code>entity_id</code>, <code>series_id</code>) simplifies writing joins across tables, reduces the risk of column name conflicts, and avoids ambiguity. We hence deliberately deviate from a common practice in data modeling to omit the entity prefix from a entity table (e.g. <code>entity_</code> in the entities table).</p>
 <div class="cell" data-fig-width="12" data-fig-height="8" data-layout-align="default">
 <div class="cell-output-display">
 <div>
@@ -80,12 +80,12 @@
 <figure class=""><p></p>
 <div>
 <pre class="mermaid mermaid-js">erDiagram
-    GEOGRAPHIES ||--o{ DEBT_STATISTICS : has
-    GEOGRAPHIES {
-        string geography_id PK
-        string geography_name
-        string geography_iso2code
-        string geography_type
+    ENTITIES ||--o{ DEBT_STATISTICS : has
+    ENTITIES {
+        string entity_id PK
+        string entity_name
+        string entity_iso2code
+        string entity_type
         string capital_city
         string region_id
         string region_iso2code
@@ -121,7 +121,7 @@
     }
     DEBT_STATISTICS {
         string series_id FK
-        string geography_id FK
+        string entity_id FK
         string counterpart_id FK
         int year
         float value
@@ -134,7 +134,7 @@
 </div>
 </section><section class="level2"><h2 id="table-details">Table Details<a class="anchor" aria-label="anchor" href="#table-details"></a>
 </h2>
-<section class="level3"><h3 id="geographies">Geographies<a class="anchor" aria-label="anchor" href="#geographies"></a>
+<section class="level3"><h3 id="entities">Entities<a class="anchor" aria-label="anchor" href="#entities"></a>
 </h3>
 <table class="table caption-top">
 <colgroup>
@@ -149,28 +149,28 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>geography_id</td>
-<td>ISO 3166-1 alpha-3 code of the geography</td>
+<td>entity_id</td>
+<td>ISO 3166-1 alpha-3 code of the entity</td>
 <td>ZMB</td>
 </tr>
 <tr class="even">
-<td>geography_name</td>
-<td>Standardized name of the geography</td>
+<td>entity_name</td>
+<td>Standardized name of the entity</td>
 <td>Zambia</td>
 </tr>
 <tr class="odd">
-<td>geography_iso2code</td>
-<td>ISO 3166-1 alpha-2 code of the geography</td>
+<td>entity_iso2code</td>
+<td>ISO 3166-1 alpha-2 code of the entity</td>
 <td>ZM</td>
 </tr>
 <tr class="even">
-<td>geography_type</td>
-<td>Type of geography (e.g., country, region)</td>
+<td>entity_type</td>
+<td>Type of entity (e.g., country, region)</td>
 <td>Country</td>
 </tr>
 <tr class="odd">
 <td>capital_city</td>
-<td>Capital city of the geography</td>
+<td>Capital city of the entity</td>
 <td>Lusaka</td>
 </tr>
 <tr class="even">
@@ -314,8 +314,8 @@
 <td>DT.DOD.DPPG.CD</td>
 </tr>
 <tr class="even">
-<td>geography_id</td>
-<td>Identifier for the geography</td>
+<td>entity_id</td>
+<td>Identifier for the entity</td>
 <td>ZMB</td>
 </tr>
 <tr class="odd">
@@ -334,115 +334,97 @@
 <td>4298957000</td>
 </tr>
 </tbody>
-</table></section></section><section class="level2"><h2 id="assignment-of-geography-and-counterpart-types">Assignment of Geography and Counterpart Types<a class="anchor" aria-label="anchor" href="#assignment-of-geography-and-counterpart-types"></a>
+</table></section></section><section class="level2"><h2 id="assignment-of-entity-and-counterpart-types">Assignment of Entity and Counterpart Types<a class="anchor" aria-label="anchor" href="#assignment-of-entity-and-counterpart-types"></a>
 </h2>
-<p>The original World Bank IDS data includes a ‘country’ field, containing both countries and regions, and a ‘counterpart-area’ field, which may include countries, regions, and institutions. In our data model, these fields are renamed to ‘geography’ and ‘counterpart’ to clarify the types of entities in each column.</p>
-<p>We also introduce corresponding type columns that specify whether a geography is a country (e.g., “Aruba”) or a region (e.g., “Africa Eastern and Southern”), and whether a counterpart is a country, region, or a special category (e.g., “Global IFIs”, “Global MDBs”). Each counterpart is represented in the geography table if it is a country or region, ensuring consistency across both tables.</p>
-</section><section class="level2"><h2 id="harmonization-of-geography-and-counterpart-names">Harmonization of Geography and Counterpart Names<a class="anchor" aria-label="anchor" href="#harmonization-of-geography-and-counterpart-names"></a>
+<p>The original World Bank IDS data includes a ‘country’ field, containing both countries and regions, and a ‘counterpart-area’ field, which may include countries, regions, and institutions. In our data model, these fields are renamed to ‘entity’ and ‘counterpart’ to clarify the types of entities in each column.</p>
+<p>We also introduce corresponding type columns that specify whether a entity is a country (e.g., “Aruba”) or a region (e.g., “Africa Eastern and Southern”), and whether a counterpart is a country, region, or a special category (e.g., “Global IFIs”, “Global MDBs”). Each counterpart is represented in the entity table if it is a country or region, ensuring consistency across both tables.</p>
+</section><section class="level2"><h2 id="harmonization-of-entity-and-counterpart-names">Harmonization of Entity and Counterpart Names<a class="anchor" aria-label="anchor" href="#harmonization-of-entity-and-counterpart-names"></a>
 </h2>
-<p>In some cases, the IDS data provides different names for geographies that appear both in the ‘counterpart-area’ and the ‘country’ data. We use the geography names whenever they are available and drop counterpart names with different wording. For instance, if the original data features “Cote D`Ivoire, Republic Of” in the counterpart table, but the country name is “Cote d’Ivoire”, then we overwrite the former with the latter.</p>
+<p>In some cases, the IDS data provides different names for entities that appear both in the ‘counterpart-area’ and the ‘country’ data. We use the entity names whenever they are available and drop counterpart names with different wording. For instance, if the original data features “Cote D`Ivoire, Republic Of” in the counterpart table, but the country name is “Cote d’Ivoire”, then we overwrite the former with the latter.</p>
 </section><script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
-    }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-    var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-        // undo the damage that might have been done by quarto-nav.js in the case of
-        // links that we want to consider external
-        if (link.dataset.originalHref !== undefined) {
-          link.href = link.dataset.originalHref;
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
         }
       }
-    }
-  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-    const config = {
-      allowHTML: true,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'light-border',
-      placement: 'bottom-start',
-    };
-    if (contentFn) {
-      config.content = contentFn;
-    }
-    if (onTriggerFn) {
-      config.onTrigger = onTriggerFn;
-    }
-    if (onUntriggerFn) {
-      config.onUntrigger = onUntriggerFn;
-    }
-    window.tippy(el, config);
-  }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'light-border',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
       }
-    } else {
-      return undefined;
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config);
     }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
-          }
-          popup.appendChild(citeDiv);
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
         });
-        return popup.innerHTML;
-      });
+      }
     }
-  }
-});
-</script></main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+  });
+  </script></main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
@@ -452,7 +434,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
