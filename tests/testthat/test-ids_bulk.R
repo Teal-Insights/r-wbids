@@ -267,11 +267,11 @@ test_that("process_bulk_data processes data correctly", {
   expect_s3_class(result, "tbl_df")
   expect_named(
     result,
-    c("geography_id", "series_id", "counterpart_id", "year", "value")
+    c("entity_id", "series_id", "counterpart_id", "year", "value")
   )
 
   # Test data types
-  expect_type(result$geography_id, "character")
+  expect_type(result$entity_id, "character")
   expect_type(result$series_id, "character")
   expect_type(result$counterpart_id, "character")
   expect_type(result$year, "integer")
@@ -279,7 +279,7 @@ test_that("process_bulk_data processes data correctly", {
 
   # Each code in test data should occur 17 times (the number of non-NA years)
   expected_country_codes <- rep(test_data$`Country Code`, each = 17)
-  expect_equal(result$geography_id, expected_country_codes)
+  expect_equal(result$entity_id, expected_country_codes)
 
   expected_counterpart_codes <- rep(
     test_data$`Counterpart-Area Code`,
@@ -294,7 +294,7 @@ test_that("process_bulk_data processes data correctly", {
   expect_equal(result$year, rep(2006:2022, times = nrow(test_data)))
 
   # No NAs should be present
-  expect_false(any(is.na(result$geography_id)))
+  expect_false(any(is.na(result$entity_id)))
   expect_false(any(is.na(result$series_id)))
   expect_false(any(is.na(result$counterpart_id)))
   expect_false(any(is.na(result$year)))
@@ -331,7 +331,7 @@ test_that("ids_bulk downloads and processes data correctly", {
   expect_s3_class(result, "tbl_df")
 
   expected_columns <- c(
-    "geography_id",
+    "entity_id",
     "series_id",
     "counterpart_id",
     "year",

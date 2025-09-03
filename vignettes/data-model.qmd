@@ -9,18 +9,18 @@ vignette: >
 
 ## Overview
 
-The diagram below shows the data model of the `wbids` package. In our design, we primarily have R users in mind, particularly those who rely heavily on the popular data manipulation packages `dplyr` and `data.table`. For these users, having consistent and descriptive primary key column names across different tables (e.g., `geography_id`, `series_id`) simplifies writing joins across tables, reduces the risk of column name conflicts, and avoids ambiguity. We hence deliberately deviate from a common practice in data modeling to omit the entity prefix from a entity table (e.g. `geography_` in the geographies table). 
+The diagram below shows the data model of the `wbids` package. In our design, we primarily have R users in mind, particularly those who rely heavily on the popular data manipulation packages `dplyr` and `data.table`. For these users, having consistent and descriptive primary key column names across different tables (e.g., `entity_id`, `series_id`) simplifies writing joins across tables, reduces the risk of column name conflicts, and avoids ambiguity. We hence deliberately deviate from a common practice in data modeling to omit the entity prefix from a entity table (e.g. `entity_` in the entities table). 
 
 ```{mermaid}
 %%| fig-width: 12
 %%| fig-height: 8
 erDiagram
-    GEOGRAPHIES ||--o{ DEBT_STATISTICS : has
-    GEOGRAPHIES {
-        string geography_id PK
-        string geography_name
-        string geography_iso2code
-        string geography_type
+    ENTITIES ||--o{ DEBT_STATISTICS : has
+    ENTITIES {
+        string entity_id PK
+        string entity_name
+        string entity_iso2code
+        string entity_type
         string capital_city
         string region_id
         string region_iso2code
@@ -56,7 +56,7 @@ erDiagram
     }
     DEBT_STATISTICS {
         string series_id FK
-        string geography_id FK
+        string entity_id FK
         string counterpart_id FK
         int year
         float value
@@ -65,15 +65,15 @@ erDiagram
 
 ## Table Details
 
-### Geographies
+### Entities
 
 | Column name | Description | Example value |
 |-----------------|-------------------------------------|-----------------|
-| geography_id | ISO 3166-1 alpha-3 code of the geography | ZMB |
-| geography_name | Standardized name of the geography | Zambia |
-| geography_iso2code | ISO 3166-1 alpha-2 code of the geography | ZM |
-| geography_type | Type of geography (e.g., country, region) | Country |
-| capital_city | Capital city of the geography | Lusaka |
+| entity_id | ISO 3166-1 alpha-3 code of the entity | ZMB |
+| entity_name | Standardized name of the entity | Zambia |
+| entity_iso2code | ISO 3166-1 alpha-2 code of the entity | ZM |
+| entity_type | Type of entity (e.g., country, region) | Country |
+| capital_city | Capital city of the entity | Lusaka |
 | region_id | Unique identifier for the region | SSF |
 | region_iso2code | ISO 3166-1 alpha-2 code of the region | ZG |
 | region_name | Name of the region | Sub-Saharan Africa |
@@ -109,17 +109,17 @@ erDiagram
 | Column name | Description | Example value  |
 |----------------|--------------------------------|----------------|
 | series_id      | Identifier for the series      | DT.DOD.DPPG.CD |
-| geography_id   | Identifier for the geography   | ZMB            |
+| entity_id   | Identifier for the entity   | ZMB            |
 | counterpart_id | Identifier for the counterpart | 061.           |
 | year           | Year of the data point         | 2020           |
 | value          | Value of the data point        | 4298957000     |
 
-## Assignment of Geography and Counterpart Types
+## Assignment of Entity and Counterpart Types
 
-The original World Bank IDS data includes a ‘country’ field, containing both countries and regions, and a ‘counterpart-area’ field, which may include countries, regions, and institutions. In our data model, these fields are renamed to ‘geography’ and ‘counterpart’ to clarify the types of entities in each column.
+The original World Bank IDS data includes a ‘country’ field, containing both countries and regions, and a ‘counterpart-area’ field, which may include countries, regions, and institutions. In our data model, these fields are renamed to ‘entity’ and ‘counterpart’ to clarify the types of entities in each column.
 
-We also introduce corresponding type columns that specify whether a geography is a country (e.g., “Aruba”) or a region (e.g., “Africa Eastern and Southern”), and whether a counterpart is a country, region, or a special category (e.g., “Global IFIs”, “Global MDBs”). Each counterpart is represented in the geography table if it is a country or region, ensuring consistency across both tables.
+We also introduce corresponding type columns that specify whether a entity is a country (e.g., “Aruba”) or a region (e.g., “Africa Eastern and Southern”), and whether a counterpart is a country, region, or a special category (e.g., “Global IFIs”, “Global MDBs”). Each counterpart is represented in the entity table if it is a country or region, ensuring consistency across both tables.
 
-## Harmonization of Geography and Counterpart Names
+## Harmonization of Entity and Counterpart Names
 
-In some cases, the  IDS data provides different names for geographies that appear both in the 'counterpart-area' and the 'country' data. We use the geography names whenever they are available and drop counterpart names with different wording. For instance, if the original data features "Cote D`Ivoire, Republic Of" in the counterpart table, but the country name is "Cote d'Ivoire", then we overwrite the former with the latter. 
+In some cases, the  IDS data provides different names for entities that appear both in the 'counterpart-area' and the 'country' data. We use the entity names whenever they are available and drop counterpart names with different wording. For instance, if the original data features "Cote D`Ivoire, Republic Of" in the counterpart table, but the country name is "Cote d'Ivoire", then we overwrite the former with the latter. 

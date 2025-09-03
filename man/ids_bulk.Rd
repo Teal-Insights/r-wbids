@@ -33,13 +33,13 @@ downloads. Defaults to TRUE.}
 A tibble containing processed debt statistics data with the following
 columns:
 \describe{
-\item{geography_id}{The unique identifier for the geography (e.g., "ZMB").}
+\item{entity_id}{The unique identifier for the entity (e.g., "ZMB").}
 \item{series_id}{The unique identifier for the series (e.g.,
 "DT.DOD.DPPG.CD").}
 \item{counterpart_id}{The unique identifier for the counterpart series.}
 \item{year}{The year corresponding to the data (as an integer).}
 \item{value}{The numeric value representing the statistic for the given
-geography, series, counterpart, and year.}
+entity, series, counterpart, and year.}
 }
 }
 \description{

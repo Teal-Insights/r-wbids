@@ -5,7 +5,7 @@
 \title{Fetch Data from the World Bank International Debt Statistics (IDS) API}
 \usage{
 ids_get(
-  geographies,
+  entities,
   series,
   counterparts = "WLD",
   start_year = 2000,
@@ -14,9 +14,9 @@ ids_get(
 )
 }
 \arguments{
-\item{geographies}{A character vector of geography identifiers representing
-debtor countries and aggregates. Must use \code{geography_id} from
-\link{ids_list_geographies}:
+\item{entities}{A character vector of entity identifiers representing
+debtor countries and aggregates. Must use \code{entity_id} from
+\link{ids_list_entities}:
 \itemize{
 \item For individual countries, use ISO3C codes (e.g., "GHA" for Ghana)
 \item For aggregates, use World Bank codes (e.g., "LIC" for low income
@@ -60,7 +60,7 @@ messages during data retrieval (default: FALSE).}
 \value{
 A tibble containing debt statistics with the following columns:
 \describe{
-\item{geography_id}{The identifier for the debtor geography (e.g., "GHA"
+\item{entity_id}{The identifier for the debtor entity (e.g., "GHA"
 for Ghana, "LIC" for low income countries)}
 \item{series_id}{The identifier for the debt statistic series (e.g.,
 "DT.DOD.DECT.CD" for total external debt stocks)}
@@ -91,7 +91,7 @@ countries, including:
 
 To ensure valid queries:
 \itemize{
-\item Use \link{ids_list_geographies} to find valid debtor geography codes
+\item Use \link{ids_list_entities} to find valid debtor entity codes
 \item Use \link{ids_list_series} to explore available debt statistics
 \item Use \link{ids_list_counterparts} to see available creditor codes
 }
@@ -101,20 +101,20 @@ To ensure valid queries:
 \donttest{
 # Get total external debt stocks for a single country from 2000 onward
 ghana_debt <- ids_get(
-  geographies = "GHA",
+  entities = "GHA",
   series = "DT.DOD.DECT.CD"  # External debt stocks, total
 )
 
 # Compare debt service metrics across income groups
 income_groups <- ids_get(
-  geographies = c("LIC", "LMC", "UMC"),  # Income group aggregates
+  entities = c("LIC", "LMC", "UMC"),  # Income group aggregates
   series = "DT.TDS.DECT.CD",  # Total debt service
   start_year = 2010
 )
 
 # Analyze debt composition by major creditors
 creditor_analysis <- ids_get(
-  geographies = c("KEN", "ETH"),  # Kenya and Ethiopia
+  entities = c("KEN", "ETH"),  # Kenya and Ethiopia
   series = c(
     "DT.DOD.DECT.CD",  # Total external debt
     "DT.TDS.DECT.CD"   # Total debt service
@@ -132,7 +132,7 @@ creditor_analysis <- ids_get(
 }
 \seealso{
 \itemize{
-\item \code{ids_list_geographies()} for available debtor geography codes
+\item \code{ids_list_entities()} for available debtor entity codes
 \item \code{ids_list_series()} for available debt statistics series codes
 \item \code{ids_list_counterparts()} for available creditor codes
 }

@@ -4,5 +4,9 @@
 # var.
 # For tidy selection, use "var" instead of var.
 utils::globalVariables(c(
-  "geographies", "series", "counterparts", "series_topics", "times"
+  "entities",
+  "series",
+  "counterparts",
+  "series_topics",
+  "times"
 ))

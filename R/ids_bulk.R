@@ -18,13 +18,13 @@
 #' @return A tibble containing processed debt statistics data with the following
 #' columns:
 #' \describe{
-#'   \item{geography_id}{The unique identifier for the geography (e.g., "ZMB").}
+#'   \item{entity_id}{The unique identifier for the entity (e.g., "ZMB").}
 #'   \item{series_id}{The unique identifier for the series (e.g.,
 #'                    "DT.DOD.DPPG.CD").}
 #'   \item{counterpart_id}{The unique identifier for the counterpart series.}
 #'   \item{year}{The year corresponding to the data (as an integer).}
 #'   \item{value}{The numeric value representing the statistic for the given
-#'                geography, series, counterpart, and year.}
+#'                entity, series, counterpart, and year.}
 #' }
 #'
 #' @export
@@ -49,10 +49,14 @@ ids_bulk <- function(
 
   download_bulk_file(file_url, file_path, timeout, warn_size, quiet)
 
-  if (!quiet) cli::cli_progress_message("Reading in file.")
+  if (!quiet) {
+    cli::cli_progress_message("Reading in file.")
+  }
   bulk_data <- read_bulk_file(file_path)
 
-  if (!quiet) cli::cli_progress_message("Processing file.")
+  if (!quiet) {
+    cli::cli_progress_message("Processing file.")
+  }
   bulk_data <- process_bulk_data(bulk_data)
 
   bulk_data
@@ -212,14 +216,14 @@ process_bulk_data <- function(bulk_raw) {
     ) |>
     # Rename columns to match the package data model
     select(
-      geography_id = "Country Code",
+      entity_id = "Country Code",
       series_id = "Series Code",
       counterpart_id = "Counterpart-Area Code",
       everything()
     ) |>
     # Pivot to long (tidy) format
     tidyr::pivot_longer(
-      cols = -c("geography_id", "series_id", "counterpart_id"),
+      cols = -c("entity_id", "series_id", "counterpart_id"),
       names_to = "year"
     ) |>
     # Convert year to integer

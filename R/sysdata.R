@@ -5,12 +5,12 @@
 #' @keywords internal
 "counterparts"
 
-#' Internal Geographies Data
+#' Internal Entities Data
 #'
-#' This dataset is accessible through \link{ids_list_geographies}.
+#' This dataset is accessible through \link{ids_list_entities}.
 #'
 #' @keywords internal
-"geographies"
+"entities"
 
 #' Internal Series Data
 #'

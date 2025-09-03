@@ -33,7 +33,7 @@ test_that("create_resource_url constructs URL path correctly", {
   # Test basic URL construction
   expect_equal(
     create_resource_url(
-      geography = "ZMB",
+      entity = "ZMB",
       series = "DT.DOD.DPPG.CD",
       counterpart = "all",
       time = "all"
@@ -44,7 +44,7 @@ test_that("create_resource_url constructs URL path correctly", {
   # Test with multiple values (semicolon-separated)
   expect_equal(
     create_resource_url(
-      geography = "ZMB;CHN",
+      entity = "ZMB;CHN",
       series = "DT.DOD.DPPG.CD;BM.GSR.TOTL.CD",
       counterpart = "216;231",
       time = "YR2019;YR2020"
@@ -55,42 +55,44 @@ test_that("create_resource_url constructs URL path correctly", {
 
 test_that("validate_character_vector correctly validates character vectors", {
   expect_error(
-    validate_character_vector(NA, "geographies"),
-    "`geographies` must be a character vector and cannot contain NA values."
+    validate_character_vector(NA, "entities"),
+    "`entities` must be a character vector and cannot contain NA values."
   )
   expect_error(
     validate_character_vector(c("ZMB", NA), "series"),
     "`series` must be a character vector and cannot contain NA values."
   )
   expect_error(
-    validate_character_vector(123, "geographies"),
-    "`geographies` must be a character vector and cannot contain NA values."
+    validate_character_vector(123, "entities"),
+    "`entities` must be a character vector and cannot contain NA values."
   )
-  expect_silent(validate_character_vector(c("ZMB", "CHN"), "geographies"))
+  expect_silent(validate_character_vector(c("ZMB", "CHN"), "entities"))
 })
 
 test_that("process_character_vector correctly processes character vectors", {
   expect_equal(
-    process_character_vector(c("ZMB", "CHN"), "geographies"),
+    process_character_vector(c("ZMB", "CHN"), "entities"),
     "ZMB;CHN"
   )
-  expect_equal(process_character_vector("ZMB", "geographies"), "ZMB")
+  expect_equal(process_character_vector("ZMB", "entities"), "ZMB")
   expect_error(
-    process_character_vector(NA, "geographies"),
-    "`geographies` must be a character vector and cannot contain NA values."
+    process_character_vector(NA, "entities"),
+    "`entities` must be a character vector and cannot contain NA values."
   )
 })
 
 test_that("validate_progress checks logical values for progress", {
-  expect_error(validate_progress("yes"),
-               "`progress` must be either TRUE or FALSE")
+  expect_error(
+    validate_progress("yes"),
+    "`progress` must be either TRUE or FALSE"
+  )
   expect_silent(validate_progress(TRUE))
   expect_silent(validate_progress(FALSE))
 })
 
 test_that("ids_get returns a tibble with expected columns", {
   result <- ids_get(
-    geographies = "ZMB",
+    entities = "ZMB",
     series = "DT.DOD.DPPG.CD",
     counterparts = c("216"),
     start_year = 2015,
@@ -100,39 +102,47 @@ test_that("ids_get returns a tibble with expected columns", {
   expect_s3_class(result, "tbl_df")
   expect_true(nrow(result) > 0)
   expected_columns <- c(
-    "geography_id", "series_id", "counterpart_id", "year", "value"
+    "entity_id",
+    "series_id",
+    "counterpart_id",
+    "year",
+    "value"
   )
   expect_equal(colnames(result), expected_columns)
 })
 
 test_that("ids_get returns a large data", {
   result <- ids_get(
-    geographies = "ZMB",
+    entities = "ZMB",
     series = "DT.DOD.DPPG.CD",
     counterparts = c("all")
   )
   expect_s3_class(result, "tbl_df")
   expect_true(nrow(result) > 0)
   expected_columns <- c(
-    "geography_id", "series_id", "counterpart_id", "year", "value"
+    "entity_id",
+    "series_id",
+    "counterpart_id",
+    "year",
+    "value"
   )
   expect_equal(colnames(result), expected_columns)
 })
 
-test_that("ids_get handles invalid geography input", {
+test_that("ids_get handles invalid entity input", {
   expect_error(
     ids_get(
-      geographies = NA,
+      entities = NA,
       series = "DT.DOD.DPPG.CD"
     ),
-    "`geographies` must be a character vector and cannot contain NA values"
+    "`entities` must be a character vector and cannot contain NA values"
   )
 })
 
 test_that("ids_get handles invalid series input", {
   expect_error(
     ids_get(
-      geographies = "ZMB",
+      entities = "ZMB",
       series = NA
     ),
     "`series` must be a character vector and cannot contain NA values"
@@ -142,7 +152,9 @@ test_that("ids_get handles invalid series input", {
 test_that("ids_get handles invalid progress input", {
   expect_error(
     ids_get(
-      geographies = "ZMB", series = "DT.DOD.DPPG.CD", progress = "yes"
+      entities = "ZMB",
+      series = "DT.DOD.DPPG.CD",
+      progress = "yes"
     ),
     "`progress` must be either TRUE or FALSE."
   )
@@ -151,8 +163,11 @@ test_that("ids_get handles invalid progress input", {
 test_that("ids_get handles valid progress input", {
   expect_silent(
     ids_get(
-      geographies = "ZMB", series = "DT.DOD.DPPG.CD", counterparts = "265",
-      start_year = 2015, end_year = 2016,
+      entities = "ZMB",
+      series = "DT.DOD.DPPG.CD",
+      counterparts = "265",
+      start_year = 2015,
+      end_year = 2016,
       progress = TRUE
     )
   )
@@ -160,25 +175,31 @@ test_that("ids_get handles valid progress input", {
 
 test_that("get_debt_statistics returns raw API response", {
   mock_perform_request <- list(
-    list(variable = list(
-      list(concept = "Country", id = "ZMB"),
-      list(concept = "Series", id = "DT.DOD.DPPG.CD"),
-      list(concept = "Counterpart-Area", id = "216"),
-      list(concept = "Time", value = "2020")
-    ), value = 100),
-    list(variable = list(
-      list(concept = "Country", id = "ZMB"),
-      list(concept = "Series", id = "DT.DOD.DPPG.CD"),
-      list(concept = "Counterpart-Area", id = "216"),
-      list(concept = "Time", value = "2021")
-    ), value = 200)
+    list(
+      variable = list(
+        list(concept = "Country", id = "ZMB"),
+        list(concept = "Series", id = "DT.DOD.DPPG.CD"),
+        list(concept = "Counterpart-Area", id = "216"),
+        list(concept = "Time", value = "2020")
+      ),
+      value = 100
+    ),
+    list(
+      variable = list(
+        list(concept = "Country", id = "ZMB"),
+        list(concept = "Series", id = "DT.DOD.DPPG.CD"),
+        list(concept = "Counterpart-Area", id = "216"),
+        list(concept = "Time", value = "2021")
+      ),
+      value = 200
+    )
   )
 
   with_mocked_bindings(
     perform_request = function(...) mock_perform_request,
     {
       result <- get_debt_statistics(
-        geography = "ZMB",
+        entity = "ZMB",
         series = "DT.DOD.DPPG.CD",
         counterpart = "216",
         time = "YR2020;YR2021",
@@ -192,29 +213,39 @@ test_that("get_debt_statistics returns raw API response", {
 
 test_that("process_debt_statistics correctly transforms raw data", {
   mock_data <- list(
-    list(variable = list(
-      list(concept = "Country", id = "ZMB"),
-      list(concept = "Series", id = "DT.DOD.DPPG.CD"),
-      list(concept = "Counterpart-Area", id = "216"),
-      list(concept = "Time", value = "2020")
-    ), value = 100),
-    list(variable = list(
-      list(concept = "Country", id = "ZMB"),
-      list(concept = "Series", id = "DT.DOD.DPPG.CD"),
-      list(concept = "Counterpart-Area", id = "216"),
-      list(concept = "Time", value = "2021")
-    ), value = 200)
+    list(
+      variable = list(
+        list(concept = "Country", id = "ZMB"),
+        list(concept = "Series", id = "DT.DOD.DPPG.CD"),
+        list(concept = "Counterpart-Area", id = "216"),
+        list(concept = "Time", value = "2020")
+      ),
+      value = 100
+    ),
+    list(
+      variable = list(
+        list(concept = "Country", id = "ZMB"),
+        list(concept = "Series", id = "DT.DOD.DPPG.CD"),
+        list(concept = "Counterpart-Area", id = "216"),
+        list(concept = "Time", value = "2021")
+      ),
+      value = 200
+    )
   )
 
   result <- process_debt_statistics(mock_data)
 
   expect_s3_class(result, "tbl_df")
   expected_columns <- c(
-    "geography_id", "series_id", "counterpart_id", "year", "value"
+    "entity_id",
+    "series_id",
+    "counterpart_id",
+    "year",
+    "value"
   )
   expect_equal(colnames(result), expected_columns)
   expect_equal(nrow(result), 2)
-  expect_equal(result$geography_id, c("ZMB", "ZMB"))
+  expect_equal(result$entity_id, c("ZMB", "ZMB"))
   expect_equal(result$series_id, c("DT.DOD.DPPG.CD", "DT.DOD.DPPG.CD"))
   expect_equal(result$counterpart_id, c("216", "216"))
   expect_equal(result$year, c(2020, 2021))
@@ -222,7 +253,6 @@ test_that("process_debt_statistics correctly transforms raw data", {
 })
 
 test_that("ids_get handles empty data gracefully", {
-
   mock_data <- list(
     list(
       "variable" = list(
@@ -277,7 +307,7 @@ test_that("ids_get handles empty or incomplete data gracefully", {
     perform_request = function(...) incomplete_data_mock,
     {
       result <- ids_get(
-        geographies = "ZMB",
+        entities = "ZMB",
         series = "DT.DOD.DPPG.CD",
         counterparts = "all",
         start_year = 2020,
@@ -375,23 +405,23 @@ test_that("validate_character_vector correctly handles vector length limits", {
 
 test_that("ids_get enforces vector length limits", {
   # Create test vectors with 61 items
-  too_many_geographies <- rep("ZMB", 61)
+  too_many_entities <- rep("ZMB", 61)
   too_many_series <- rep("DT.DOD.DPPG.CD", 61)
   too_many_counterparts <- rep("all", 61)
 
-  # Test geographies limit
+  # Test entities limit
   expect_error(
     ids_get(
-      geographies = too_many_geographies,
+      entities = too_many_entities,
       series = "DT.DOD.DPPG.CD"
     ),
-    "`geographies` must be a character vector with 60 or fewer values"
+    "`entities` must be a character vector with 60 or fewer values"
   )
 
   # Test series limit
   expect_error(
     ids_get(
-      geographies = "ZMB",
+      entities = "ZMB",
       series = too_many_series
     ),
     "`series` must be a character vector with 60 or fewer values"
@@ -400,7 +430,7 @@ test_that("ids_get enforces vector length limits", {
   # Test counterparts limit
   expect_error(
     ids_get(
-      geographies = "ZMB",
+      entities = "ZMB",
       series = "DT.DOD.DPPG.CD",
       counterparts = too_many_counterparts
     ),
@@ -411,7 +441,7 @@ test_that("ids_get enforces vector length limits", {
   exactly_60 <- rep("ZMB", 60)
   expect_error(
     ids_get(
-      geographies = exactly_60,
+      entities = exactly_60,
       series = "DT.DOD.DPPG.CD"
     ),
     NA
@@ -421,7 +451,7 @@ test_that("ids_get enforces vector length limits", {
 test_that("ids_get uses new default parameters correctly", {
   # Test that default counterparts = "WLD"
   default_result <- ids_get(
-    geographies = "GHA",
+    entities = "GHA",
     series = "DT.DOD.DECT.CD"
   )
 
@@ -434,7 +464,7 @@ test_that("ids_get uses new default parameters correctly", {
 
 test_that("ids_get filters post-observed-year NAs correctly", {
   result <- ids_get(
-    geographies = "GHA",
+    entities = "GHA",
     series = "DT.DOD.DECT.CD"
   )
 
@@ -446,8 +476,8 @@ test_that("ids_get filters post-observed-year NAs correctly", {
 
 test_that("ids_get correctly applies default years for projection series", {
   result <- ids_get(
-    geographies = "GHA",
-    series = "DT.TDS.DECT.CD"  # Projection series
+    entities = "GHA",
+    series = "DT.TDS.DECT.CD" # Projection series
   )
 
   # Verify the years in the result
@@ -461,7 +491,7 @@ test_that("ids_get retains post-actual-year data with values", {
   end_year <- times$time_year[nrow(times)]
 
   result <- tibble(
-    geography_id = rep("GHA", 12),
+    entity_id = rep("GHA", 12),
     series_id = rep("DT.DOD.DECT.CD", 12),
     counterpart_id = rep("WLD", 12),
     year = start_year:end_year,
@@ -474,10 +504,10 @@ test_that("ids_get retains post-actual-year data with values", {
   expect_equal(filtered_result$year, start_year:end_year)
 })
 
-test_that("ids_get handles valid geography codes correctly", {
+test_that("ids_get handles valid entity codes correctly", {
   # Test individual country code (ISO3C)
   expect_silent(ids_get(
-    geographies = "GHA",
+    entities = "GHA",
     series = "DT.DOD.DECT.CD",
     start_year = 2020,
     end_year = 2020
@@ -485,15 +515,15 @@ test_that("ids_get handles valid geography codes correctly", {
 
   # Test income group aggregate code
   expect_silent(ids_get(
-    geographies = "LIC",
+    entities = "LIC",
     series = "DT.DOD.DECT.CD",
     start_year = 2020,
     end_year = 2020
   ))
 
-  # Test multiple geography types together
+  # Test multiple entity types together
   expect_silent(ids_get(
-    geographies = c("GHA", "LIC"),
+    entities = c("GHA", "LIC"),
     series = "DT.DOD.DECT.CD",
     start_year = 2020,
     end_year = 2020
@@ -503,7 +533,7 @@ test_that("ids_get handles valid geography codes correctly", {
 test_that("ids_get handles valid counterpart codes correctly", {
   # Test default world aggregate
   expect_silent(ids_get(
-    geographies = "GHA",
+    entities = "GHA",
     series = "DT.DOD.DECT.CD",
     counterparts = "WLD",
     start_year = 2020,
@@ -512,25 +542,25 @@ test_that("ids_get handles valid counterpart codes correctly", {
 
   # Test numeric country code
   expect_silent(ids_get(
-    geographies = "GHA",
+    entities = "GHA",
     series = "DT.DOD.DECT.CD",
-    counterparts = "730",  # China
+    counterparts = "730", # China
     start_year = 2020,
     end_year = 2020
   ))
 
   # Test special text codes
   expect_silent(ids_get(
-    geographies = "GHA",
+    entities = "GHA",
     series = "DT.DOD.DECT.CD",
-    counterparts = c("907", "BND"),  # IMF and bondholders
+    counterparts = c("907", "BND"), # IMF and bondholders
     start_year = 2020,
     end_year = 2020
   ))
 
   # Test requesting all counterparts
   expect_silent(ids_get(
-    geographies = "GHA",
+    entities = "GHA",
     series = "DT.DOD.DECT.CD",
     counterparts = "all",
     start_year = 2020,
@@ -540,7 +570,7 @@ test_that("ids_get handles valid counterpart codes correctly", {
 
 test_that("ids_get returns expected data structure", {
   result <- ids_get(
-    geographies = "GHA",
+    entities = "GHA",
     series = "DT.DOD.DECT.CD",
     start_year = 2020,
     end_year = 2020
@@ -551,7 +581,7 @@ test_that("ids_get returns expected data structure", {
 
   # Verify column names
   expected_columns <- c(
-    "geography_id",
+    "entity_id",
     "series_id",
     "counterpart_id",
     "year",
@@ -560,7 +590,7 @@ test_that("ids_get returns expected data structure", {
   expect_named(result, expected_columns)
 
   # Check data types
-  expect_type(result$geography_id, "character")
+  expect_type(result$entity_id, "character")
   expect_type(result$series_id, "character")
   expect_type(result$counterpart_id, "character")
   expect_type(result$year, "integer")
@@ -575,9 +605,12 @@ test_that("process_time_range handles pre-1970 dates correctly", {
   )
   expect_equal(
     result,
-    paste(times$time_id[
-      times$time_year >= 1970 & times$time_year <= 2020
-    ], collapse = ";")
+    paste(
+      times$time_id[
+        times$time_year >= 1970 & times$time_year <= 2020
+      ],
+      collapse = ";"
+    )
   )
 
   # Test end_year before 1970
@@ -591,7 +624,7 @@ test_that("ids_get handles pre-1970 dates correctly", {
   # Test with start_year before 1970
   expect_warning(
     result <- ids_get(
-      geographies = "GHA",
+      entities = "GHA",
       series = "DT.DOD.DECT.CD",
       start_year = 1960,
       end_year = 1975
@@ -603,7 +636,7 @@ test_that("ids_get handles pre-1970 dates correctly", {
   # Test with end_year before 1970
   expect_error(
     ids_get(
-      geographies = "GHA",
+      entities = "GHA",
       series = "DT.DOD.DECT.CD",
       start_year = 1960,
       end_year = 1965
