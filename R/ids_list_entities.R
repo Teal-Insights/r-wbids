@@ -1,20 +1,20 @@
-#' List Available Geographies from the World Bank International Debt Statistics
+#' List Available Entities from the World Bank International Debt Statistics
 #' API
 #'
-#' This function returns a tibble with available geographies from the World Bank
+#' This function returns a tibble with available entities from the World Bank
 #' International Debt Statistics (IDS) API. Each row provides details on
-#' geographies, including their unique identifiers, names, and types.
+#' entities, including their unique identifiers, names, and types.
 #'
-#' @return A tibble containing the available geographies and their attributes:
+#' @return A tibble containing the available entities and their attributes:
 #' \describe{
-#'   \item{geography_id}{ISO 3166-1 alpha-3 code of the geography (e.g.,
+#'   \item{entity_id}{ISO 3166-1 alpha-3 code of the entity (e.g.,
 #'                       "ZMB").}
-#'   \item{geography_name}{The standardized name of the geography (e.g.,
+#'   \item{entity_name}{The standardized name of the entity (e.g.,
 #'                         "Zambia").}
-#'   \item{geography_iso2code}{ISO 3166-1 alpha-2 code of the geography (e.g.,
+#'   \item{entity_iso2code}{ISO 3166-1 alpha-2 code of the entity (e.g.,
 #'                             "ZM").}
-#'   \item{geography_type}{The type of geography (e.g., "Country", "Region").}
-#'   \item{capital_city}{The capital city of the geography (e.g., "Lusaka").}
+#'   \item{entity_type}{The type of entity (e.g., "Country", "Region").}
+#'   \item{capital_city}{The capital city of the entity (e.g., "Lusaka").}
 #'   \item{region_id}{The unique identifier for the region (e.g., "SSF").}
 #'   \item{region_iso2code}{ISO 3166-1 alpha-2 code of the region (e.g., "ZG").}
 #'   \item{region_name}{The name of the region (e.g., "Sub-Saharan Africa").}
@@ -33,8 +33,8 @@
 #' @export
 #'
 #' @examples
-#' ids_list_geographies()
+#' ids_list_entities()
 #'
-ids_list_geographies <- function() {
-  geographies
+ids_list_entities <- function() {
+  entities
 }

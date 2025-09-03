@@ -2,28 +2,28 @@ library(httr2)
 library(dplyr)
 library(tidyr)
 
-# TODO: replace logic for geographies and series with wbwdi package once it
+# TODO: replace logic for entities and series with wbwdi package once it
 #       is on CRAN and att it to Suggests
-# TOOD: replace logic for counterparts and geographies with econid package
+# TOOD: replace logic for counterparts and entities with econid package
 #       once it is on CRAN and add it to Suggests
 
 # Fetch countries and regions from World Bank WDI API ----
 
-url_geographies_wdi <- paste0(
+url_entities_wdi <- paste0(
   "https://api.worldbank.org/v2/countries",
   "?per_page=32500&format=json"
 )
 
-geographies_raw <- request(url_geographies_wdi) |>
+entities_raw <- request(url_entities_wdi) |>
   req_perform() |>
   resp_body_json(simplifyVector = TRUE)
 
-geographies_wdi <- geographies_raw[[2]] |>
+entities_wdi <- entities_raw[[2]] |>
   as_tibble() |>
   rename(
-    geography_id = "id",
-    geography_iso2code = "iso2Code",
-    geography_name = "name"
+    entity_id = "id",
+    entity_iso2code = "iso2Code",
+    entity_name = "name"
   ) |>
   unnest_wider("region") |>
   rename(
@@ -52,31 +52,44 @@ geographies_wdi <- geographies_raw[[2]] |>
   ) |>
   mutate(
     longitude = if_else(
-      .data$longitude == "", NA_real_, as.numeric(.data$longitude)
+      .data$longitude == "",
+      NA_real_,
+      as.numeric(.data$longitude)
     ),
     latitude = if_else(
-      .data$latitude == "", NA_real_, as.numeric(.data$latitude)
+      .data$latitude == "",
+      NA_real_,
+      as.numeric(.data$latitude)
     ),
-    geography_type = if_else(
-      .data$region_name == "Aggregates", "Region", "Country"
+    entity_type = if_else(
+      .data$region_name == "Aggregates",
+      "Region",
+      "Country"
     ),
     region_id = if_else(
-      .data$region_name == "Aggregates", NA_character_, .data$region_id
+      .data$region_name == "Aggregates",
+      NA_character_,
+      .data$region_id
     ),
     region_iso2code = if_else(
-      .data$region_name == "Aggregates", NA_character_, .data$region_iso2code
+      .data$region_name == "Aggregates",
+      NA_character_,
+      .data$region_iso2code
     ),
     income_level_id = if_else(
-      .data$region_name == "Aggregates", NA_character_, .data$income_level_id
+      .data$region_name == "Aggregates",
+      NA_character_,
+      .data$income_level_id
     ),
     income_level_iso2code = if_else(
-      .data$region_name == "Aggregates", NA_character_,
+      .data$region_name == "Aggregates",
+      NA_character_,
       .data$income_level_iso2code
     ),
     across(where(is.character), ~ if_else(.x == "", NA_character_, .x)),
     across(where(is.character), ~ trimws(gsub("\u00a0", "", .x)))
   ) |>
-  relocate(c("geography_type", "capital_city"), .after = "geography_iso2code")
+  relocate(c("entity_type", "capital_city"), .after = "entity_iso2code")
 
 # Fetch counterparts from World Bank International Debt Statistics API  ----
 
@@ -91,15 +104,14 @@ counterparts_raw <- request(url_counterparts_ids) |>
 
 counterparts_ids <- counterparts_raw$source[[1]]$concept[[1]]$variable |>
   bind_rows() |>
-  select(counterpart_id = id,
-         counterpart_name = value) |>
+  select(counterpart_id = id, counterpart_name = value) |>
   mutate(across(where(is.character), ~ trimws(gsub("\u00a0", "", .x))))
 
 # Enrich counterparts with codes and types -------------------------------
 
 # Used ChatGPT to create this tribble, but also checked for most countries
-geographies_manual <- tribble(
-  ~geography_name, ~geography_iso2code, ~geography_id, ~geography_type,
+entities_manual <- tribble(
+  ~entity_name, ~entity_iso2code, ~entity_id, ~entity_type,
   "African Dev. Bank", NA, NA, "Institution",
   "African Export-Import Bank", NA, NA, "Institution",
   "Anguilla", "AI", "AIA", "Country",
@@ -230,27 +242,29 @@ geographies_manual <- tribble(
 
 counterparts_ids_enriched <- counterparts_ids |>
   left_join(
-    bind_rows(geographies_wdi, geographies_manual),
-    join_by(counterpart_name == geography_name)
+    bind_rows(entities_wdi, entities_manual),
+    join_by(counterpart_name == entity_name)
   )
 
 # Some counterparts have better names from WDI (e.g. Germany)
 counterparts_ids_cleaned <- counterparts_ids_enriched |>
   left_join(
-    geographies_wdi |>
-      select(geography_id, geography_iso2code, geography_type, geography_name),
-    join_by(geography_id, geography_iso2code, geography_type)
+    entities_wdi |>
+      select(entity_id, entity_iso2code, entity_type, entity_name),
+    join_by(entity_id, entity_iso2code, entity_type)
   ) |>
   mutate(
     counterpart_name = if_else(
-      !is.na(geography_name), geography_name, counterpart_name
+      !is.na(entity_name),
+      entity_name,
+      counterpart_name
     ),
     counterpart_name = case_when(
       counterpart_name == "German Dem. Rep." ~ "German Democratic Republic",
       .default = counterpart_name
     )
   ) |>
-  select(-geography_name)
+  select(-entity_name)
 
 global_ifis <- c(
   "International Monetary Fund",
@@ -277,35 +291,35 @@ counterparts <- counterparts_ids_cleaned |>
       counterpart_name %in% global_mdbs ~ "Global MDBs",
       counterpart_name %in% c("Bondholders") ~ "Bondholders",
       counterpart_name %in% c("World") ~ "All Creditors",
-      .default = geography_type
+      .default = entity_type
     )
   ) |>
   select(
     counterpart_id,
     counterpart_name,
-    counterpart_iso2code = geography_iso2code,
-    counterpart_iso3code = geography_id,
+    counterpart_iso2code = entity_iso2code,
+    counterpart_iso3code = entity_id,
     counterpart_type
   )
 
-# Use processed counterparts to enrich geographies -----------------------
+# Use processed counterparts to enrich entities -----------------------
 
-url_geographies_ids <- paste0(
+url_entities_ids <- paste0(
   "https://api.worldbank.org/v2/sources/",
   "6/country?per_page=32500&format=json"
 )
 
-geographies_ids_raw <- request(url_geographies_ids) |>
+entities_ids_raw <- request(url_entities_ids) |>
   req_perform() |>
   resp_body_json()
 
-geographies <- geographies_ids_raw$source[[1]]$concept[[1]]$variable |>
+entities <- entities_ids_raw$source[[1]]$concept[[1]]$variable |>
   bind_rows() |>
-  select(geography_id = id) |>
+  select(entity_id = id) |>
   left_join(
-    geographies <- geographies_wdi |>
+    entities <- entities_wdi |>
       select(-c(longitude, latitude)),
-    join_by(geography_id)
+    join_by(entity_id)
   )
 
 # Prepare series data ----------------------------------------------------------
@@ -356,8 +370,14 @@ series_extended <- series_ids |>
   left_join(indicators_wdi, join_by(series_id))
 
 series <- series_extended |>
-  select(series_id, series_name, source_id, source_name,
-         source_note, source_organization)
+  select(
+    series_id,
+    series_name,
+    source_id,
+    source_name,
+    source_note,
+    source_organization
+  )
 
 # Prepare series-topics data ---------------------------------------------------
 
@@ -397,6 +417,10 @@ times <- time_raw$source[[1]]$concept[[1]]$variable |>
 # Store all data in single rda file --------------------------------------------
 
 save(
-  geographies, series, counterparts, series_topics, times,
+  entities,
+  series,
+  counterparts,
+  series_topics,
+  times,
   file = "R/sysdata.rda"
 )

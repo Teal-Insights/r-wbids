@@ -6,9 +6,9 @@
 #' country identification, data validation, and unit standardization, making it
 #' easier to conduct cross-country debt analysis and monitoring.
 #'
-#' @param geographies A character vector of geography identifiers representing
-#'   debtor countries and aggregates. Must use `geography_id` from
-#'   \link{ids_list_geographies}:
+#' @param entities A character vector of entity identifiers representing
+#'   debtor countries and aggregates. Must use `entity_id` from
+#'   \link{ids_list_entities}:
 #'   * For individual countries, use ISO3C codes (e.g., "GHA" for Ghana)
 #'   * For aggregates, use World Bank codes (e.g., "LIC" for low income
 #'     countries)
@@ -47,7 +47,7 @@
 #'
 #' @return A tibble containing debt statistics with the following columns:
 #' \describe{
-#'   \item{geography_id}{The identifier for the debtor geography (e.g., "GHA"
+#'   \item{entity_id}{The identifier for the debtor entity (e.g., "GHA"
 #'     for Ghana, "LIC" for low income countries)}
 #'   \item{series_id}{The identifier for the debt statistic series (e.g.,
 #'     "DT.DOD.DECT.CD" for total external debt stocks)}
@@ -67,7 +67,7 @@
 #' * Terms and conditions of new commitments
 #'
 #' To ensure valid queries:
-#' * Use \link{ids_list_geographies} to find valid debtor geography codes
+#' * Use \link{ids_list_entities} to find valid debtor entity codes
 #' * Use \link{ids_list_series} to explore available debt statistics
 #' * Use \link{ids_list_counterparts} to see available creditor codes
 #'
@@ -75,20 +75,20 @@
 #' \donttest{
 #' # Get total external debt stocks for a single country from 2000 onward
 #' ghana_debt <- ids_get(
-#'   geographies = "GHA",
+#'   entities = "GHA",
 #'   series = "DT.DOD.DECT.CD"  # External debt stocks, total
 #' )
 #'
 #' # Compare debt service metrics across income groups
 #' income_groups <- ids_get(
-#'   geographies = c("LIC", "LMC", "UMC"),  # Income group aggregates
+#'   entities = c("LIC", "LMC", "UMC"),  # Income group aggregates
 #'   series = "DT.TDS.DECT.CD",  # Total debt service
 #'   start_year = 2010
 #' )
 #'
 #' # Analyze debt composition by major creditors
 #' creditor_analysis <- ids_get(
-#'   geographies = c("KEN", "ETH"),  # Kenya and Ethiopia
+#'   entities = c("KEN", "ETH"),  # Kenya and Ethiopia
 #'   series = c(
 #'     "DT.DOD.DECT.CD",  # Total external debt
 #'     "DT.TDS.DECT.CD"   # Total debt service
@@ -104,13 +104,13 @@
 #' }
 #'
 #' @seealso
-#' * `ids_list_geographies()` for available debtor geography codes
+#' * `ids_list_entities()` for available debtor entity codes
 #' * `ids_list_series()` for available debt statistics series codes
 #' * `ids_list_counterparts()` for available creditor codes
 #'
 #' @export
 ids_get <- function(
-  geographies,
+  entities,
   series,
   counterparts = "WLD",
   start_year = 2000,
@@ -121,14 +121,18 @@ ids_get <- function(
   validate_progress(progress)
 
   # Process character vectors and dates into semicolon-separated strings
-  geographies <- process_character_vector(geographies, "geographies")
+  entities <- process_character_vector(entities, "entities")
   series <- process_character_vector(series, "series")
   counterparts <- process_character_vector(counterparts, "counterparts")
   time <- process_time_range(start_year, end_year)
 
   # Fetch debt statistics
   debt_statistics_raw <- get_debt_statistics(
-    geographies, series, counterparts, time, progress
+    entities,
+    series,
+    counterparts,
+    time,
+    progress
   )
 
   # Process debt statistics
@@ -145,7 +149,7 @@ ids_get <- function(
 #' This function is a helper function for `ids_get()`. It constructs the API
 #' request URL, performs the request, and returns the raw data.
 #'
-#' @param geography A character string representing the geographic code
+#' @param entity A character string representing the entity code
 #'  (e.g., "ZMB" for Zambia).
 #' @param series A character string representing the series code (e.g.,
 #'  "DT.DOD.DPPG.CD").
@@ -162,15 +166,23 @@ ids_get <- function(
 #' @noRd
 #' @keywords internal
 get_debt_statistics <- function(
-  geography, series, counterpart, time, progress
+  entity,
+  series,
+  counterpart,
+  time,
+  progress
 ) {
   # Create progress message if progress is TRUE
   progress_message <- create_progress_message(
-    progress, series, geography, counterpart, time
+    progress,
+    series,
+    entity,
+    counterpart,
+    time
   )
 
   # Create resource URL
-  resource <- create_resource_url(geography, series, counterpart, time)
+  resource <- create_resource_url(entity, series, counterpart, time)
 
   # Perform API request
   perform_request(resource, progress = progress_message)
@@ -182,7 +194,7 @@ get_debt_statistics <- function(
 #'
 #' @param progress A logical value indicating whether to show progress
 #' @param series The series code
-#' @param geography The geography code
+#' @param entity The entity code
 #' @param counterpart The counterpart code
 #' @param time The time period
 #'
@@ -191,17 +203,25 @@ get_debt_statistics <- function(
 #' @noRd
 #' @keywords internal
 create_progress_message <- function(
-  progress, series, geography, counterpart, time
+  progress,
+  series,
+  entity,
+  counterpart,
+  time
 ) {
   if (!progress) {
     return(FALSE)
   }
 
   paste(
-    "Fetching series", series,
-    "for geography", geography,
-    ", counterpart", counterpart,
-    ", and time", time
+    "Fetching series",
+    series,
+    "for entity",
+    entity,
+    ", counterpart",
+    counterpart,
+    ", and time",
+    time
   )
 }
 
@@ -209,7 +229,7 @@ create_progress_message <- function(
 #'
 #' Creates the resource URL path for the API request.
 #'
-#' @param geography The semicolon-separated geography codes
+#' @param entity The semicolon-separated entity codes
 #' @param series The semicolon-separated series codes
 #' @param counterpart The semicolon-separated counterpart codes
 #' @param time The semicolon-separated time periods
@@ -218,12 +238,16 @@ create_progress_message <- function(
 #'
 #' @noRd
 #' @keywords internal
-create_resource_url <- function(geography, series, counterpart, time) {
+create_resource_url <- function(entity, series, counterpart, time) {
   url <- paste0(
-    "country/", geography,
-    "/series/", series,
-    "/counterpart-area/", counterpart,
-    "/time/", time
+    "country/",
+    entity,
+    "/series/",
+    series,
+    "/counterpart-area/",
+    counterpart,
+    "/time/",
+    time
   )
 
   validate_string(url, 4000, "resource URL")
@@ -240,7 +264,7 @@ create_resource_url <- function(geography, series, counterpart, time) {
 #'
 #' @return A tibble with the following columns:
 #'   \describe{
-#'     \item{geography_id}{The unique identifier for the geography.}
+#'     \item{entity_id}{The unique identifier for the entity.}
 #'     \item{series_id}{The unique identifier for the series.}
 #'     \item{counterpart_id}{The unique identifier for the counterpart.}
 #'     \item{year}{The year corresponding to the data.}
@@ -251,8 +275,8 @@ create_resource_url <- function(geography, series, counterpart, time) {
 #' @keywords internal
 process_debt_statistics <- function(series_raw) {
   if (length(series_raw[[1]]$variable[[1]]$concept) == 0) {
-    tibble(
-      "geography_id" = character(),
+    tibble::tibble(
+      "entity_id" = character(),
       "series_id" = character(),
       "counterpart_id" = character(),
       "year" = integer(),
@@ -263,8 +287,8 @@ process_debt_statistics <- function(series_raw) {
       bind_rows() |>
       unnest_wider("variable", names_sep = "_")
 
-    tibble(
-      geography_id = series_df$variable_id[
+    tibble::tibble(
+      entity_id = series_df$variable_id[
         series_df$variable_concept == "Country"
       ],
       series_id = series_df$variable_id[
@@ -451,12 +475,14 @@ process_time_range <- function(start_year, end_year) {
       times$time_id[
         times$time_year >= start_year & times$time_year <= end_year
       ],
-      collapse = ";", sep = ""
+      collapse = ";",
+      sep = ""
     )
   } else if (!is.null(start_year)) {
     paste(
       times$time_id[times$time_year >= start_year],
-      collapse = ";", sep = ""
+      collapse = ";",
+      sep = ""
     )
   } else {
     "all"

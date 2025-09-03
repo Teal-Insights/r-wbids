@@ -6,6 +6,7 @@
 
 ## usethis namespace: start
 #' @importFrom purrr map map_df
+#' @importFrom tibble tibble
 #' @importFrom tidyr unnest unnest_wider crossing pivot_longer
 #' @importFrom rlang parse_expr eval_tidy
 ## usethis namespace: end
