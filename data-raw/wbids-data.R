@@ -416,6 +416,16 @@ times <- time_raw$source[[1]]$concept[[1]]$variable |>
 
 # Store all data in single rda file --------------------------------------------
 
+# Save exported data
+save(
+  entities,
+  series,
+  counterparts,
+  series_topics,
+  file = "data/sysdata.rda"
+)
+
+# Save internal data
 save(
   entities,
   series,
