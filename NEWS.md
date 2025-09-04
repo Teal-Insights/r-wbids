@@ -1,5 +1,9 @@
 # wbids (development version)
 
+# wbids 1.1.0
+
+* Rename `geographies` to `entities` across all functions (soft deprecation, no breaking change).
+
 # wbids 1.0.0
 
 * `ids_get()` Roxygen2 documentation enhancements.

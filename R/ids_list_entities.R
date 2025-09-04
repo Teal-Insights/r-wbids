@@ -38,3 +38,28 @@
 ids_list_entities <- function() {
   entities
 }
+
+#' @title Superseded: List Available Geographies
+#'
+#' @description
+#' `r lifecycle::badge("superseded")`
+#'
+#' `ids_list_geographies()` has been superseded in favor of
+#' [ids_list_entities()]. It still works, but will be retired in a future
+#' release. Please use [ids_list_entities()] instead.
+#'
+#' @inherit ids_list_entities return
+#'
+#' @seealso [ids_list_entities()]
+#' @keywords internal
+#' @export
+ids_list_geographies <- function() {
+  #nocov start
+  lifecycle::deprecate_warn(
+    when = "1.1.0",
+    what = "ids_list_geographies()",
+    with = "ids_list_entities()"
+  )
+  ids_list_entities()
+  #nocov end
+}

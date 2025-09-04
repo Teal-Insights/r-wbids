@@ -1,6 +1,6 @@
 Package: wbids
 Title: Seamless Access to World Bank International Debt Statistics (IDS)
-Version: 1.0.0.9002
+Version: 1.1.0.9000
 Authors@R: 
     c(person("Teal", "Emery", , "lte@tealinsights.com", role = c("aut", "cre")),
       person("Teal Insights", role = c("cph")),
@@ -9,7 +9,7 @@ Authors@R:
       person("Christopher", "Smith", email = "chriscarrollsmith@gmail.com", 
              role = c("ctb")))
 Description: Access and analyze the World Bank's International Debt Statistics 
-  (IDS) <https://datacatalog.worldbank.org/search/dataset/0038015>. 
+  (IDS) <https://www.worldbank.org/en/programs/debt-statistics/ids>. 
   IDS provides creditor-debtor relationships between countries, regions, and 
   institutions. 'wbids' enables users to download, process and work with IDS
   series across multiple geographies, counterparts, and time periods. 
@@ -34,6 +34,7 @@ Suggests:
     quarto,
     readxl (>= 1.0.0),
     testthat (>= 3.0.0),
+    lifecycle,
     httr
 Config/testthat/edition: 3
 URL: https://teal-insights.github.io/r-wbids/, https://github.com/teal-insights/r-wbids/
