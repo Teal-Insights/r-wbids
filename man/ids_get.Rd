@@ -10,7 +10,8 @@ ids_get(
   counterparts = "WLD",
   start_year = 2000,
   end_year = NULL,
-  progress = FALSE
+  progress = FALSE,
+  geographies = lifecycle::deprecated()
 )
 }
 \arguments{
@@ -56,6 +57,10 @@ debt service projections are available through 2031.}
 
 \item{progress}{A logical value indicating whether to display progress
 messages during data retrieval (default: FALSE).}
+
+\item{geographies}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}
+Superseded in favor of \code{entities}. If supplied, it will be mapped to
+\code{entities} with a warning. Do \strong{not} use together with \code{entities}.}
 }
 \value{
 A tibble containing debt statistics with the following columns:

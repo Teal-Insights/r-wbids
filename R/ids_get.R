@@ -45,6 +45,10 @@
 #' @param progress A logical value indicating whether to display progress
 #'   messages during data retrieval (default: FALSE).
 #'
+#' @param geographies `r lifecycle::badge("superseded")`
+#'   Superseded in favor of `entities`. If supplied, it will be mapped to
+#'   `entities` with a warning. Do **not** use together with `entities`.
+#'
 #' @return A tibble containing debt statistics with the following columns:
 #' \describe{
 #'   \item{entity_id}{The identifier for the debtor entity (e.g., "GHA"
@@ -115,8 +119,31 @@ ids_get <- function(
   counterparts = "WLD",
   start_year = 2000,
   end_year = NULL,
-  progress = FALSE
+  progress = FALSE,
+  geographies = lifecycle::deprecated()
 ) {
+  # Handle superseded argument
+  #nocov start
+  if (lifecycle::is_present(geographies)) {
+    lifecycle::deprecate_warn(
+      when = "1.1.0",
+      what = "ids_get(geographies =)",
+      with = "ids_get(entities =)"
+    )
+
+    if (missing(entities) || is.null(entities)) {
+      entities <- geographies
+    } else {
+      cli::cli_abort(
+        c(
+          "!" = "Can't supply both {.arg entities} and {.arg geographies}.",
+          "i" = "Use {.arg entities} only."
+        )
+      )
+    }
+  }
+  #nocov end
+
   # Validate arguments
   validate_progress(progress)
 

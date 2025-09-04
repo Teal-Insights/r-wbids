@@ -17,7 +17,7 @@ coverage](https://codecov.io/gh/Teal-Insights/r-wbids/graph/badge.svg)](https://
 
 `wbids` is an R package to access and analyze the World Bank’s
 [International Debt Statistics
-(IDS)](https://datacatalog.worldbank.org/search/dataset/0038015/). IDS
+(IDS)](https://www.worldbank.org/en/programs/debt-statistics/ids). IDS
 provides creditor-debtor relationships between countries, regions, and
 institutions. ‘wbids’ enables users to download, process and work with
 IDS series across multiple entities, counterparts, and time periods.
@@ -68,7 +68,7 @@ ranges.
 library(wbids)
 
 ids_get(
-  entities = c("ZMB", "ZAF"),
+  geographies = c("ZMB", "ZAF"),
   series = c("DT.DOD.DPPG.CD", "BM.GSR.TOTL.CD"),
   counterparts = c("216", "231"),
   start_year = 2015,
