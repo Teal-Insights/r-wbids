@@ -92,13 +92,13 @@ test_that("ids_bulk handles message parameter correctly", {
 
   local_mocked_bindings(
     check_interactive = function() FALSE,
-    download_file = function(...) TRUE,
-    validate_file = function(...) TRUE,
-    get_response_headers = function(...) {
-      list(
-        `content-type` = "application/octet-stream",
-        `content-length` = 1000
-      )
+    download_bulk_file = function(
+      file_url, file_path, timeout, warn_size, quiet
+    ) {
+      file.create(file_path)
+      if (!quiet) {
+        cli::cli_progress_message("Downloading file to: {file_path}")
+      }
     },
     read_excel = function(...) mock_data,
     .package = "readxl"
