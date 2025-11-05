@@ -176,23 +176,25 @@ validate_file <- function(file_path) {
 #'
 read_bulk_file <- function(file_path) {
   # Read in first row of Excel file to get column names
-  header_row <- readxl::read_excel(path = file_path, n_max = 0)
+  header_row <- read_excel_wrapper(path = file_path, n_max = 0)
 
   # Get all column names
   available_columns <- header_row |>
     colnames()
 
   # Initialize a helper tibble mapping relevant column names to types
-  relevant_columns <- tibble(names = available_columns) |>
+  relevant_columns <- tibble::tibble(names = available_columns) |>
     # Drop column names that contain "column" (which are empty in the bulk file)
     filter(!grepl("column", .data$names, ignore.case = TRUE)) |>
     # Year columns are numeric, all others are text
-    mutate(
-      types = if_else(grepl(pattern = "[0:9]", .data$names), "numeric", "text")
+    dplyr::mutate(
+      types = dplyr::if_else(
+        grepl(pattern = "[0:9]", .data$names), "numeric", "text"
+      )
     )
 
   # Read in the data from the Excel file for only the relevant columns
-  readxl::read_excel(
+  read_excel_wrapper(
     path = file_path,
     range = readxl::cell_cols(seq_len(nrow(relevant_columns))),
     col_types = relevant_columns$types
@@ -208,18 +210,18 @@ read_bulk_file <- function(file_path) {
 process_bulk_data <- function(bulk_raw) {
   bulk_raw |>
     # Select only the relevant columns
-    select(
+    dplyr::select(
       "Country Code",
       "Series Code",
       "Counterpart-Area Code",
-      matches("^\\d{4}$")
+      dplyr::matches("^\\d{4}$")
     ) |>
     # Rename columns to match the package data model
     select(
       entity_id = "Country Code",
       series_id = "Series Code",
       counterpart_id = "Counterpart-Area Code",
-      everything()
+      dplyr::everything()
     ) |>
     # Pivot to long (tidy) format
     tidyr::pivot_longer(
@@ -227,7 +229,7 @@ process_bulk_data <- function(bulk_raw) {
       names_to = "year"
     ) |>
     # Convert year to integer
-    mutate(year = as.integer(.data$year)) |>
+    dplyr::mutate(year = as.integer(.data$year)) |>
     # Drop rows with NA values
     tidyr::drop_na()
 }
@@ -270,4 +272,18 @@ download_file <- function(url, destfile, quiet) {
 #'
 prompt_user <- function(prompt) {
   readline(prompt) # nocov
+}
+
+#' Read an Excel file using readxl
+#'
+#' Wrapper around readxl::read_excel to facilitate testing without mocking
+#' external package namespaces.
+#'
+#' @param ... Arguments passed to readxl::read_excel
+#' @return Data frame from Excel file
+#' @keywords internal
+#' @noRd
+#'
+read_excel_wrapper <- function(...) {
+  readxl::read_excel(...)
 }

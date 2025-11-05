@@ -100,8 +100,7 @@ test_that("ids_bulk handles message parameter correctly", {
         cli::cli_progress_message("Downloading file to: {file_path}")
       }
     },
-    read_excel = function(...) mock_data,
-    .package = "readxl"
+    read_excel_wrapper = function(...) mock_data
   )
 
   expect_message(
