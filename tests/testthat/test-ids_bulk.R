@@ -2,8 +2,6 @@
 options(timeout = 60)
 
 test_that("ids_bulk handles custom file paths", {
-  skip_if_offline()
-  skip_on_cran()
   skip_if_not_installed("jsonlite")
   skip_if_not_installed("readxl")
 
@@ -13,29 +11,26 @@ test_that("ids_bulk handles custom file paths", {
   )
   temp_path <- tempfile(fileext = ".xlsx")
 
+  # This acts like an expect statement to verify that the file exists at the
+  # destination path when we expect it to
   local_mocked_bindings(
     check_interactive = function() FALSE,
-    download_file = function(url, destfile, quiet) {
-      file.create(destfile)
+    validate_file = function(file_path) {
+      # Assert that file exists when validate_file is called
+      expect_true(file.exists(file_path))
+    },
+    download_bulk_file = function(
+      file_url, file_path, timeout, warn_size, quiet
+    ) {
+      file.create(file_path)
+      validate_file(file_path)
     },
     read_bulk_file = function(...) {
       tibble::tibble()
     },
     process_bulk_data = function(...) {
       tibble::tibble()
-    },
-    get_response_headers = function(...) {
-      list(
-        `content-type` = "application/octet-stream",
-        `content-length` = 1000
-      )
     }
-  )
-
-  # This acts like an expect statement to verify that the file exists at the
-  # destination path when we expect it to
-  local_mocked_bindings(
-    validate_file = function(...) file.exists(temp_path)
   )
 
   result <- ids_bulk(
@@ -49,6 +44,9 @@ test_that("ids_bulk handles custom file paths", {
 })
 
 test_that("ids_bulk fails gracefully with invalid URL", {
+  skip_if_not_installed("jsonlite")
+  skip_if_not_installed("readxl")
+
   local_mocked_bindings(
     get_response_headers = function(file_url) {
       list(
@@ -75,8 +73,6 @@ test_that("ids_bulk requires readxl package", {
 })
 
 test_that("ids_bulk handles message parameter correctly", {
-  skip_if_offline()
-  skip_on_cran()
   skip_if_not_installed("jsonlite")
   skip_if_not_installed("readxl")
 
@@ -95,17 +91,17 @@ test_that("ids_bulk handles message parameter correctly", {
   )
 
   local_mocked_bindings(
-    download_file = function(...) TRUE
-  )
-  local_mocked_bindings(
-    validate_file = function(...) TRUE
-  )
-  local_mocked_bindings(
+    check_interactive = function() FALSE,
+    download_bulk_file = function(
+      file_url, file_path, timeout, warn_size, quiet
+    ) {
+      file.create(file_path)
+      if (!quiet) {
+        cli::cli_progress_message("Downloading file to: {file_path}")
+      }
+    },
     read_excel = function(...) mock_data,
     .package = "readxl"
-  )
-  local_mocked_bindings(
-    check_interactive = function() FALSE
   )
 
   expect_message(
@@ -251,6 +247,7 @@ test_that("download_bulk_file downloads files correctly", {
 
 test_that("read_bulk_file reads files correctly", {
   skip_on_cran()
+  skip_if_not_installed("readxl")
 
   test_path <- test_path("data/download_bulk_file_output.xlsx")
   result <- read_bulk_file(test_path)

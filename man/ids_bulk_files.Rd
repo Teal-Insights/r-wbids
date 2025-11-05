@@ -22,6 +22,8 @@ in Excel (xlsx) format.
 }
 \examples{
 \dontshow{if (curl::has_internet() && rlang::is_installed("jsonlite")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\donttest{
 ids_bulk_files()
+}
 \dontshow{\}) # examplesIf}
 }

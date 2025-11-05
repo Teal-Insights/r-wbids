@@ -20,7 +20,9 @@
 #' @export
 #'
 #' @examplesIf curl::has_internet() && rlang::is_installed("jsonlite")
+#' \donttest{
 #' ids_bulk_series()
+#' }
 #'
 ids_bulk_series <- function() {
   ids_meta <- read_bulk_info()
