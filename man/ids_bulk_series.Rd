@@ -27,6 +27,8 @@ bulk download of the World Bank International Debt Statistics (IDS).
 }
 \examples{
 \dontshow{if (curl::has_internet() && rlang::is_installed("jsonlite")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\donttest{
 ids_bulk_series()
+}
 \dontshow{\}) # examplesIf}
 }
