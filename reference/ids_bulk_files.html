@@ -13,7 +13,7 @@ in Excel (xlsx) format."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">wbids</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,7 +39,7 @@ in Excel (xlsx) format."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Retrieve Available Bulk Download Files for International Debt Statistics</h1>
-      <small class="dont-index">Source: <a href="https://github.com/teal-insights/r-wbids/blob/v1.1.1/R/ids_bulk_files.R" class="external-link"><code>R/ids_bulk_files.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/teal-insights/r-wbids/blob/main/R/ids_bulk_files.R" class="external-link"><code>R/ids_bulk_files.R</code></a></small>
       <div class="d-none name"><code>ids_bulk_files.Rd</code></div>
     </div>
 
@@ -73,15 +73,8 @@ in Excel (xlsx) format.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu">ids_bulk_files</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   file_name                                           file_url last_updated_date</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Bulk Download File - Debtor Countries: A to D, Cou… https:/… 2024-12-04       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Bulk Download File - Debtor Countries: L to M, Cou… https:/… 2024-12-04       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Bulk Download File - Debtor Countries: V to Z, Cou… https:/… 2024-12-04       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> Bulk Download File - Debtor Countries: E to K, Cou… https:/… 2024-12-04       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> Bulk Download File - Debtor Countries: N to Q, Cou… https:/… 2024-12-04       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> Bulk Download File - Debtor Countries: R to U, Cou… https:/… 2024-12-04       </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot open URL 'https://datacatalogapi.worldbank.org/ddhxext/DatasetDownload?dataset_unique_id=0038015&amp;version_id=': HTTP status was '429 Unknown Error'</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in open.connection(con, "rb"):</span> cannot open the connection to 'https://datacatalogapi.worldbank.org/ddhxext/DatasetDownload?dataset_unique_id=0038015&amp;version_id='</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

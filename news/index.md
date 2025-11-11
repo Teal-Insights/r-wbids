@@ -1,5 +1,7 @@
 # Changelog
 
+## wbids (development version)
+
 ## wbids 1.1.1
 
 CRAN release: 2025-11-11
