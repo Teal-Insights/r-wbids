@@ -3,7 +3,7 @@ pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   data-model: data-model.html
-last_built: 2025-11-11T20:48Z
+last_built: 2025-11-11T20:50Z
 urls:
   reference: https://teal-insights.github.io/r-wbids/reference
   article: https://teal-insights.github.io/r-wbids/articles

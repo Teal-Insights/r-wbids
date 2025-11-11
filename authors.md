@@ -14,7 +14,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/teal-insights/r-wbids/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/teal-insights/r-wbids/blob/v1.1.1/DESCRIPTION)
 
 Emery T, Scheuch C (2025). *wbids: Seamless Access to World Bank
 International Debt Statistics (IDS)*. R package version 1.1.1,
