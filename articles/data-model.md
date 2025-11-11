@@ -1,0 +1,138 @@
+# `wbids` Data Model
+
+## Overview
+
+The diagram below shows the data model of the `wbids` package. In our
+design, we primarily have R users in mind, particularly those who rely
+heavily on the popular data manipulation packages `dplyr` and
+`data.table`. For these users, having consistent and descriptive primary
+key column names across different tables (e.g., `entity_id`,
+`series_id`) simplifies writing joins across tables, reduces the risk of
+column name conflicts, and avoids ambiguity. We hence deliberately
+deviate from a common practice in data modeling to omit the entity
+prefix from a entity table (e.g. `entity_` in the entities table).
+
+``` mermaid
+erDiagram
+    ENTITIES ||--o{ DEBT_STATISTICS : has
+    ENTITIES {
+        string entity_id PK
+        string entity_name
+        string entity_iso2code
+        string entity_type
+        string capital_city
+        string region_id
+        string region_iso2code
+        string region_name
+        string admin_region_id
+        string admin_region_iso2code
+        string admin_region_name
+        string lending_type_id
+        string lending_type_iso2code
+        string lending_type_name
+    }
+    SERIES ||--o{ DEBT_STATISTICS : has
+    SERIES ||--o{ SERIES_TOPICS : has
+    SERIES {
+        string series_id PK
+        string series_name
+        int source_id
+        string source_note
+        string source_organization
+    }
+    COUNTERPARTS ||--o{ DEBT_STATISTICS : has
+    COUNTERPARTS {
+        string counterpart_id PK
+        string counterpart_name
+        string counterpart_iso2code
+        string counterpart_iso3code
+        string counterpart_type
+    }
+    SERIES_TOPICS {
+        string series_id FK
+        int topic_id
+        string topic_name
+    }
+    DEBT_STATISTICS {
+        string series_id FK
+        string entity_id FK
+        string counterpart_id FK
+        int year
+        float value
+    }
+```
+
+## Table Details
+
+### Entities
+
+| Column name           | Description                                     | Example value                              |
+|-----------------------|-------------------------------------------------|--------------------------------------------|
+| entity_id             | ISO 3166-1 alpha-3 code of the entity           | ZMB                                        |
+| entity_name           | Standardized name of the entity                 | Zambia                                     |
+| entity_iso2code       | ISO 3166-1 alpha-2 code of the entity           | ZM                                         |
+| entity_type           | Type of entity (e.g., country, region)          | Country                                    |
+| capital_city          | Capital city of the entity                      | Lusaka                                     |
+| region_id             | Unique identifier for the region                | SSF                                        |
+| region_iso2code       | ISO 3166-1 alpha-2 code of the region           | ZG                                         |
+| region_name           | Name of the region                              | Sub-Saharan Africa                         |
+| admin_region_id       | Unique identifier for the administrative region | SSA                                        |
+| admin_region_iso2code | Unique identifier for the administrative region | ZF                                         |
+| admin_region_name     | Name of the administrative region               | Sub-Saharan Africa (excluding high income) |
+| lending_type_id       | Unique identifier for the lending type          | IDX                                        |
+| lending_type_iso2code | ISO code of the lending type                    | XI                                         |
+| lending_type_name     | Name of the lending type                        | IDA                                        |
+
+### Counterparts
+
+| Column name          | Description                                              | Example value |
+|----------------------|----------------------------------------------------------|---------------|
+| counterpart_id       | Unique identifier for the counterpart                    | 730           |
+| counterpart_name     | Standardized name of the counterpart                     | China         |
+| counterpart_iso2code | ISO 3166-1 alpha-2 code of the counterpart               | CN            |
+| counterpart_iso3code | ISO 3166-1 alpha-3 code of the counterpart               | CHN           |
+| counterpart_type     | Type of counterpart (e.g., institution, country, region) | Country       |
+
+### Series
+
+| Column name         | Description                                  | Example value                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+|---------------------|----------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| series_id           | Unique identifier for the data series        | DT.DOD.DPPG.CD                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| series_name         | Name of the series                           | External debt stocks, public and publicly guaranteed (PPG) (DOD, current US\$)                                                                                                                                                                                                                                                                                                                                                                 |
+| source_id           | Unique identifier for the data source        | 2                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| source_note         | Note about the data source                   | Public and publicly guaranteed debt comprises long-term external obligations of public debtors, including the national government, Public Corporations, State Owned Enterprises, Development Banks and Other Mixed Enterprises, political subdivisions (or an agency of either), autonomous public bodies, and external obligations of private debtors that are guaranteed for repayment by a public entity. Data are in current U.S. dollars. |
+| source_organization | Organization responsible for the data series | World Bank, International Debt Statistics.                                                                                                                                                                                                                                                                                                                                                                                                     |
+
+### Debt Statistics
+
+| Column name    | Description                    | Example value  |
+|----------------|--------------------------------|----------------|
+| series_id      | Identifier for the series      | DT.DOD.DPPG.CD |
+| entity_id      | Identifier for the entity      | ZMB            |
+| counterpart_id | Identifier for the counterpart | 061\.          |
+| year           | Year of the data point         | 2020           |
+| value          | Value of the data point        | 4298957000     |
+
+## Assignment of Entity and Counterpart Types
+
+The original World Bank IDS data includes a ‘country’ field, containing
+both countries and regions, and a ‘counterpart-area’ field, which may
+include countries, regions, and institutions. In our data model, these
+fields are renamed to ‘entity’ and ‘counterpart’ to clarify the types of
+entities in each column.
+
+We also introduce corresponding type columns that specify whether a
+entity is a country (e.g., “Aruba”) or a region (e.g., “Africa Eastern
+and Southern”), and whether a counterpart is a country, region, or a
+special category (e.g., “Global IFIs”, “Global MDBs”). Each counterpart
+is represented in the entity table if it is a country or region,
+ensuring consistency across both tables.
+
+## Harmonization of Entity and Counterpart Names
+
+In some cases, the IDS data provides different names for entities that
+appear both in the ‘counterpart-area’ and the ‘country’ data. We use the
+entity names whenever they are available and drop counterpart names with
+different wording. For instance, if the original data features “Cote
+D\`Ivoire, Republic Of” in the counterpart table, but the country name
+is “Cote d’Ivoire”, then we overwrite the former with the latter.
