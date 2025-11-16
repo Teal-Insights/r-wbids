@@ -68,12 +68,26 @@ ranges.
 library(wbids)
 
 ids_get(
-  geographies = c("ZMB", "ZAF"),
+  entities = c("ZMB", "ZAF"),
   series = c("DT.DOD.DPPG.CD", "BM.GSR.TOTL.CD"),
   counterparts = c("216", "231"),
   start_year = 2015,
   end_year = 2020
 )
+#> # A tibble: 48 × 5
+#>    entity_id series_id      counterpart_id  year     value
+#>    <chr>     <chr>          <chr>          <int>     <dbl>
+#>  1 ZMB       BM.GSR.TOTL.CD 231             2015        NA
+#>  2 ZMB       BM.GSR.TOTL.CD 216             2015        NA
+#>  3 ZMB       DT.DOD.DPPG.CD 231             2015        NA
+#>  4 ZMB       DT.DOD.DPPG.CD 216             2015 193907000
+#>  5 ZMB       BM.GSR.TOTL.CD 231             2016        NA
+#>  6 ZMB       BM.GSR.TOTL.CD 216             2016        NA
+#>  7 ZMB       DT.DOD.DPPG.CD 231             2016        NA
+#>  8 ZMB       DT.DOD.DPPG.CD 216             2016 180118000
+#>  9 ZMB       BM.GSR.TOTL.CD 231             2017        NA
+#> 10 ZMB       BM.GSR.TOTL.CD 216             2017        NA
+#> # ℹ 38 more rows
 ```
 
 The package comes with prepared metadata about available series,
@@ -92,6 +106,34 @@ This data can be used to enrich the IDS series or facilitate data
 discovery. For further applications, please consult [Teal Insights’
 Guide to Working with the World Bank International Debt
 Statistics](https://teal-insights.github.io/teal-insights-guide-to-wbids/).
+
+The package also provides a convenience function to download the full
+IDS data pre-processed with `wbids` from the corresponding EconDataverse
+dataset on [Hugging
+Face](https://huggingface.co/datasets/econdataverse/wbids) via the
+[`econdatasets`](https://tidy-intelligence.github.io/r-econdatasets/)
+package:
+
+``` r
+ids_get_ed("debt_statistics")
+#> → Reading dataset from
+#>   https://huggingface.co/datasets/econdataverse/wbids/resolve/main/debt_statistics.parquet
+#> ✔ Successfully loaded debt_statistics from wbids
+#> # A tibble: 144,526,432 × 5
+#>    entity_id series_id           counterpart_id  year value
+#>    <chr>     <chr>               <chr>          <int> <dbl>
+#>  1 AFG       DT.DIS.BLAT.PRVG.CD 625             2006     0
+#>  2 AFG       DT.DIS.BLAT.PRVG.CD 625             2007     0
+#>  3 AFG       DT.DIS.BLAT.PRVG.CD 625             2008     0
+#>  4 AFG       DT.DIS.BLAT.PRVG.CD 625             2009     0
+#>  5 AFG       DT.DIS.BLAT.PRVG.CD 625             2010     0
+#>  6 AFG       DT.DIS.BLAT.PRVG.CD 625             2011     0
+#>  7 AFG       DT.DIS.BLAT.PRVG.CD 625             2012     0
+#>  8 AFG       DT.DIS.BLAT.PRVG.CD 625             2013     0
+#>  9 AFG       DT.DIS.BLAT.PRVG.CD 625             2014     0
+#> 10 AFG       DT.DIS.BLAT.PRVG.CD 625             2015     0
+#> # ℹ 144,526,422 more rows
+```
 
 The interface and column names are fully consistent with World
 Development Indicators (WDI) data provided through the `wbwdi` package.
