@@ -1,5 +1,7 @@
 # wbids (development version)
 
+* Add `ids_get_ed()` to download pre-processed tables from EconDataverse datasets on Hugging Face.
+
 # wbids 1.1.1
 
 * Examples that made third-party API calls are now skipped on CRAN.

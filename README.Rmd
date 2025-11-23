@@ -52,11 +52,11 @@ On Linux, you may need to install `libcurl4-openssl-dev` as a prerequisite to bu
 
 The main function `ids_get()` provides an interface to download multiple IDS series for multiple entities and counterparts and specific date ranges. 
 
-```r
+```{r}
 library(wbids)
 
 ids_get(
-  geographies = c("ZMB", "ZAF"),
+  entities = c("ZMB", "ZAF"),
   series = c("DT.DOD.DPPG.CD", "BM.GSR.TOTL.CD"),
   counterparts = c("216", "231"),
   start_year = 2015,
@@ -66,7 +66,7 @@ ids_get(
 
 The package comes with prepared metadata about available series, entities, counterparts, and topics. Please consult the [package vignette](https://teal-insights.github.io/r-wbids/articles/data-model.html) for details. 
 
-```r
+```{r, eval = FALSE}
 ids_list_series()
 ids_list_entities()
 ids_list_counterparts()
@@ -74,6 +74,12 @@ ids_list_series_topics()
 ```
 
 This data can be used to enrich the IDS series or facilitate data discovery. For further applications, please consult [Teal Insights’ Guide to Working with the World Bank International Debt Statistics](https://teal-insights.github.io/teal-insights-guide-to-wbids/).
+
+The package also provides a convenience function to download the full IDS data pre-processed with `wbids` from the corresponding EconDataverse dataset on [Hugging Face](https://huggingface.co/datasets/econdataverse/wbids) via the [`econdatasets`](https://tidy-intelligence.github.io/r-econdatasets/) package: 
+
+```{r}
+ids_get_ed("debt_statistics")
+```
 
 The interface and column names are fully consistent with World Development Indicators (WDI) data provided through the `wbwdi` package. You can find details on [github.com/tidy-intelligence/r-wbwdi](https://github.com/tidy-intelligence/r-wbwdi).
 

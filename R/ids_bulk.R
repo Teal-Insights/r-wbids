@@ -189,7 +189,9 @@ read_bulk_file <- function(file_path) {
     # Year columns are numeric, all others are text
     dplyr::mutate(
       types = dplyr::if_else(
-        grepl(pattern = "[0:9]", .data$names), "numeric", "text"
+        grepl(pattern = "[0:9]", .data$names),
+        "numeric",
+        "text"
       )
     )
 

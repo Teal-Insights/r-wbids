@@ -9,5 +9,6 @@
 #' @importFrom tibble tibble
 #' @importFrom tidyr unnest unnest_wider crossing pivot_longer
 #' @importFrom rlang parse_expr eval_tidy
+#' @importFrom econdatasets ed_get
 ## usethis namespace: end
 NULL
