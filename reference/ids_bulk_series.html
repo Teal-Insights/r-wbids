@@ -9,7 +9,7 @@ bulk download of the World Bank International Debt Statistics (IDS)."></head><bo
 
     <a class="navbar-brand me-2" href="../index.html">wbids</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,8 +80,20 @@ source.</p></dd>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu">ids_bulk_series</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot open URL 'https://datacatalogapi.worldbank.org/ddhxext/DatasetDownload?dataset_unique_id=0038015&amp;version_id=': HTTP status was '429 Unknown Error'</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in open.connection(con, "rb"):</span> cannot open the connection to 'https://datacatalogapi.worldbank.org/ddhxext/DatasetDownload?dataset_unique_id=0038015&amp;version_id='</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 495 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    series_id   series_name source_id source_name source_note source_organization</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> NY.GNP.MKT… GNI (curre…         2 <span style="color: #949494;">"</span>World Dev… Gross nati… <span style="color: #949494;">"</span>Country official …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> DT.INT.BLA… PS, bilate…        81 <span style="color: #949494;">"</span> Internat… Public sec… <span style="color: #949494;">"</span>World Bank, Inter…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> DT.TDS.PRO… PPG, other…        81 <span style="color: #949494;">"</span> Internat… Public and… <span style="color: #949494;">"</span>World Bank, Inter…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> DT.TDS.PRO… GG, other …        81 <span style="color: #949494;">"</span> Internat… General go… <span style="color: #949494;">"</span>World Bank, Inter…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> DT.TDS.PRO… OPS, other…        81 <span style="color: #949494;">"</span> Internat… Other publ… <span style="color: #949494;">"</span>World Bank, Inter…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> DT.TDS.PRO… PS, other …        81 <span style="color: #949494;">"</span> Internat… Public sec… <span style="color: #949494;">"</span>World Bank, Inter…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> DT.TDS.PRV… GG, privat…        81 <span style="color: #949494;">"</span> Internat… General go… <span style="color: #949494;">"</span>World Bank, Inter…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> DT.TDS.PRV… OPS, priva…        81 <span style="color: #949494;">"</span> Internat… Other publ… <span style="color: #949494;">"</span>World Bank, Inter…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> DT.TDS.PRV… PRVG, priv…        81 <span style="color: #949494;">"</span> Internat… Private se… <span style="color: #949494;">"</span>World Bank, Inter…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> DT.TDS.PRV… PS, privat…        81 <span style="color: #949494;">"</span> Internat… Public sec… <span style="color: #949494;">"</span>World Bank, Inter…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 485 more rows</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

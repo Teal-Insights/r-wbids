@@ -32,7 +32,14 @@ A tibble containing the available files and their metadata:
 ``` r
 # \donttest{
 ids_bulk_files()
-#> Warning: cannot open URL 'https://datacatalogapi.worldbank.org/ddhxext/DatasetDownload?dataset_unique_id=0038015&version_id=': HTTP status was '429 Unknown Error'
-#> Error in open.connection(con, "rb"): cannot open the connection to 'https://datacatalogapi.worldbank.org/ddhxext/DatasetDownload?dataset_unique_id=0038015&version_id='
+#> # A tibble: 6 × 3
+#>   file_name                                           file_url last_updated_date
+#>   <chr>                                               <chr>    <date>           
+#> 1 Bulk Download File - Debtor Countries: A to D, Cou… https:/… 2024-12-04       
+#> 2 Bulk Download File - Debtor Countries: L to M, Cou… https:/… 2024-12-04       
+#> 3 Bulk Download File - Debtor Countries: V to Z, Cou… https:/… 2024-12-04       
+#> 4 Bulk Download File - Debtor Countries: E to K, Cou… https:/… 2024-12-04       
+#> 5 Bulk Download File - Debtor Countries: N to Q, Cou… https:/… 2024-12-04       
+#> 6 Bulk Download File - Debtor Countries: R to U, Cou… https:/… 2024-12-04       
 # }
 ```

@@ -2,6 +2,11 @@
 
 ## wbids (development version)
 
+- Add
+  [`ids_get_ed()`](https://teal-insights.github.io/r-wbids/reference/ids_get_ed.md)
+  to download pre-processed tables from EconDataverse datasets on
+  Hugging Face.
+
 ## wbids 1.1.1
 
 CRAN release: 2025-11-11

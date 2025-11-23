@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">wbids</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,12 +81,26 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://teal-insights.github.io/r-wbids/">wbids</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/ids_get.html">ids_get</a></span><span class="op">(</span></span>
-<span>  geographies <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ZMB"</span>, <span class="st">"ZAF"</span><span class="op">)</span>,</span>
+<span>  entities <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ZMB"</span>, <span class="st">"ZAF"</span><span class="op">)</span>,</span>
 <span>  series <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DT.DOD.DPPG.CD"</span>, <span class="st">"BM.GSR.TOTL.CD"</span><span class="op">)</span>,</span>
 <span>  counterparts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"216"</span>, <span class="st">"231"</span><span class="op">)</span>,</span>
 <span>  start_year <span class="op">=</span> <span class="fl">2015</span>,</span>
 <span>  end_year <span class="op">=</span> <span class="fl">2020</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 48 × 5</span></span>
+<span><span class="co">#&gt;    entity_id series_id      counterpart_id  year     value</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;          &lt;int&gt;     &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 ZMB       BM.GSR.TOTL.CD 231             2015        NA</span></span>
+<span><span class="co">#&gt;  2 ZMB       BM.GSR.TOTL.CD 216             2015        NA</span></span>
+<span><span class="co">#&gt;  3 ZMB       DT.DOD.DPPG.CD 231             2015        NA</span></span>
+<span><span class="co">#&gt;  4 ZMB       DT.DOD.DPPG.CD 216             2015 193907000</span></span>
+<span><span class="co">#&gt;  5 ZMB       BM.GSR.TOTL.CD 231             2016        NA</span></span>
+<span><span class="co">#&gt;  6 ZMB       BM.GSR.TOTL.CD 216             2016        NA</span></span>
+<span><span class="co">#&gt;  7 ZMB       DT.DOD.DPPG.CD 231             2016        NA</span></span>
+<span><span class="co">#&gt;  8 ZMB       DT.DOD.DPPG.CD 216             2016 180118000</span></span>
+<span><span class="co">#&gt;  9 ZMB       BM.GSR.TOTL.CD 231             2017        NA</span></span>
+<span><span class="co">#&gt; 10 ZMB       BM.GSR.TOTL.CD 216             2017        NA</span></span>
+<span><span class="co">#&gt; # ℹ 38 more rows</span></span></code></pre></div>
 <p>The package comes with prepared metadata about available series, entities, counterparts, and topics. Please consult the <a href="https://teal-insights.github.io/r-wbids/articles/data-model.html">package vignette</a> for details.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ids_list_series.html">ids_list_series</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -94,6 +108,26 @@
 <span><span class="fu"><a href="reference/ids_list_counterparts.html">ids_list_counterparts</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/ids_list_series_topics.html">ids_list_series_topics</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>This data can be used to enrich the IDS series or facilitate data discovery. For further applications, please consult <a href="https://teal-insights.github.io/teal-insights-guide-to-wbids/" class="external-link">Teal Insights’ Guide to Working with the World Bank International Debt Statistics</a>.</p>
+<p>The package also provides a convenience function to download the full IDS data pre-processed with <code>wbids</code> from the corresponding EconDataverse dataset on <a href="https://huggingface.co/datasets/econdataverse/wbids" class="external-link">Hugging Face</a> via the <a href="https://tidy-intelligence.github.io/r-econdatasets/" class="external-link"><code>econdatasets</code></a> package:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ids_get_ed.html">ids_get_ed</a></span><span class="op">(</span><span class="st">"debt_statistics"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; → Reading dataset from</span></span>
+<span><span class="co">#&gt;   https://huggingface.co/datasets/econdataverse/wbids/resolve/main/debt_statistics.parquet</span></span>
+<span><span class="co">#&gt; ✔ Successfully loaded debt_statistics from wbids</span></span>
+<span><span class="co">#&gt; # A tibble: 144,526,432 × 5</span></span>
+<span><span class="co">#&gt;    entity_id series_id           counterpart_id  year value</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;     &lt;chr&gt;               &lt;chr&gt;          &lt;int&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 AFG       DT.DIS.BLAT.PRVG.CD 625             2006     0</span></span>
+<span><span class="co">#&gt;  2 AFG       DT.DIS.BLAT.PRVG.CD 625             2007     0</span></span>
+<span><span class="co">#&gt;  3 AFG       DT.DIS.BLAT.PRVG.CD 625             2008     0</span></span>
+<span><span class="co">#&gt;  4 AFG       DT.DIS.BLAT.PRVG.CD 625             2009     0</span></span>
+<span><span class="co">#&gt;  5 AFG       DT.DIS.BLAT.PRVG.CD 625             2010     0</span></span>
+<span><span class="co">#&gt;  6 AFG       DT.DIS.BLAT.PRVG.CD 625             2011     0</span></span>
+<span><span class="co">#&gt;  7 AFG       DT.DIS.BLAT.PRVG.CD 625             2012     0</span></span>
+<span><span class="co">#&gt;  8 AFG       DT.DIS.BLAT.PRVG.CD 625             2013     0</span></span>
+<span><span class="co">#&gt;  9 AFG       DT.DIS.BLAT.PRVG.CD 625             2014     0</span></span>
+<span><span class="co">#&gt; 10 AFG       DT.DIS.BLAT.PRVG.CD 625             2015     0</span></span>
+<span><span class="co">#&gt; # ℹ 144,526,422 more rows</span></span></code></pre></div>
 <p>The interface and column names are fully consistent with World Development Indicators (WDI) data provided through the <code>wbwdi</code> package. You can find details on <a href="https://github.com/tidy-intelligence/r-wbwdi" class="external-link">github.com/tidy-intelligence/r-wbwdi</a>.</p>
 </div>
 <div class="section level2">

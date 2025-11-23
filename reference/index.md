@@ -13,6 +13,8 @@
 - [`ids_get()`](https://teal-insights.github.io/r-wbids/reference/ids_get.md)
   : Fetch Data from the World Bank International Debt Statistics (IDS)
   API
+- [`ids_get_ed()`](https://teal-insights.github.io/r-wbids/reference/ids_get_ed.md)
+  : Get full IDS tables from EconDataverse datasets
 - [`ids_list_counterparts()`](https://teal-insights.github.io/r-wbids/reference/ids_list_counterparts.md)
   : List Available Counterparts from the World Bank International Debt
   Statistics API
