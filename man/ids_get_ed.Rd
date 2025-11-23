@@ -9,6 +9,11 @@ ids_get_ed(table = "debt_statistics", columns = NULL, quiet = FALSE)
 \arguments{
 \item{table}{Character string naming the table from the IDS dataset.
 Default: \code{"debt_statistics"}.}
+
+\item{columns}{Character vector naming the columns. Defaults to \code{NULL}.}
+
+\item{quiet}{A logical parameter indicating whether messages should be
+printed to the console.}
 }
 \value{
 A \code{data.frame} containing the requested IDS table, or \code{NULL} if
@@ -21,7 +26,7 @@ hosted on EconDataverse Hugging Face repositories.
 }
 \examples{
 \dontshow{if (curl::has_internet()) withAutoprint(\{ # examplesIf}
-\dontrun{
+\donttest{
 # Get the default debt statistics table
 debt_statitics <- ids_get_ed()
 
