@@ -2,21 +2,10 @@
 
 ``` r
 library(wbids)
-library(dplyr)
 ```
 
-    Attaching package: 'dplyr'
-
-    The following objects are masked from 'package:stats':
-
-        filter, lag
-
-    The following objects are masked from 'package:base':
-
-        intersect, setdiff, setequal, union
-
 The `wbids` package provides two ways to download the complete
-International Debt Statistics (IDS) dataset:
+International Debt Statistics (IDS) dataset.
 
 With
 [`ids_bulk()`](https://teal-insights.github.io/r-wbids/reference/ids_bulk.md),
@@ -30,7 +19,7 @@ files <- ids_bulk_files()
 data_list <- lapply(files$file_url, ids_bulk)
 
 # Step 3: Combine all data
-full_data <- bind_rows(data_list)
+full_data <- rbind(data_list)
 ```
 
 With
