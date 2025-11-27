@@ -2,6 +2,8 @@
 
 ## wbids 1.1.2
 
+CRAN release: 2025-11-27
+
 - Add
   [`ids_get_ed()`](https://teal-insights.github.io/r-wbids/reference/ids_get_ed.md)
   to download pre-processed tables from EconDataverse datasets on
