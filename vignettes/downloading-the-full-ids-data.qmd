@@ -7,17 +7,15 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup}
+```{r, eval=FALSE}
 library(wbids)
-library(dplyr)
 ```
 
-The `wbids` package provides two ways to download the complete International Debt Statistics  (IDS) dataset:
+The `wbids` package provides two ways to download the complete International Debt Statistics  (IDS) dataset.
 
 With `ids_bulk()`, you need to download and combine multiple Excel files:
 
-```{r}
-#| eval: false
+```{r, eval=FALSE}
 # Step 1: Get list of available files
 files <- ids_bulk_files()
 
@@ -25,12 +23,12 @@ files <- ids_bulk_files()
 data_list <- lapply(files$file_url, ids_bulk)
 
 # Step 3: Combine all data
-full_data <- bind_rows(data_list)
+full_data <- rbind(data_list)
 ```
 
 With `ids_get_ed()`, you get everything in one step:
 
-```{r ed-approach}
+```{r, eval=FALSE}
 #| eval: false
 full_data <- ids_get_ed("debt_statistics")
 ```
