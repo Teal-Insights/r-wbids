@@ -2,7 +2,7 @@
 title: "Downloading the Full IDS Data"
 format: html
 vignette: >
-  %\VignetteIndexEntry{`wbids` Data Model}
+  %\VignetteIndexEntry{Downloading the Full IDS Data}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---
