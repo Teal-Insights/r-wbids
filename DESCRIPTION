@@ -1,23 +1,23 @@
 Package: wbids
 Title: Seamless Access to World Bank International Debt Statistics (IDS)
-Version: 1.1.2.9000
-Authors@R: 
+Version: 1.1.2.9001
+Authors@R:
     c(person("Teal", "Emery", , "lte@tealinsights.com", role = c("aut", "cre")),
       person("Teal Insights", role = c("cph")),
       person("Christoph", "Scheuch", , "christoph@tidy-intelligence.com",
              role = c("aut"), comment = c(ORCID = "0009-0004-0423-6819")),
-      person("Christopher", "Smith", email = "chriscarrollsmith@gmail.com", 
+      person("Christopher", "Smith", email = "chriscarrollsmith@gmail.com",
              role = c("ctb")))
-Description: Access and analyze the World Bank's International Debt Statistics 
-  (IDS) <https://www.worldbank.org/en/programs/debt-statistics/ids>. 
-  IDS provides creditor-debtor relationships between countries, regions, and 
+Description: Access and analyze the World Bank's International Debt Statistics
+  (IDS) <https://www.worldbank.org/en/programs/debt-statistics/ids>.
+  IDS provides creditor-debtor relationships between countries, regions, and
   institutions. 'wbids' enables users to download, process and work with IDS
-  series across multiple geographies, counterparts, and time periods. 
+  series across multiple geographies, counterparts, and time periods.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
-Depends: 
+Depends:
     R (>= 4.1.0)
 Imports:
     cli,
@@ -29,10 +29,11 @@ Imports:
     tidyr (>= 1.0.0),
     rlang (>= 1.0.0),
     econdatasets (>= 0.1.0)
-Suggests: 
+Suggests:
     curl,
     jsonlite,
-    quarto,
+    knitr,
+    rmarkdown,
     readxl (>= 1.0.0),
     testthat (>= 3.0.0),
     lifecycle,
@@ -40,4 +41,4 @@ Suggests:
 Config/testthat/edition: 3
 URL: https://teal-insights.github.io/r-wbids/, https://github.com/teal-insights/r-wbids/
 BugReports: https://github.com/teal-insights/r-wbids/issues
-VignetteBuilder: quarto
+VignetteBuilder: knitr
