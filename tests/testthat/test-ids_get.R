@@ -467,11 +467,10 @@ test_that("ids_get filters post-observed-year NAs correctly", {
     entities = "GHA",
     series = "DT.DOD.DECT.CD"
   )
-
-  # Ensure no rows exist beyond current year if all values are NA
-  expect_true(all(
-    result$year <= as.numeric(format(Sys.Date(), "%Y")) | !is.na(result$value)
-  ))
+  # Last year with data should be current year - 1 or current year - 2
+  current_year <- as.numeric(format(Sys.Date(), "%Y"))
+  last_data_year <- max(result$year[!is.na(result$value)])
+  expect_true(last_data_year %in% c(current_year - 1, current_year - 2))
 })
 
 test_that("ids_get correctly applies default years for projection series", {
@@ -502,6 +501,26 @@ test_that("ids_get retains post-actual-year data with values", {
 
   # Rows with years <= last year of projections should remain
   expect_equal(filtered_result$year, start_year:end_year)
+})
+
+test_that("ids_get filters post-cutoff years when all are NA", {
+  current_year <- as.integer(format(Sys.Date(), "%Y"))
+  cutoff_year <- current_year - 2
+
+  # Create data where all years after cutoff are NA
+  result <- tibble(
+    entity_id = rep("GHA", 6),
+    series_id = rep("DT.DOD.DECT.CD", 6),
+    counterpart_id = rep("WLD", 6),
+    year = (cutoff_year - 2):(cutoff_year + 3),
+    value = c(100, 200, 300, NA, NA, NA)  # Last 3 years (post-cutoff) are NA
+  )
+
+  filtered_result <- filter_post_actual_na(result)
+
+  # Only years up to cutoff should remain
+  expect_equal(max(filtered_result$year), cutoff_year)
+  expect_equal(nrow(filtered_result), 3)
 })
 
 test_that("ids_get handles valid entity codes correctly", {

@@ -518,8 +518,9 @@ process_time_range <- function(start_year, end_year) {
 
 #' Filter Data for Years Beyond Latest Observed Data
 #'
-#' This function filters out rows for years beyond the latest observed data
-#' and removes rows with NA values for these years.
+#' This function filters out rows for projection years that have no data.
+#' It assumes the latest actual data is from the current or previous year,
+#' and removes future years where all values are NA.
 #'
 #' @param data The data to filter.
 #'
@@ -528,13 +529,18 @@ process_time_range <- function(start_year, end_year) {
 #' @noRd
 #' @keywords internal
 filter_post_actual_na <- function(data) {
-  # WB provides projections ~8 yrs after end of actual data
-  data_after_actual <- data |>
-    filter(.data$year > times$time_year[nrow(times) - 8])
+  # Assume latest actual data could be up to 2 years behind current year
+  # (e.g., in early 2025, latest data might still be 2023)
+  current_year <- as.integer(format(Sys.Date(), "%Y"))
+  cutoff_year <- current_year - 2
 
-  if (all(is.na(data_after_actual$value))) {
+  # Check if all values after the cutoff year are NA
+  data_after_cutoff <- data |>
+    filter(.data$year > cutoff_year)
+
+  if (nrow(data_after_cutoff) > 0 && all(is.na(data_after_cutoff$value))) {
     data <- data |>
-      filter(.data$year <= times$time_year[nrow(times) - 8])
+      filter(.data$year <= cutoff_year)
   }
 
   data
