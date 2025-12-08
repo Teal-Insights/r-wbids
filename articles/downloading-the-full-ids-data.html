@@ -10,9 +10,7 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="downloading-the-full-ids-data_files/libs/quarto-html/popper.min.js"></script><script src="downloading-the-full-ids-data_files/libs/quarto-html/tippy.umd.min.js"></script><link href="downloading-the-full-ids-data_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="downloading-the-full-ids-data_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Downloading the Full IDS Data">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Downloading the Full IDS Data">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -22,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">wbids</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.2.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,32 +49,30 @@
 
 
   </div>
-</nav><div class="container template-quarto">
+</nav><div class="container template-article">
+
+
+
+
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Downloading the Full IDS Data</h1>
-
-
-
-
-      <small class="dont-index">Source: <a href="https://github.com/teal-insights/r-wbids/blob/main/vignettes/downloading-the-full-ids-data.qmd" class="external-link"><code>vignettes/downloading-the-full-ids-data.qmd</code></a></small>
-      <div class="d-none name"><code></code></div>
+            
+      
+      <small class="dont-index">Source: <a href="https://github.com/teal-insights/r-wbids/blob/main/vignettes/downloading-the-full-ids-data.Rmd" class="external-link"><code>vignettes/downloading-the-full-ids-data.Rmd</code></a></small>
+      <div class="d-none name"><code>downloading-the-full-ids-data.Rmd</code></div>
     </div>
 
-
-
-
-
-
-    <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
+    
+    
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://teal-insights.github.io/r-wbids/">wbids</a></span><span class="op">)</span></span></code></pre></div>
-</div>
-<p>The <code>wbids</code> package provides two ways to download the complete International Debt Statistics (IDS) dataset.</p>
-<p>With <code><a href="../reference/ids_bulk.html">ids_bulk()</a></code>, you need to download and combine multiple Excel files:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
+<p>The <code>wbids</code> package provides two ways to download the
+complete International Debt Statistics (IDS) dataset.</p>
+<p>With <code><a href="../reference/ids_bulk.html">ids_bulk()</a></code>, you need to download and combine
+multiple Excel files:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Step 1: Get list of available files</span></span>
 <span><span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ids_bulk_files.html">ids_bulk_files</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -85,107 +81,20 @@
 <span></span>
 <span><span class="co"># Step 3: Combine all data</span></span>
 <span><span class="va">full_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">data_list</span><span class="op">)</span></span></code></pre></div>
-</div>
 <p>With <code><a href="../reference/ids_get_ed.html">ids_get_ed()</a></code>, you get everything in one step:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">full_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ids_get_ed.html">ids_get_ed</a></span><span class="op">(</span><span class="st">"debt_statistics"</span><span class="op">)</span></span></code></pre></div>
-</div>
 <p>The <code><a href="../reference/ids_get_ed.html">ids_get_ed()</a></code> function is faster because:</p>
 <ul>
 <li>Downloads one optimized file instead of multiple Excel files</li>
 <li>Uses Parquet format which is faster to read than Excel</li>
 <li>Data is already processed and ready to use</li>
 </ul>
-<p>For most use cases, <code><a href="../reference/ids_get_ed.html">ids_get_ed()</a></code> is the recommended approach due to its simplicity and performance benefits.</p>
-
-
-
-<script id="quarto-html-after-body" type="application/javascript">
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
-      var isInternal = (href) => {
-          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-      }
-      // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-      for (var i=0; i<links.length; i++) {
-        const link = links[i];
-        if (!isInternal(link.href)) {
-          // undo the damage that might have been done by quarto-nav.js in the case of
-          // links that we want to consider external
-          if (link.dataset.originalHref !== undefined) {
-            link.href = link.dataset.originalHref;
-          }
-        }
-      }
-    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-      const config = {
-        allowHTML: true,
-        maxWidth: 500,
-        delay: 100,
-        arrow: false,
-        appendTo: function(el) {
-            return el.parentElement;
-        },
-        interactive: true,
-        interactiveBorder: 10,
-        theme: 'light-border',
-        placement: 'bottom-start',
-      };
-      if (contentFn) {
-        config.content = contentFn;
-      }
-      if (onTriggerFn) {
-        config.onTrigger = onTriggerFn;
-      }
-      if (onUntriggerFn) {
-        config.onUntrigger = onUntriggerFn;
-      }
-      window.tippy(el, config);
-    }
-    const findCites = (el) => {
-      const parentEl = el.parentElement;
-      if (parentEl) {
-        const cites = parentEl.dataset.cites;
-        if (cites) {
-          return {
-            el,
-            cites: cites.split(' ')
-          };
-        } else {
-          return findCites(el.parentElement)
-        }
-      } else {
-        return undefined;
-      }
-    };
-    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-    for (var i=0; i<bibliorefs.length; i++) {
-      const ref = bibliorefs[i];
-      const citeInfo = findCites(ref);
-      if (citeInfo) {
-        tippyHover(citeInfo.el, function() {
-          var popup = window.document.createElement('div');
-          citeInfo.cites.forEach(function(cite) {
-            var citeDiv = window.document.createElement('div');
-            citeDiv.classList.add('hanging-indent');
-            citeDiv.classList.add('csl-entry');
-            var biblioDiv = window.document.getElementById('ref-' + cite);
-            if (biblioDiv) {
-              citeDiv.innerHTML = biblioDiv.innerHTML;
-            }
-            popup.appendChild(citeDiv);
-          });
-          return popup.innerHTML;
-        });
-      }
-    }
-  });
-  </script></main>
+<p>For most use cases, <code><a href="../reference/ids_get_ed.html">ids_get_ed()</a></code> is the recommended
+approach due to its simplicity and performance benefits.</p>
+  </main>
 </div>
+
 
 
     <footer><div class="pkgdown-footer-left">
