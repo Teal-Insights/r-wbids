@@ -1,4 +1,4 @@
-# wbids (development version)
+# wbids 1.1.3
 
 # wbids 1.1.2
 
