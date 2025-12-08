@@ -19,3 +19,4 @@ _pkgdown.yml
 ^.specstory$
 CLAUDE.md
 air.toml
+^\.claude$

@@ -1,9 +1,9 @@
 ---
 title: "Downloading the Full IDS Data"
-format: html
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Downloading the Full IDS Data}
-  %\VignetteEngine{quarto::html}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -29,7 +29,6 @@ full_data <- rbind(data_list)
 With `ids_get_ed()`, you get everything in one step:
 
 ```{r, eval=FALSE}
-#| eval: false
 full_data <- ids_get_ed("debt_statistics")
 ```
 
