@@ -1,4 +1,6 @@
 test_that("perform_request handles error responses", {
+  skip_on_cran()
+
   mock_error_response <- list(
     list(
       message = list(
@@ -19,6 +21,8 @@ test_that("perform_request handles error responses", {
 })
 
 test_that("perform_request validates per_page parameter", {
+  skip_on_cran()
+
   expect_error(perform_request("series", per_page = 50000))
   expect_silent(perform_request("series", per_page = 1000))
 })
@@ -51,6 +55,7 @@ test_that("create_request constructs a request with default parameters", {
 })
 
 test_that("is_request_error identifies error responses correctly", {
+
   mock_resp <- httr2::response(
     status_code = 400,
     headers = list("Content-Type" = "application/json"),
@@ -60,10 +65,13 @@ test_that("is_request_error identifies error responses correctly", {
 })
 
 test_that("perform_request handles API errors gracefully", {
+  skip_on_cran()
+
   expect_error(perform_request("nonexistent"), "HTTP 400 Bad Request.")
 })
 
 test_that("perform_request handles wrong requests gracefully", {
+  skip_on_cran()
 
   mocked_request <- request(paste0(
     "https://api.worldbank.org/v2/sources/6/",
@@ -107,6 +115,7 @@ test_that("perform_request errors on too long URLs", {
 })
 
 test_that("perform_request handles pagination correctly", {
+  skip_on_cran()
   result <- perform_request(
     "country/ZMB/series/DT.DOD.DPPG.CD/counterpart-area/WLD/time/YR2020;YR2021",
     per_page = 1L

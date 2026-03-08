@@ -524,6 +524,8 @@ test_that("ids_get filters post-cutoff years when all are NA", {
 })
 
 test_that("ids_get handles valid entity codes correctly", {
+  skip_on_cran()
+
   # Test individual country code (ISO3C)
   expect_silent(ids_get(
     entities = "GHA",
@@ -550,6 +552,8 @@ test_that("ids_get handles valid entity codes correctly", {
 })
 
 test_that("ids_get handles valid counterpart codes correctly", {
+  skip_on_cran()
+
   # Test default world aggregate
   expect_silent(ids_get(
     entities = "GHA",
@@ -588,6 +592,8 @@ test_that("ids_get handles valid counterpart codes correctly", {
 })
 
 test_that("ids_get returns expected data structure", {
+  skip_on_cran()
+
   result <- ids_get(
     entities = "GHA",
     series = "DT.DOD.DECT.CD",
@@ -617,6 +623,8 @@ test_that("ids_get returns expected data structure", {
 })
 
 test_that("process_time_range handles pre-1970 dates correctly", {
+  skip_on_cran()
+  
   # Test start_year before 1970
   expect_warning(
     result <- process_time_range(1960, 2020),
