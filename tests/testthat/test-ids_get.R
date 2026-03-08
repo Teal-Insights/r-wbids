@@ -624,7 +624,7 @@ test_that("ids_get returns expected data structure", {
 
 test_that("process_time_range handles pre-1970 dates correctly", {
   skip_on_cran()
-  
+
   # Test start_year before 1970
   expect_warning(
     result <- process_time_range(1960, 2020),
