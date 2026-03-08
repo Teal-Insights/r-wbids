@@ -25,7 +25,7 @@ tables from the World Bank International Debt Statistics (IDS) dataset
 hosted on EconDataverse Hugging Face repositories.
 }
 \examples{
-\dontshow{if (curl::has_internet()) withAutoprint(\{ # examplesIf}
+\dontshow{if (curl::has_internet()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 \donttest{
 # Get the default debt statistics table
 debt_statitics <- ids_get_ed()
