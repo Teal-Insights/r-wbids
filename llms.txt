@@ -105,20 +105,20 @@ ids_get_ed("debt_statistics")
 #> → Reading dataset from
 #>   https://huggingface.co/datasets/econdataverse/wbids/resolve/main/debt_statistics.parquet
 #> ✔ Successfully loaded debt_statistics from wbids
-#> # A tibble: 144,526,432 × 5
+#> # A tibble: 147,000,092 × 5
 #>    entity_id series_id           counterpart_id  year value
 #>    <chr>     <chr>               <chr>          <int> <dbl>
-#>  1 AFG       DT.DIS.BLAT.PRVG.CD 625             2006     0
-#>  2 AFG       DT.DIS.BLAT.PRVG.CD 625             2007     0
-#>  3 AFG       DT.DIS.BLAT.PRVG.CD 625             2008     0
-#>  4 AFG       DT.DIS.BLAT.PRVG.CD 625             2009     0
-#>  5 AFG       DT.DIS.BLAT.PRVG.CD 625             2010     0
-#>  6 AFG       DT.DIS.BLAT.PRVG.CD 625             2011     0
-#>  7 AFG       DT.DIS.BLAT.PRVG.CD 625             2012     0
-#>  8 AFG       DT.DIS.BLAT.PRVG.CD 625             2013     0
-#>  9 AFG       DT.DIS.BLAT.PRVG.CD 625             2014     0
-#> 10 AFG       DT.DIS.BLAT.PRVG.CD 625             2015     0
-#> # ℹ 144,526,422 more rows
+#>  1 AFG       DT.DIS.PRVT.PRVG.CD 625             2006     0
+#>  2 AFG       DT.DIS.PRVT.PRVG.CD 625             2007     0
+#>  3 AFG       DT.DIS.PRVT.PRVG.CD 625             2008     0
+#>  4 AFG       DT.DIS.PRVT.PRVG.CD 625             2009     0
+#>  5 AFG       DT.DIS.PRVT.PRVG.CD 625             2010     0
+#>  6 AFG       DT.DIS.PRVT.PRVG.CD 625             2011     0
+#>  7 AFG       DT.DIS.PRVT.PRVG.CD 625             2012     0
+#>  8 AFG       DT.DIS.PRVT.PRVG.CD 625             2013     0
+#>  9 AFG       DT.DIS.PRVT.PRVG.CD 625             2014     0
+#> 10 AFG       DT.DIS.PRVT.PRVG.CD 625             2015     0
+#> # ℹ 147,000,082 more rows
 ```
 
 The interface and column names are fully consistent with World

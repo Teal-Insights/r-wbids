@@ -1,6 +1,10 @@
 # Changelog
 
-## wbids (development version)
+## wbids 1.1.4
+
+CRAN release: 2026-03-10
+
+- Tests that made third-party API calls are now skipped on CRAN.
 
 ## wbids 1.1.2
 

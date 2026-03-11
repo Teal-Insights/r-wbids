@@ -17,13 +17,13 @@ Source:
 [`DESCRIPTION`](https://github.com/teal-insights/r-wbids/blob/main/DESCRIPTION)
 
 Emery T, Scheuch C (2026). *wbids: Seamless Access to World Bank
-International Debt Statistics (IDS)*. R package version 1.1.2.9001,
+International Debt Statistics (IDS)*. R package version 1.1.4,
 <https://teal-insights.github.io/r-wbids/>.
 
     @Manual{,
       title = {wbids: Seamless Access to World Bank International Debt Statistics (IDS)},
       author = {Teal Emery and Christoph Scheuch},
       year = {2026},
-      note = {R package version 1.1.2.9001},
+      note = {R package version 1.1.4},
       url = {https://teal-insights.github.io/r-wbids/},
     }
