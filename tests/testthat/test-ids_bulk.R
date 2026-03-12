@@ -354,6 +354,8 @@ test_that("check_interactive returns expected results", {
 })
 
 test_that("download_file downloads a file correctly", {
+  skip_on_cran()
+  
   url <- "https://example.com"
   destfile <- tempfile(fileext = ".txt")
   if (file.exists(destfile)) {
