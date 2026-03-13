@@ -524,7 +524,33 @@ test_that("ids_get filters post-cutoff years when all are NA", {
 })
 
 test_that("ids_get handles valid entity codes correctly", {
-  skip_on_cran()
+  mock_debt_statistics_data <- function(entity_id, series_id,
+                                        counterpart_id, year, value) {
+    list(
+      list(
+        variable = list(
+          list(concept = "Country", id = entity_id, value = entity_id),
+          list(concept = "Series", id = series_id, value = series_id),
+          list(
+            concept = "Counterpart-Area", id = counterpart_id,
+            value = counterpart_id
+          ),
+          list(concept = "Time", id = paste0("YR", year),
+               value = as.character(year))
+        ),
+        value = value
+      )
+    )
+  }
+
+  local_mocked_bindings(
+    get_debt_statistics = function(entity, series,
+                                   counterpart, time, progress) {
+      purrr::map(strsplit(entity, ";")[[1]], function(e) {
+        mock_debt_statistics_data(e, "DT.DOD.DECT.CD", "WLD", 2020, 1000000)
+      }) |> purrr::list_flatten()
+    }
+  )
 
   # Test individual country code (ISO3C)
   expect_silent(ids_get(
@@ -552,7 +578,33 @@ test_that("ids_get handles valid entity codes correctly", {
 })
 
 test_that("ids_get handles valid counterpart codes correctly", {
-  skip_on_cran()
+  mock_debt_statistics_data <- function(entity_id, series_id,
+                                        counterpart_id, year, value) {
+    list(
+      list(
+        variable = list(
+          list(concept = "Country", id = entity_id, value = entity_id),
+          list(concept = "Series", id = series_id, value = series_id),
+          list(
+            concept = "Counterpart-Area", id = counterpart_id,
+            value = counterpart_id
+          ),
+          list(concept = "Time", id = paste0("YR", year),
+               value = as.character(year))
+        ),
+        value = value
+      )
+    )
+  }
+
+  local_mocked_bindings(
+    get_debt_statistics = function(entity, series,
+                                   counterpart, time, progress) {
+      purrr::map(strsplit(entity, ";")[[1]], function(e) {
+        mock_debt_statistics_data(e, "DT.DOD.DECT.CD", "WLD", 2020, 1000000)
+      }) |> purrr::list_flatten()
+    }
+  )
 
   # Test default world aggregate
   expect_silent(ids_get(
@@ -592,7 +644,33 @@ test_that("ids_get handles valid counterpart codes correctly", {
 })
 
 test_that("ids_get returns expected data structure", {
-  skip_on_cran()
+  mock_debt_statistics_data <- function(entity_id, series_id,
+                                        counterpart_id, year, value) {
+    list(
+      list(
+        variable = list(
+          list(concept = "Country", id = entity_id, value = entity_id),
+          list(concept = "Series", id = series_id, value = series_id),
+          list(
+            concept = "Counterpart-Area", id = counterpart_id,
+            value = counterpart_id
+          ),
+          list(concept = "Time", id = paste0("YR", year),
+               value = as.character(year))
+        ),
+        value = value
+      )
+    )
+  }
+
+  local_mocked_bindings(
+    get_debt_statistics = function(entity, series,
+                                   counterpart, time, progress) {
+      purrr::map(strsplit(entity, ";")[[1]], function(e) {
+        mock_debt_statistics_data(e, "DT.DOD.DECT.CD", "WLD", 2020, 1000000)
+      }) |> purrr::list_flatten()
+    }
+  )
 
   result <- ids_get(
     entities = "GHA",
@@ -623,7 +701,33 @@ test_that("ids_get returns expected data structure", {
 })
 
 test_that("process_time_range handles pre-1970 dates correctly", {
-  skip_on_cran()
+  mock_debt_statistics_data <- function(entity_id, series_id,
+                                        counterpart_id, year, value) {
+    list(
+      list(
+        variable = list(
+          list(concept = "Country", id = entity_id, value = entity_id),
+          list(concept = "Series", id = series_id, value = series_id),
+          list(
+            concept = "Counterpart-Area", id = counterpart_id,
+            value = counterpart_id
+          ),
+          list(concept = "Time", id = paste0("YR", year),
+               value = as.character(year))
+        ),
+        value = value
+      )
+    )
+  }
+
+  local_mocked_bindings(
+    get_debt_statistics = function(entity, series,
+                                   counterpart, time, progress) {
+      purrr::map(strsplit(entity, ";")[[1]], function(e) {
+        mock_debt_statistics_data(e, "DT.DOD.DECT.CD", "WLD", 2020, 1000000)
+      }) |> purrr::list_flatten()
+    }
+  )
 
   # Test start_year before 1970
   expect_warning(
@@ -648,6 +752,34 @@ test_that("process_time_range handles pre-1970 dates correctly", {
 })
 
 test_that("ids_get handles pre-1970 dates correctly", {
+  mock_debt_statistics_data <- function(entity_id, series_id,
+                                        counterpart_id, year, value) {
+    list(
+      list(
+        variable = list(
+          list(concept = "Country", id = entity_id, value = entity_id),
+          list(concept = "Series", id = series_id, value = series_id),
+          list(
+            concept = "Counterpart-Area", id = counterpart_id,
+            value = counterpart_id
+          ),
+          list(concept = "Time", id = paste0("YR", year),
+               value = as.character(year))
+        ),
+        value = value
+      )
+    )
+  }
+
+  local_mocked_bindings(
+    get_debt_statistics = function(entity, series,
+                                   counterpart, time, progress) {
+      purrr::map(strsplit(entity, ";")[[1]], function(e) {
+        mock_debt_statistics_data(e, "DT.DOD.DECT.CD", "WLD", 2020, 1000000)
+      }) |> purrr::list_flatten()
+    }
+  )
+
   # Test with start_year before 1970
   expect_warning(
     result <- ids_get(
