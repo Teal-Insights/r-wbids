@@ -354,13 +354,20 @@ test_that("check_interactive returns expected results", {
 })
 
 test_that("download_file downloads a file correctly", {
-  skip_on_cran()
-
   url <- "https://example.com"
   destfile <- tempfile(fileext = ".txt")
   if (file.exists(destfile)) {
     file.remove(destfile)
   }
+
+  local_mocked_bindings(
+    download.file = function(url, destfile, ...) {
+      file.create(destfile)
+      0L
+    },
+    .package = "utils"
+  )
+
   download_file(url, destfile, quiet = TRUE)
   expect_true(file.exists(destfile))
   file.remove(destfile)
