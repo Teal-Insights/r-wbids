@@ -524,7 +524,14 @@ test_that("ids_get filters post-cutoff years when all are NA", {
 })
 
 test_that("ids_get handles valid entity codes correctly", {
-  skip_on_cran()
+  local_mocked_bindings(
+    get_debt_statistics = function(entity, series,
+                                   counterpart, time, progress) {
+      purrr::map(strsplit(entity, ";")[[1]], function(e) {
+        mock_debt_statistics_data(e, "DT.DOD.DECT.CD", "WLD", 2020, 1000000)
+      }) |> purrr::list_flatten()
+    }
+  )
 
   # Test individual country code (ISO3C)
   expect_silent(ids_get(
@@ -552,7 +559,14 @@ test_that("ids_get handles valid entity codes correctly", {
 })
 
 test_that("ids_get handles valid counterpart codes correctly", {
-  skip_on_cran()
+  local_mocked_bindings(
+    get_debt_statistics = function(entity, series,
+                                   counterpart, time, progress) {
+      purrr::map(strsplit(entity, ";")[[1]], function(e) {
+        mock_debt_statistics_data(e, "DT.DOD.DECT.CD", "WLD", 2020, 1000000)
+      }) |> purrr::list_flatten()
+    }
+  )
 
   # Test default world aggregate
   expect_silent(ids_get(
@@ -592,7 +606,14 @@ test_that("ids_get handles valid counterpart codes correctly", {
 })
 
 test_that("ids_get returns expected data structure", {
-  skip_on_cran()
+  local_mocked_bindings(
+    get_debt_statistics = function(entity, series,
+                                   counterpart, time, progress) {
+      purrr::map(strsplit(entity, ";")[[1]], function(e) {
+        mock_debt_statistics_data(e, "DT.DOD.DECT.CD", "WLD", 2020, 1000000)
+      }) |> purrr::list_flatten()
+    }
+  )
 
   result <- ids_get(
     entities = "GHA",
@@ -623,7 +644,14 @@ test_that("ids_get returns expected data structure", {
 })
 
 test_that("process_time_range handles pre-1970 dates correctly", {
-  skip_on_cran()
+  local_mocked_bindings(
+    get_debt_statistics = function(entity, series,
+                                   counterpart, time, progress) {
+      purrr::map(strsplit(entity, ";")[[1]], function(e) {
+        mock_debt_statistics_data(e, "DT.DOD.DECT.CD", "WLD", 2020, 1000000)
+      }) |> purrr::list_flatten()
+    }
+  )
 
   # Test start_year before 1970
   expect_warning(
@@ -648,6 +676,15 @@ test_that("process_time_range handles pre-1970 dates correctly", {
 })
 
 test_that("ids_get handles pre-1970 dates correctly", {
+  local_mocked_bindings(
+    get_debt_statistics = function(entity, series,
+                                   counterpart, time, progress) {
+      purrr::map(strsplit(entity, ";")[[1]], function(e) {
+        mock_debt_statistics_data(e, "DT.DOD.DECT.CD", "WLD", 2020, 1000000)
+      }) |> purrr::list_flatten()
+    }
+  )
+
   # Test with start_year before 1970
   expect_warning(
     result <- ids_get(
