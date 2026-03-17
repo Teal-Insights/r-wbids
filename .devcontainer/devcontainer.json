@@ -1,0 +1,20 @@
+{
+  "name": "R Development",
+  "image": "mcr.microsoft.com/devcontainers/base:debian",
+  "features": {
+    "ghcr.io/rocker-org/devcontainer-features/r-rig:1": {
+      "version": "release",
+      "installREnv": false,
+      "installRMarkdown": false,
+      "installJupyterlab": false
+    }
+  },
+  "postCreateCommand": "R -e \"install.packages(c('jsonlite', 'languageserver', 'devtools', 'httpgd'), repos = 'https://cloud.r-project.org')\"",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "REditorSupport.r"
+      ]
+    }
+  }
+}
