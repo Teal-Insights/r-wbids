@@ -21,7 +21,6 @@ Depends:
     R (>= 4.1.0)
 Imports:
     cli,
-    withr,
     httr2 (>= 1.0.0),
     dplyr (>= 1.0.0),
     purrr (>= 1.0.0),

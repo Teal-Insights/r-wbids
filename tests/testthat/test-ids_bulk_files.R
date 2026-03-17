@@ -1,13 +1,13 @@
-test_that("ids_bulk_files returns a tibble with expected columns", {
-  skip_if_not_installed("jsonlite")
+httptest2::without_internet({
+  test_that("ids_bulk_files returns a tibble with expected columns", {
+    skip_if_not_installed("jsonlite")
 
-  local_mocked_bindings(
-    read_bulk_info = function() {
-      readRDS(test_path("data/read_bulk_info_output.rds"))
-    }
-  )
+    local_mocked_bindings(
+      read_bulk_info = function() {
+        readRDS(test_path("data/read_bulk_info_output.rds"))
+      }
+    )
 
-  httptest2::without_internet({
     result <- ids_bulk_files()
     expected_columns <- c("file_name", "file_url", "last_updated_date")
 
