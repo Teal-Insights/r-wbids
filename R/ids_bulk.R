@@ -127,27 +127,27 @@ download_bulk_file <- function(file_url, file_path, timeout, warn_size, quiet) {
   }
 
   # nocov start
-  withr::with_options(
-    list(timeout = timeout),
-    tryCatch(
-      {
-        download_file(file_url, destfile = file_path, quiet = quiet)
-      },
-      error = function(e) {
-        if (grepl("timeout|cannot open URL", e$message, ignore.case = TRUE)) {
-          cli::cli_abort(
-            paste0(
-              "Download timed out after ",
-              timeout,
-              " seconds.\n",
-              "Try increasing the timeout parameter",
-              " (e.g., timeout=600 for 10 minutes)"
-            )
+  tryCatch(
+    {
+      download_file(
+        file_url, destfile = file_path, quiet = quiet, timeout = timeout
+      )
+    },
+    error = function(e) {
+      if (grepl("timeout|cannot open URL|Timeout", e$message,
+                ignore.case = TRUE)) {
+        cli::cli_abort(
+          paste0(
+            "Download timed out after ",
+            timeout,
+            " seconds.\n",
+            "Try increasing the timeout parameter",
+            " (e.g., timeout=600 for 10 minutes)"
           )
-        }
-        cli::cli_abort(e$message)
+        )
       }
-    )
+      cli::cli_abort(e$message)
+    }
   )
   # nocov end
   validate_file(file_path)
@@ -256,12 +256,18 @@ check_interactive <- function() {
 #' @param url URL of file to download
 #' @param destfile Destination file path
 #' @param quiet Whether to suppress messages
-#' @return Invisibly returns the status code from download.file
+#' @param timeout Timeout in seconds for the download request
+#' @return The httr2 response object (invisibly)
 #' @keywords internal
 #' @noRd
 #'
-download_file <- function(url, destfile, quiet) {
-  utils::download.file(url, destfile = destfile, quiet = quiet, mode = "wb")
+download_file <- function(url, destfile, quiet, timeout = 300) {
+  req <- httr2::request(url) |>
+    httr2::req_user_agent(
+      "wbids R package (https://github.com/teal-insights/r-wbids)"
+    ) |>
+    httr2::req_timeout(timeout)
+  httr2::req_perform(req, path = destfile)
 }
 
 #' Prompt a user with a question

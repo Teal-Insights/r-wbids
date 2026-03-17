@@ -35,6 +35,7 @@ Suggests:
     knitr,
     rmarkdown,
     readxl (>= 1.0.0),
+    httptest2,
     testthat (>= 3.0.0),
     lifecycle,
     httr

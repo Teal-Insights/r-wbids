@@ -91,42 +91,64 @@ test_that("validate_progress checks logical values for progress", {
 })
 
 test_that("ids_get returns a tibble with expected columns", {
-  result <- ids_get(
-    entities = "ZMB",
-    series = "DT.DOD.DPPG.CD",
-    counterparts = c("216"),
-    start_year = 2015,
-    end_year = 2016,
-    progress = FALSE
+  local_mocked_bindings(
+    get_debt_statistics = function(entity, series,
+                                   counterpart, time, progress) {
+      mock_debt_statistics_data("ZMB", "DT.DOD.DPPG.CD", "216", 2015, 100) |>
+        c(mock_debt_statistics_data("ZMB", "DT.DOD.DPPG.CD", "216",
+                                    2016, 200))
+    }
   )
-  expect_s3_class(result, "tbl_df")
-  expect_true(nrow(result) > 0)
-  expected_columns <- c(
-    "entity_id",
-    "series_id",
-    "counterpart_id",
-    "year",
-    "value"
-  )
-  expect_equal(colnames(result), expected_columns)
+
+  httptest2::without_internet({
+    result <- ids_get(
+      entities = "ZMB",
+      series = "DT.DOD.DPPG.CD",
+      counterparts = c("216"),
+      start_year = 2015,
+      end_year = 2016,
+      progress = FALSE
+    )
+    expect_s3_class(result, "tbl_df")
+    expect_true(nrow(result) > 0)
+    expected_columns <- c(
+      "entity_id",
+      "series_id",
+      "counterpart_id",
+      "year",
+      "value"
+    )
+    expect_equal(colnames(result), expected_columns)
+  })
 })
 
 test_that("ids_get returns a large data", {
-  result <- ids_get(
-    entities = "ZMB",
-    series = "DT.DOD.DPPG.CD",
-    counterparts = c("all")
+  local_mocked_bindings(
+    get_debt_statistics = function(entity, series,
+                                   counterpart, time, progress) {
+      purrr::map(c("216", "218", "730"), function(cp) {
+        mock_debt_statistics_data("ZMB", "DT.DOD.DPPG.CD", cp, 2020, 500)
+      }) |> purrr::list_flatten()
+    }
   )
-  expect_s3_class(result, "tbl_df")
-  expect_true(nrow(result) > 0)
-  expected_columns <- c(
-    "entity_id",
-    "series_id",
-    "counterpart_id",
-    "year",
-    "value"
-  )
-  expect_equal(colnames(result), expected_columns)
+
+  httptest2::without_internet({
+    result <- ids_get(
+      entities = "ZMB",
+      series = "DT.DOD.DPPG.CD",
+      counterparts = c("all")
+    )
+    expect_s3_class(result, "tbl_df")
+    expect_true(nrow(result) > 0)
+    expected_columns <- c(
+      "entity_id",
+      "series_id",
+      "counterpart_id",
+      "year",
+      "value"
+    )
+    expect_equal(colnames(result), expected_columns)
+  })
 })
 
 test_that("ids_get handles invalid entity input", {
@@ -161,16 +183,27 @@ test_that("ids_get handles invalid progress input", {
 })
 
 test_that("ids_get handles valid progress input", {
-  expect_silent(
-    ids_get(
-      entities = "ZMB",
-      series = "DT.DOD.DPPG.CD",
-      counterparts = "265",
-      start_year = 2015,
-      end_year = 2016,
-      progress = TRUE
-    )
+  local_mocked_bindings(
+    get_debt_statistics = function(entity, series,
+                                   counterpart, time, progress) {
+      mock_debt_statistics_data("ZMB", "DT.DOD.DPPG.CD", "265", 2015, 100) |>
+        c(mock_debt_statistics_data("ZMB", "DT.DOD.DPPG.CD", "265",
+                                    2016, 200))
+    }
   )
+
+  httptest2::without_internet({
+    expect_silent(
+      ids_get(
+        entities = "ZMB",
+        series = "DT.DOD.DPPG.CD",
+        counterparts = "265",
+        start_year = 2015,
+        end_year = 2016,
+        progress = TRUE
+      )
+    )
+  })
 })
 
 test_that("get_debt_statistics returns raw API response", {
@@ -198,15 +231,17 @@ test_that("get_debt_statistics returns raw API response", {
   with_mocked_bindings(
     perform_request = function(...) mock_perform_request,
     {
-      result <- get_debt_statistics(
-        entity = "ZMB",
-        series = "DT.DOD.DPPG.CD",
-        counterpart = "216",
-        time = "YR2020;YR2021",
-        progress = FALSE
-      )
+      httptest2::without_internet({
+        result <- get_debt_statistics(
+          entity = "ZMB",
+          series = "DT.DOD.DPPG.CD",
+          counterpart = "216",
+          time = "YR2020;YR2021",
+          progress = FALSE
+        )
 
-      expect_equal(result, mock_perform_request)
+        expect_equal(result, mock_perform_request)
+      })
     }
   )
 })
@@ -284,8 +319,10 @@ test_that("ids_get handles empty data gracefully", {
   with_mocked_bindings(
     perform_request = function(...) mock_data,
     {
-      result <- ids_get("ZMB", "DT.DOD.DPPG.CD")
-      expect_equal(nrow(result), 0)
+      httptest2::without_internet({
+        result <- ids_get("ZMB", "DT.DOD.DPPG.CD")
+        expect_equal(nrow(result), 0)
+      })
     }
   )
 })
@@ -306,17 +343,19 @@ test_that("ids_get handles empty or incomplete data gracefully", {
   with_mocked_bindings(
     perform_request = function(...) incomplete_data_mock,
     {
-      result <- ids_get(
-        entities = "ZMB",
-        series = "DT.DOD.DPPG.CD",
-        counterparts = "all",
-        start_year = 2020,
-        end_year = 2020,
-        progress = FALSE
-      )
-      expect_equal(nrow(result), 1)
-      expect_true(is.na(result$series_id[1]))
-      expect_equal(result$value, NA_real_)
+      httptest2::without_internet({
+        result <- ids_get(
+          entities = "ZMB",
+          series = "DT.DOD.DPPG.CD",
+          counterparts = "all",
+          start_year = 2020,
+          end_year = 2020,
+          progress = FALSE
+        )
+        expect_equal(nrow(result), 1)
+        expect_true(is.na(result$series_id[1]))
+        expect_equal(result$value, NA_real_)
+      })
     }
   )
 })
@@ -438,51 +477,94 @@ test_that("ids_get enforces vector length limits", {
   )
 
   # Test that exactly 60 items works for each parameter
-  exactly_60 <- rep("ZMB", 60)
-  expect_error(
-    ids_get(
-      entities = exactly_60,
-      series = "DT.DOD.DPPG.CD"
-    ),
-    NA
+  local_mocked_bindings(
+    get_debt_statistics = function(entity, series,
+                                   counterpart, time, progress) {
+      mock_debt_statistics_data("ZMB", "DT.DOD.DPPG.CD", "WLD", 2020, 100)
+    }
   )
+
+  httptest2::without_internet({
+    exactly_60 <- rep("ZMB", 60)
+    expect_error(
+      ids_get(
+        entities = exactly_60,
+        series = "DT.DOD.DPPG.CD"
+      ),
+      NA
+    )
+  })
 })
 
 test_that("ids_get uses new default parameters correctly", {
-  # Test that default counterparts = "WLD"
-  default_result <- ids_get(
-    entities = "GHA",
-    series = "DT.DOD.DECT.CD"
+  local_mocked_bindings(
+    get_debt_statistics = function(entity, series,
+                                   counterpart, time, progress) {
+      purrr::map(2000:2005, function(yr) {
+        mock_debt_statistics_data("GHA", "DT.DOD.DECT.CD", "WLD", yr, 1e6)
+      }) |> purrr::list_flatten()
+    }
   )
 
-  # All records should have counterpart_id = "WLD"
-  expect_true(all(default_result$counterpart_id == "WLD"))
+  httptest2::without_internet({
+    # Test that default counterparts = "WLD"
+    default_result <- ids_get(
+      entities = "GHA",
+      series = "DT.DOD.DECT.CD"
+    )
 
-  # All years should be >= 2000 (the new default start_year)
-  expect_true(all(default_result$year >= 2000))
+    # All records should have counterpart_id = "WLD"
+    expect_true(all(default_result$counterpart_id == "WLD"))
+
+    # All years should be >= 2000 (the new default start_year)
+    expect_true(all(default_result$year >= 2000))
+  })
 })
 
 test_that("ids_get filters post-observed-year NAs correctly", {
-  result <- ids_get(
-    entities = "GHA",
-    series = "DT.DOD.DECT.CD"
+  current_year <- as.integer(format(Sys.Date(), "%Y"))
+  local_mocked_bindings(
+    get_debt_statistics = function(entity, series,
+                                   counterpart, time, progress) {
+      purrr::map((current_year - 3):(current_year + 1), function(yr) {
+        val <- if (yr <= current_year - 1) 1e6 else NULL
+        mock_debt_statistics_data("GHA", "DT.DOD.DECT.CD", "WLD", yr, val)
+      }) |> purrr::list_flatten()
+    }
   )
-  # Last year with data should be current year - 1 or current year - 2
-  current_year <- as.numeric(format(Sys.Date(), "%Y"))
-  last_data_year <- max(result$year[!is.na(result$value)])
-  expect_true(last_data_year %in% c(current_year - 1, current_year - 2))
+
+  httptest2::without_internet({
+    result <- ids_get(
+      entities = "GHA",
+      series = "DT.DOD.DECT.CD"
+    )
+    # Last year with data should be current year - 1 or current year - 2
+    last_data_year <- max(result$year[!is.na(result$value)])
+    expect_true(last_data_year %in% c(current_year - 1, current_year - 2))
+  })
 })
 
 test_that("ids_get correctly applies default years for projection series", {
-  result <- ids_get(
-    entities = "GHA",
-    series = "DT.TDS.DECT.CD" # Projection series
+  local_mocked_bindings(
+    get_debt_statistics = function(entity, series,
+                                   counterpart, time, progress) {
+      purrr::map(2000:2005, function(yr) {
+        mock_debt_statistics_data("GHA", "DT.TDS.DECT.CD", "WLD", yr, 5e5)
+      }) |> purrr::list_flatten()
+    }
   )
 
-  # Verify the years in the result
-  expect_true(all(
-    result$year >= 2000 & result$year <= times$time_year[nrow(times)]
-  ))
+  httptest2::without_internet({
+    result <- ids_get(
+      entities = "GHA",
+      series = "DT.TDS.DECT.CD" # Projection series
+    )
+
+    # Verify the years in the result
+    expect_true(all(
+      result$year >= 2000 & result$year <= times$time_year[nrow(times)]
+    ))
+  })
 })
 
 test_that("ids_get retains post-actual-year data with values", {
@@ -533,29 +615,31 @@ test_that("ids_get handles valid entity codes correctly", {
     }
   )
 
-  # Test individual country code (ISO3C)
-  expect_silent(ids_get(
-    entities = "GHA",
-    series = "DT.DOD.DECT.CD",
-    start_year = 2020,
-    end_year = 2020
-  ))
+  httptest2::without_internet({
+    # Test individual country code (ISO3C)
+    expect_silent(ids_get(
+      entities = "GHA",
+      series = "DT.DOD.DECT.CD",
+      start_year = 2020,
+      end_year = 2020
+    ))
 
-  # Test income group aggregate code
-  expect_silent(ids_get(
-    entities = "LIC",
-    series = "DT.DOD.DECT.CD",
-    start_year = 2020,
-    end_year = 2020
-  ))
+    # Test income group aggregate code
+    expect_silent(ids_get(
+      entities = "LIC",
+      series = "DT.DOD.DECT.CD",
+      start_year = 2020,
+      end_year = 2020
+    ))
 
-  # Test multiple entity types together
-  expect_silent(ids_get(
-    entities = c("GHA", "LIC"),
-    series = "DT.DOD.DECT.CD",
-    start_year = 2020,
-    end_year = 2020
-  ))
+    # Test multiple entity types together
+    expect_silent(ids_get(
+      entities = c("GHA", "LIC"),
+      series = "DT.DOD.DECT.CD",
+      start_year = 2020,
+      end_year = 2020
+    ))
+  })
 })
 
 test_that("ids_get handles valid counterpart codes correctly", {
@@ -568,41 +652,43 @@ test_that("ids_get handles valid counterpart codes correctly", {
     }
   )
 
-  # Test default world aggregate
-  expect_silent(ids_get(
-    entities = "GHA",
-    series = "DT.DOD.DECT.CD",
-    counterparts = "WLD",
-    start_year = 2020,
-    end_year = 2020
-  ))
+  httptest2::without_internet({
+    # Test default world aggregate
+    expect_silent(ids_get(
+      entities = "GHA",
+      series = "DT.DOD.DECT.CD",
+      counterparts = "WLD",
+      start_year = 2020,
+      end_year = 2020
+    ))
 
-  # Test numeric country code
-  expect_silent(ids_get(
-    entities = "GHA",
-    series = "DT.DOD.DECT.CD",
-    counterparts = "730", # China
-    start_year = 2020,
-    end_year = 2020
-  ))
+    # Test numeric country code
+    expect_silent(ids_get(
+      entities = "GHA",
+      series = "DT.DOD.DECT.CD",
+      counterparts = "730", # China
+      start_year = 2020,
+      end_year = 2020
+    ))
 
-  # Test special text codes
-  expect_silent(ids_get(
-    entities = "GHA",
-    series = "DT.DOD.DECT.CD",
-    counterparts = c("907", "BND"), # IMF and bondholders
-    start_year = 2020,
-    end_year = 2020
-  ))
+    # Test special text codes
+    expect_silent(ids_get(
+      entities = "GHA",
+      series = "DT.DOD.DECT.CD",
+      counterparts = c("907", "BND"), # IMF and bondholders
+      start_year = 2020,
+      end_year = 2020
+    ))
 
-  # Test requesting all counterparts
-  expect_silent(ids_get(
-    entities = "GHA",
-    series = "DT.DOD.DECT.CD",
-    counterparts = "all",
-    start_year = 2020,
-    end_year = 2020
-  ))
+    # Test requesting all counterparts
+    expect_silent(ids_get(
+      entities = "GHA",
+      series = "DT.DOD.DECT.CD",
+      counterparts = "all",
+      start_year = 2020,
+      end_year = 2020
+    ))
+  })
 })
 
 test_that("ids_get returns expected data structure", {
@@ -615,44 +701,37 @@ test_that("ids_get returns expected data structure", {
     }
   )
 
-  result <- ids_get(
-    entities = "GHA",
-    series = "DT.DOD.DECT.CD",
-    start_year = 2020,
-    end_year = 2020
-  )
+  httptest2::without_internet({
+    result <- ids_get(
+      entities = "GHA",
+      series = "DT.DOD.DECT.CD",
+      start_year = 2020,
+      end_year = 2020
+    )
 
-  # Check tibble structure
-  expect_s3_class(result, "tbl_df")
+    # Check tibble structure
+    expect_s3_class(result, "tbl_df")
 
-  # Verify column names
-  expected_columns <- c(
-    "entity_id",
-    "series_id",
-    "counterpart_id",
-    "year",
-    "value"
-  )
-  expect_named(result, expected_columns)
+    # Verify column names
+    expected_columns <- c(
+      "entity_id",
+      "series_id",
+      "counterpart_id",
+      "year",
+      "value"
+    )
+    expect_named(result, expected_columns)
 
-  # Check data types
-  expect_type(result$entity_id, "character")
-  expect_type(result$series_id, "character")
-  expect_type(result$counterpart_id, "character")
-  expect_type(result$year, "integer")
-  expect_type(result$value, "double")
+    # Check data types
+    expect_type(result$entity_id, "character")
+    expect_type(result$series_id, "character")
+    expect_type(result$counterpart_id, "character")
+    expect_type(result$year, "integer")
+    expect_type(result$value, "double")
+  })
 })
 
 test_that("process_time_range handles pre-1970 dates correctly", {
-  local_mocked_bindings(
-    get_debt_statistics = function(entity, series,
-                                   counterpart, time, progress) {
-      purrr::map(strsplit(entity, ";")[[1]], function(e) {
-        mock_debt_statistics_data(e, "DT.DOD.DECT.CD", "WLD", 2020, 1000000)
-      }) |> purrr::list_flatten()
-    }
-  )
-
   # Test start_year before 1970
   expect_warning(
     result <- process_time_range(1960, 2020),
@@ -685,26 +764,28 @@ test_that("ids_get handles pre-1970 dates correctly", {
     }
   )
 
-  # Test with start_year before 1970
-  expect_warning(
-    result <- ids_get(
-      entities = "GHA",
-      series = "DT.DOD.DECT.CD",
-      start_year = 1960,
-      end_year = 1975
-    ),
-    "Data only available from 1970 onward"
-  )
-  expect_true(min(result$year) >= 1970)
+  httptest2::without_internet({
+    # Test with start_year before 1970
+    expect_warning(
+      result <- ids_get(
+        entities = "GHA",
+        series = "DT.DOD.DECT.CD",
+        start_year = 1960,
+        end_year = 1975
+      ),
+      "Data only available from 1970 onward"
+    )
+    expect_true(min(result$year) >= 1970)
 
-  # Test with end_year before 1970
-  expect_error(
-    ids_get(
-      entities = "GHA",
-      series = "DT.DOD.DECT.CD",
-      start_year = 1960,
-      end_year = 1965
-    ),
-    "Data only available from 1970 onward"
-  )
+    # Test with end_year before 1970
+    expect_error(
+      ids_get(
+        entities = "GHA",
+        series = "DT.DOD.DECT.CD",
+        start_year = 1960,
+        end_year = 1965
+      ),
+      "Data only available from 1970 onward"
+    )
+  })
 })

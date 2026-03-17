@@ -33,14 +33,16 @@ test_that("ids_bulk handles custom file paths", {
     }
   )
 
-  result <- ids_bulk(
-    test_url,
-    file_path = temp_path,
-    quiet = TRUE,
-    warn_size = FALSE
-  )
+  httptest2::without_internet({
+    result <- ids_bulk(
+      test_url,
+      file_path = temp_path,
+      quiet = TRUE,
+      warn_size = FALSE
+    )
 
-  expect_false(file.exists(temp_path))
+    expect_false(file.exists(temp_path))
+  })
 })
 
 test_that("ids_bulk fails gracefully with invalid URL", {
@@ -55,10 +57,12 @@ test_that("ids_bulk fails gracefully with invalid URL", {
     }
   )
 
-  expect_error(
-    ids_bulk("https://invalid-url.com/file.xlsx"),
-    "Request returned an invalid file type. Please check the URL and try again."
-  )
+  httptest2::without_internet({
+    expect_error(
+      ids_bulk("https://invalid-url.com/file.xlsx"),
+      "Request returned an invalid file type. Please check the URL and try again."
+    )
+  })
 })
 
 test_that("ids_bulk requires readxl package", {
@@ -66,10 +70,12 @@ test_that("ids_bulk requires readxl package", {
     check_installed = function(...) stop("Package not installed"),
     .package = "rlang"
   )
-  expect_error(
-    ids_bulk("https://example.com/file.xlsx"),
-    "Package not installed"
-  )
+  httptest2::without_internet({
+    expect_error(
+      ids_bulk("https://example.com/file.xlsx"),
+      "Package not installed"
+    )
+  })
 })
 
 test_that("ids_bulk handles message parameter correctly", {
@@ -103,21 +109,23 @@ test_that("ids_bulk handles message parameter correctly", {
     read_excel_wrapper = function(...) mock_data
   )
 
-  expect_message(
-    ids_bulk(test_url, quiet = FALSE, warn_size = FALSE),
-    "Downloading file"
-  )
-  expect_message(
-    ids_bulk(test_url, quiet = FALSE, warn_size = FALSE),
-    "Reading in file"
-  )
-  expect_message(
-    ids_bulk(test_url, quiet = FALSE, warn_size = FALSE),
-    "Processing file"
-  )
-  expect_no_message(
-    ids_bulk(test_url, quiet = TRUE, warn_size = FALSE)
-  )
+  httptest2::without_internet({
+    expect_message(
+      ids_bulk(test_url, quiet = FALSE, warn_size = FALSE),
+      "Downloading file"
+    )
+    expect_message(
+      ids_bulk(test_url, quiet = FALSE, warn_size = FALSE),
+      "Reading in file"
+    )
+    expect_message(
+      ids_bulk(test_url, quiet = FALSE, warn_size = FALSE),
+      "Processing file"
+    )
+    expect_no_message(
+      ids_bulk(test_url, quiet = TRUE, warn_size = FALSE)
+    )
+  })
 })
 
 test_that("ids_bulk handles timeout parameter correctly", {
@@ -128,14 +136,13 @@ test_that("ids_bulk handles timeout parameter correctly", {
 
   local_mocked_bindings(
     check_interactive = function() FALSE,
-    download_file = function(...) {
-      current_timeout <- getOption("timeout")
-      # Verify the timeout option was set correctly
-      if (current_timeout == 1) {
+    download_file = function(url, destfile, quiet, timeout = 300) {
+      # Verify the timeout was passed correctly
+      if (timeout == 1) {
         stop(
           paste0(
             "Download timed out after ",
-            current_timeout,
+            timeout,
             " seconds"
           ),
           call. = FALSE
@@ -151,15 +158,15 @@ test_that("ids_bulk handles timeout parameter correctly", {
     }
   )
 
-  expect_error(
-    ids_bulk(mock_url, timeout = 1, warn_size = FALSE),
-    "Download timed out after 1 seconds"
-  )
+  httptest2::without_internet({
+    expect_error(
+      ids_bulk(mock_url, timeout = 1, warn_size = FALSE),
+      "Download timed out after 1 seconds"
+    )
+  })
 })
 
 test_that("ids_bulk handles warn_size parameter", {
-  skip_if_offline()
-  skip_on_cran()
   skip_if_not_installed("jsonlite")
   skip_if_not_installed("readxl")
 
@@ -171,29 +178,37 @@ test_that("ids_bulk handles warn_size parameter", {
   local_mocked_bindings(
     download_file = function(...) TRUE,
     validate_file = function(...) TRUE,
-    check_interactive = function() FALSE
+    check_interactive = function() FALSE,
+    get_response_headers = function(...) {
+      list(
+        `content-type` = "application/octet-stream",
+        `content-length` = 150 * 1024^2
+      )
+    }
   )
 
-  expect_message(
-    download_bulk_file(
-      test_url,
-      tempfile(fileext = ".xlsx"),
-      60,
-      warn_size = TRUE,
-      quiet = TRUE
-    ),
-    "may take several minutes to download"
-  )
-
-  expect_no_warning(
-    download_bulk_file(
-      test_url,
-      tempfile(fileext = ".xlsx"),
-      60,
-      warn_size = FALSE,
-      quiet = TRUE
+  httptest2::without_internet({
+    expect_message(
+      download_bulk_file(
+        test_url,
+        tempfile(fileext = ".xlsx"),
+        60,
+        warn_size = TRUE,
+        quiet = TRUE
+      ),
+      "may take several minutes to download"
     )
-  )
+
+    expect_no_warning(
+      download_bulk_file(
+        test_url,
+        tempfile(fileext = ".xlsx"),
+        60,
+        warn_size = FALSE,
+        quiet = TRUE
+      )
+    )
+  })
 })
 
 test_that("ids_bulk validates downloaded files", {
@@ -245,7 +260,6 @@ test_that("download_bulk_file downloads files correctly", {
 })
 
 test_that("read_bulk_file reads files correctly", {
-  skip_on_cran()
   skip_if_not_installed("readxl")
 
   test_path <- test_path("data/download_bulk_file_output.xlsx")
@@ -298,8 +312,6 @@ test_that("process_bulk_data processes data correctly", {
 })
 
 test_that("ids_bulk downloads and processes data correctly", {
-  skip_if_offline()
-  skip_on_cran()
   skip_if_not_installed("jsonlite")
   skip_if_not_installed("readxl")
 
@@ -317,32 +329,34 @@ test_that("ids_bulk downloads and processes data correctly", {
     }
   )
 
-  result <- ids_bulk(
-    test_url,
-    file_path = test_path,
-    quiet = TRUE,
-    warn_size = FALSE
-  )
+  httptest2::without_internet({
+    result <- ids_bulk(
+      test_url,
+      file_path = test_path,
+      quiet = TRUE,
+      warn_size = FALSE
+    )
 
-  expect_s3_class(result, "tbl_df")
+    expect_s3_class(result, "tbl_df")
 
-  expected_columns <- c(
-    "entity_id",
-    "series_id",
-    "counterpart_id",
-    "year",
-    "value"
-  )
-  expect_equal(colnames(result), expected_columns)
+    expected_columns <- c(
+      "entity_id",
+      "series_id",
+      "counterpart_id",
+      "year",
+      "value"
+    )
+    expect_equal(colnames(result), expected_columns)
 
-  expected_types <- c(
-    "character",
-    "character",
-    "character",
-    "integer",
-    "numeric"
-  )
-  expect_true(all(lapply(result, class) == expected_types))
+    expected_types <- c(
+      "character",
+      "character",
+      "character",
+      "integer",
+      "numeric"
+    )
+    expect_true(all(lapply(result, class) == expected_types))
+  })
 })
 
 test_that("check_interactive returns expected results", {
@@ -361,21 +375,21 @@ test_that("download_file downloads a file correctly", {
   }
 
   local_mocked_bindings(
-    download.file = function(url, destfile, ...) {
-      file.create(destfile)
-      0L
+    req_perform = function(req, path, ...) {
+      file.create(path)
+      NULL
     },
-    .package = "utils"
+    .package = "httr2"
   )
 
-  download_file(url, destfile, quiet = TRUE)
-  expect_true(file.exists(destfile))
-  file.remove(destfile)
+  httptest2::without_internet({
+    download_file(url, destfile, quiet = TRUE)
+    expect_true(file.exists(destfile))
+    file.remove(destfile)
+  })
 })
 
 test_that("warn_size warning is triggered & user prompt is handled correctly", {
-  skip_if_offline()
-  skip_on_cran()
   skip_if_not_installed("jsonlite")
   skip_if_not_installed("readxl")
 
@@ -395,19 +409,21 @@ test_that("warn_size warning is triggered & user prompt is handled correctly", {
     check_interactive = function(...) TRUE,
     prompt_user = function(...) "n",
     {
-      expect_error(
-        expect_warning(
-          download_bulk_file(
-            test_url,
-            temp_file,
-            timeout = 30,
-            warn_size = TRUE,
-            quiet = TRUE
+      httptest2::without_internet({
+        expect_error(
+          expect_warning(
+            download_bulk_file(
+              test_url,
+              temp_file,
+              timeout = 30,
+              warn_size = TRUE,
+              quiet = TRUE
+            ),
+            regexp = "may take several minutes to download."
           ),
-          regexp = "may take several minutes to download."
-        ),
-        regexp = "Download cancelled."
-      )
+          regexp = "Download cancelled."
+        )
+      })
     }
   )
 })

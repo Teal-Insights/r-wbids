@@ -1,6 +1,4 @@
 test_that("perform_request handles error responses", {
-  skip_on_cran()
-
   mock_error_response <- list(
     list(
       message = list(
@@ -14,16 +12,21 @@ test_that("perform_request handles error responses", {
     is_request_error = function(...) TRUE,
     handle_request_error = function(resp) stop("API error: Invalid indicator"),
     {
-      expect_error(perform_request("indicators"),
-                   "API error: Invalid indicator")
+      httptest2::without_internet({
+        expect_error(perform_request("indicators"),
+                     "API error: Invalid indicator")
+      })
     }
   )
 })
 
 test_that("perform_request validates per_page parameter", {
+  expect_error(perform_request("series", per_page = 50000))
+})
+
+test_that("perform_request succeeds with valid per_page parameter", {
   skip_on_cran()
 
-  expect_error(perform_request("series", per_page = 50000))
   expect_silent(perform_request("series", per_page = 1000))
 })
 

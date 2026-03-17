@@ -7,9 +7,11 @@ test_that("ids_bulk_files returns a tibble with expected columns", {
     }
   )
 
-  result <- ids_bulk_files()
-  expected_columns <- c("file_name", "file_url", "last_updated_date")
+  httptest2::without_internet({
+    result <- ids_bulk_files()
+    expected_columns <- c("file_name", "file_url", "last_updated_date")
 
-  expect_equal(colnames(result), expected_columns)
-  expect_s3_class(result, "tbl_df")
+    expect_equal(colnames(result), expected_columns)
+    expect_s3_class(result, "tbl_df")
+  })
 })
