@@ -9,12 +9,16 @@
       "installJupyterlab": false
     }
   },
-  "postCreateCommand": "R -e \"install.packages(c('jsonlite', 'languageserver', 'devtools', 'httpgd'), repos = 'https://cloud.r-project.org')\"",
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y libxml2-dev libfontconfig1-dev libfreetype6-dev libharfbuzz-dev libfribidi-dev libpng-dev libtiff5-dev libjpeg-dev libcurl4-openssl-dev libssl-dev && R -e \"install.packages(c('jsonlite', 'languageserver', 'devtools', 'httpgd', 'lintr'), repos = 'https://cloud.r-project.org')\"",
   "customizations": {
     "vscode": {
       "extensions": [
-        "REditorSupport.r"
-      ]
+        "REditorSupport.r",
+        "anthropic.claude-code"
+      ],
+      "settings": {
+        "editor.rulers": [80]
+      }
     }
   }
 }
