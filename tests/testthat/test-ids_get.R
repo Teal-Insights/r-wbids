@@ -235,6 +235,16 @@ httptest2::without_internet({
         )
 
         expect_equal(result, mock_perform_request)
+
+        result_with_progress <- get_debt_statistics(
+          entity = "ZMB",
+          series = "DT.DOD.DPPG.CD",
+          counterpart = "216",
+          time = "YR2020;YR2021",
+          progress = TRUE
+        )
+
+        expect_equal(result_with_progress, mock_perform_request)
       }
     )
   })
