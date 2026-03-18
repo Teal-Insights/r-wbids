@@ -2,6 +2,7 @@
   "name": "R Development",
   "image": "mcr.microsoft.com/devcontainers/base:debian",
   "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/rocker-org/devcontainer-features/r-rig:1": {
       "version": "release",
       "installREnv": false,
@@ -9,7 +10,7 @@
       "installJupyterlab": false
     }
   },
-  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y libxml2-dev libfontconfig1-dev libfreetype6-dev libharfbuzz-dev libfribidi-dev libpng-dev libtiff5-dev libjpeg-dev libcurl4-openssl-dev libssl-dev cmake && R -e \"install.packages(c('jsonlite', 'languageserver', 'devtools', 'httpgd', 'lintr', 'httptest2), repos = 'https://cloud.r-project.org')\"",
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y libxml2-dev libfontconfig1-dev libfreetype6-dev libfribidi-dev libgit2-dev libharfbuzz-dev libjpeg-dev libpng-dev libtiff-dev libwebp-dev libx11-dev libcairo2-dev pandoc && R -e \"pak::pkg_install(c('jsonlite', 'languageserver', 'devtools', 'httpgd', 'lintr', 'httptest2'))\"",
   "customizations": {
     "vscode": {
       "extensions": [
