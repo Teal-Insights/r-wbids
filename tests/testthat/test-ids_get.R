@@ -94,7 +94,7 @@ httptest2::without_internet({
   test_that("ids_get returns a tibble with expected columns", {
     local_mocked_bindings(
       get_debt_statistics = function(entity, series,
-                                    counterpart, time, progress) {
+                                     counterpart, time, progress) {
         mock_debt_statistics_data("ZMB", "DT.DOD.DPPG.CD", "216", 2015, 100) |>
           c(mock_debt_statistics_data("ZMB", "DT.DOD.DPPG.CD", "216",
                                       2016, 200))
@@ -124,7 +124,7 @@ httptest2::without_internet({
   test_that("ids_get returns a large data", {
     local_mocked_bindings(
       get_debt_statistics = function(entity, series,
-                                    counterpart, time, progress) {
+                                     counterpart, time, progress) {
         purrr::map(c("216", "218", "730"), function(cp) {
           mock_debt_statistics_data("ZMB", "DT.DOD.DPPG.CD", cp, 2020, 500)
         }) |> purrr::list_flatten()
@@ -182,7 +182,7 @@ httptest2::without_internet({
   test_that("ids_get handles valid progress input", {
     local_mocked_bindings(
       get_debt_statistics = function(entity, series,
-                                    counterpart, time, progress) {
+                                     counterpart, time, progress) {
         mock_debt_statistics_data("ZMB", "DT.DOD.DPPG.CD", "265", 2015, 100) |>
           c(mock_debt_statistics_data("ZMB", "DT.DOD.DPPG.CD", "265",
                                       2016, 200))
@@ -376,7 +376,7 @@ httptest2::without_internet({
     expect_equal(result, 2020)
   })
 
-  test_that("process_debt_statistics handles empty/incomplete data gracefully", {
+  test_that("process_debt_statistics handles empty/incomplete data", {
     incomplete_data <- list(
       list(
         "variable" = list(
@@ -414,7 +414,7 @@ httptest2::without_internet({
     )
   })
 
-  test_that("validate_character_vector correctly handles vector length limits", {
+  test_that("validate_character_vector handles vector length limits", {
     # Test vector with exactly 60 items (should pass)
     exactly_60 <- rep("A", 60)
     expect_silent(validate_character_vector(exactly_60, "test_vector"))
@@ -468,7 +468,7 @@ httptest2::without_internet({
     # Test that exactly 60 items works for each parameter
     local_mocked_bindings(
       get_debt_statistics = function(entity, series,
-                                    counterpart, time, progress) {
+                                     counterpart, time, progress) {
         mock_debt_statistics_data("ZMB", "DT.DOD.DPPG.CD", "WLD", 2020, 100)
       }
     )
@@ -486,7 +486,7 @@ httptest2::without_internet({
   test_that("ids_get uses new default parameters correctly", {
     local_mocked_bindings(
       get_debt_statistics = function(entity, series,
-                                    counterpart, time, progress) {
+                                     counterpart, time, progress) {
         purrr::map(2000:2005, function(yr) {
           mock_debt_statistics_data("GHA", "DT.DOD.DECT.CD", "WLD", yr, 1e6)
         }) |> purrr::list_flatten()
@@ -510,7 +510,7 @@ httptest2::without_internet({
     current_year <- as.integer(format(Sys.Date(), "%Y"))
     local_mocked_bindings(
       get_debt_statistics = function(entity, series,
-                                    counterpart, time, progress) {
+                                     counterpart, time, progress) {
         purrr::map((current_year - 3):(current_year + 1), function(yr) {
           val <- if (yr <= current_year - 1) 1e6 else NULL
           mock_debt_statistics_data("GHA", "DT.DOD.DECT.CD", "WLD", yr, val)
@@ -530,7 +530,7 @@ httptest2::without_internet({
   test_that("ids_get correctly applies default years for projection series", {
     local_mocked_bindings(
       get_debt_statistics = function(entity, series,
-                                    counterpart, time, progress) {
+                                     counterpart, time, progress) {
         purrr::map(2000:2005, function(yr) {
           mock_debt_statistics_data("GHA", "DT.TDS.DECT.CD", "WLD", yr, 5e5)
         }) |> purrr::list_flatten()
@@ -589,7 +589,7 @@ httptest2::without_internet({
   test_that("ids_get handles valid entity codes correctly", {
     local_mocked_bindings(
       get_debt_statistics = function(entity, series,
-                                    counterpart, time, progress) {
+                                     counterpart, time, progress) {
         purrr::map(strsplit(entity, ";")[[1]], function(e) {
           mock_debt_statistics_data(e, "DT.DOD.DECT.CD", "WLD", 2020, 1000000)
         }) |> purrr::list_flatten()
@@ -624,7 +624,7 @@ httptest2::without_internet({
   test_that("ids_get handles valid counterpart codes correctly", {
     local_mocked_bindings(
       get_debt_statistics = function(entity, series,
-                                    counterpart, time, progress) {
+                                     counterpart, time, progress) {
         purrr::map(strsplit(entity, ";")[[1]], function(e) {
           mock_debt_statistics_data(e, "DT.DOD.DECT.CD", "WLD", 2020, 1000000)
         }) |> purrr::list_flatten()
@@ -671,7 +671,7 @@ httptest2::without_internet({
   test_that("ids_get returns expected data structure", {
     local_mocked_bindings(
       get_debt_statistics = function(entity, series,
-                                    counterpart, time, progress) {
+                                     counterpart, time, progress) {
         purrr::map(strsplit(entity, ";")[[1]], function(e) {
           mock_debt_statistics_data(e, "DT.DOD.DECT.CD", "WLD", 2020, 1000000)
         }) |> purrr::list_flatten()
@@ -732,7 +732,7 @@ httptest2::without_internet({
   test_that("ids_get handles pre-1970 dates correctly", {
     local_mocked_bindings(
       get_debt_statistics = function(entity, series,
-                                    counterpart, time, progress) {
+                                     counterpart, time, progress) {
         purrr::map(strsplit(entity, ";")[[1]], function(e) {
           mock_debt_statistics_data(e, "DT.DOD.DECT.CD", "WLD", 2020, 1000000)
         }) |> purrr::list_flatten()

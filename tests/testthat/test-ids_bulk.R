@@ -345,7 +345,7 @@ httptest2::without_internet({
     file.remove(destfile)
   })
 
-  test_that("warn_size warning is triggered & user prompt is handled correctly", {
+  test_that("warn_size warning is triggered & prompt is handled correctly", {
     skip_if_not_installed("jsonlite")
     skip_if_not_installed("readxl")
 

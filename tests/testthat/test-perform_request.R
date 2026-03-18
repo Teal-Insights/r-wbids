@@ -14,10 +14,12 @@ httptest2::without_internet({
       {
         with_mocked_bindings(
           is_request_error = function(...) TRUE,
-          handle_request_error = function(resp) stop("API error: Invalid indicator"),
+          handle_request_error = function(resp) {
+            stop("API error: Invalid indicator")
+          },
           {
             expect_error(perform_request("indicators"),
-                        "API error: Invalid indicator")
+                         "API error: Invalid indicator")
           }
         )
       }
@@ -36,13 +38,13 @@ httptest2::without_internet({
 
   test_that("validate_per_page throws an error for invalid per_page values", {
     expect_error(validate_per_page(0),
-                "must be an integer between 1 and 32,500")
+                 "must be an integer between 1 and 32,500")
     expect_error(validate_per_page(32501),
-                "must be an integer between 1 and 32,500")
+                 "must be an integer between 1 and 32,500")
     expect_error(validate_per_page("1000"),
-                "must be an integer between 1 and 32,500")
+                 "must be an integer between 1 and 32,500")
     expect_error(validate_per_page(1000.5),
-                "must be an integer between 1 and 32,500")
+                 "must be an integer between 1 and 32,500")
   })
 
   test_that("create_request constructs a request with default parameters", {
