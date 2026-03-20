@@ -1,6 +1,10 @@
 # wbids 1.1.5
 
+* Improved test coverage.
+* Better safeguards against API call leakage.
+
 # wbids 1.1.4
+
 * Tests that made third-party API calls are now skipped on CRAN.
 
 # wbids 1.1.2
