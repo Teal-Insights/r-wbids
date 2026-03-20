@@ -37,7 +37,8 @@ Suggests:
     httptest2,
     testthat (>= 3.0.0),
     lifecycle,
-    httr
+    httr,
+    withr
 Config/testthat/edition: 3
 URL: https://teal-insights.github.io/r-wbids/, https://github.com/teal-insights/r-wbids/
 BugReports: https://github.com/teal-insights/r-wbids/issues
