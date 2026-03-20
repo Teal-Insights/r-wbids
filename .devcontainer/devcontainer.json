@@ -1,0 +1,25 @@
+{
+  "name": "R Development",
+  "image": "mcr.microsoft.com/devcontainers/base:debian",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/rocker-org/devcontainer-features/r-rig:1": {
+      "version": "release",
+      "installREnv": false,
+      "installRMarkdown": false,
+      "installJupyterlab": false
+    }
+  },
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y libxml2-dev libfontconfig1-dev libfreetype6-dev libfribidi-dev libgit2-dev libharfbuzz-dev libjpeg-dev libpng-dev libtiff-dev libwebp-dev libx11-dev libcairo2-dev cmake pandoc && R -e \"Sys.setenv(LIBARROW_BINARY = 'true', MAKEFLAGS='-j2'); pak::pkg_install(c('jsonlite', 'languageserver', 'devtools', 'httpgd', 'lintr', 'httptest2', 'cli', 'httr2', 'dplyr', 'purrr', 'tibble', 'tidyr', 'rlang', 'econdatasets'))\"",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "REditorSupport.r",
+        "anthropic.claude-code"
+      ],
+      "settings": {
+        "editor.rulers": [80]
+      }
+    }
+  }
+}

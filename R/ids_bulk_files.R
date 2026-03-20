@@ -18,6 +18,7 @@
 #' \donttest{
 #' ids_bulk_files()
 #' }
+#'
 ids_bulk_files <- function() {
   ids_meta <- read_bulk_info()
 

@@ -47,7 +47,7 @@ This function downloads a data file from the World Bank International Debt
 Statistics (IDS), reads and processes the data into a tidy format.
 }
 \examples{
-\dontshow{if (curl::has_internet() && rlang::is_installed("readxl")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (curl::has_internet() && rlang::is_installed("readxl")) withAutoprint(\{ # examplesIf}
 \dontrun{
 available_files <- ids_bulk_files()
 data <- ids_bulk(
