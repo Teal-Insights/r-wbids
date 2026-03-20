@@ -10,15 +10,15 @@
 |collate  |English_United States.utf8                                        |
 |ctype    |English_United States.utf8                                        |
 |tz       |America/New_York                                                  |
-|date     |2026-03-09                                                        |
-|pandoc   |3.8.2.1 @ C:/Users/Ninsin/AppData/Local/Pandoc/ (via rmarkdown)   |
+|date     |2026-03-20                                                        |
+|pandoc   |3.8.2.1 @ C:\Users\Ninsin\AppData\Local\Pandoc\pandoc.exe         |
 |quarto   |NA @ C:\Users\Ninsin\AppData\Local\Programs\Quarto\bin\quarto.exe |
 
 # Dependencies
 
 |package      |old      |new      |Δ  |
 |:------------|:--------|:--------|:--|
-|wbids        |1.1.3    |1.1.4    |*  |
+|wbids        |1.1.4    |1.1.5    |*  |
 |arrow        |23.0.1.1 |23.0.1.1 |   |
 |askpass      |1.2.1    |1.2.1    |   |
 |assertthat   |0.2.1    |0.2.1    |   |
