@@ -1,3 +1,5 @@
+# wbids 1.1.5
+
 # wbids 1.1.4
 * Tests that made third-party API calls are now skipped on CRAN.
 
