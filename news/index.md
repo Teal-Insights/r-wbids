@@ -1,5 +1,12 @@
 # Changelog
 
+## wbids 1.1.5
+
+CRAN release: 2026-03-20
+
+- Improved test coverage.
+- Better safeguards against API call leakage.
+
 ## wbids 1.1.4
 
 CRAN release: 2026-03-10
